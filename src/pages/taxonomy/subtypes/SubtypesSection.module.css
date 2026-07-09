@@ -296,7 +296,6 @@
 .subtypeItemHeader {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
 }
 
@@ -745,13 +744,6 @@
   gap: 8px;
 }
 
-.detailLead {
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.5;
-  color: #64748b;
-}
-
 .detailSectionIntro {
   display: flex;
   flex-direction: column;
@@ -789,6 +781,13 @@
   flex-direction: column;
   gap: 6px;
   min-width: 0;
+}
+
+.detailAttributeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .detailAttribute {

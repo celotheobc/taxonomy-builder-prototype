@@ -12,7 +12,6 @@ export default function SubtypeDistribution({
   items,
   totalRows: totalRowsOverride,
   label,
-  lead,
   selectable = false,
   selectedValues = null,
   onToggleValue,
@@ -34,10 +33,9 @@ export default function SubtypeDistribution({
 
   return (
     <div className={styles.detailSection}>
-      {(label || lead || showTruncationNote) && (
+      {(label || showTruncationNote) && (
         <div className={styles.detailSectionIntro}>
           {label ? <span className={styles.detailLabel}>{label}</span> : null}
-          {lead ? <p className={styles.detailLead}>{lead}</p> : null}
           {showTruncationNote && (
             <span className={styles.detailTruncationNote}>
               Showing {visibleItems.length} of {uniqueTotal.toLocaleString()} subtype options.

@@ -20,7 +20,6 @@ import styles from './SubtypesSection.module.css';
 
 const RECOMMENDATION_CLASS = {
   Recommended: styles.badgeRecommended,
-  Caution: styles.badgeCaution,
   'Not recommended': styles.badgeNotRecommended,
 };
 
@@ -86,6 +85,10 @@ export default function AttributeWorkflowPanel({
   const selectedCount = distributionItems.filter((item) => selectedValues.has(item.value)).length;
   const canCreateSelection = canGenerate && selectedCount > 0;
   const recommendationClass = candidate ? RECOMMENDATION_CLASS[candidate.recommendation] : null;
+  const showRecommendationBadge =
+    !hasCreated &&
+    candidate?.recommendation !== 'Caution' &&
+    Boolean(recommendationClass);
 
   const handleToggleValue = (valueKey) => {
     setSelectedValues((prev) => {
@@ -140,7 +143,14 @@ export default function AttributeWorkflowPanel({
       <div className={styles.detailBody}>
         <div className={styles.detailHeaderRow}>
           <div className={styles.detailIntro}>
-            <h4 className={styles.detailAttribute}>{selectedAttribute.name}</h4>
+            <div className={styles.detailAttributeRow}>
+              <h4 className={styles.detailAttribute}>{selectedAttribute.name}</h4>
+              {showRecommendationBadge ? (
+                <span className={`${styles.recommendationBadge} ${recommendationClass}`}>
+                  {candidate.recommendation}
+                </span>
+              ) : null}
+            </div>
             <div className={styles.detailSummarySwap} key={hasCreated ? 'created' : 'preview'}>
               {hasCreated ? (
                 activeSplit?.taxonomy ? (
@@ -156,18 +166,11 @@ export default function AttributeWorkflowPanel({
                     </button>
                   </div>
                 ) : null
-              ) : (
-                <div className={`${styles.detailSummaryStack} ${styles.workflowSummaryEnter}`}>
-                  {recommendationClass && candidate ? (
-                    <span className={`${styles.recommendationBadge} ${recommendationClass}`}>
-                      {candidate.recommendation}
-                    </span>
-                  ) : null}
-                  {recommendationReason ? (
-                    <p className={styles.detailSummary}>{recommendationReason}</p>
-                  ) : null}
-                </div>
-              )}
+              ) : recommendationReason ? (
+                <p className={`${styles.detailSummary} ${styles.workflowSummaryEnter}`}>
+                  {recommendationReason}
+                </p>
+              ) : null}
             </div>
           </div>
 
@@ -196,8 +199,7 @@ export default function AttributeWorkflowPanel({
             <div className={styles.workflowContentEnter}>
               {distributionItems.length > 0 && (
                 <SubtypeDistribution
-                  label={`${distributionItems.length} Potential object subtypes`}
-                  lead="The following values will become object subtypes:"
+                  label={`Potential object subtypes (${distributionItems.length})`}
                   items={distributionItems}
                   totalRows={totalRows}
                   selectable
