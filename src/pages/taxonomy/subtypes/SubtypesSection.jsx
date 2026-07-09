@@ -79,9 +79,8 @@ export default function SubtypesSection({
     await new Promise((resolve) => {
       window.setTimeout(resolve, GENERATION_DELAY_MS);
     });
-    const taxonomy = regenerateSubtypes(objectTypeId, activeAttributeId, matchingValues);
+    regenerateSubtypes(objectTypeId, activeAttributeId, matchingValues);
     setIsRegenerating(false);
-    if (taxonomy) onTaxonomyGenerated?.(taxonomy);
   };
 
   const handleDeleteSplit = () => {
