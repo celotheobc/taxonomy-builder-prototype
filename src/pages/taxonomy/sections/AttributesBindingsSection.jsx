@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { getObjectType } from '../../../data/mockObjectTypes';
+import { getAllSubtypeEntries, getSubtypeCountForAttribute } from '../context/ObjectTypeWorkspaceContext';
 import ObjectTypeSectionCard from './ObjectTypeSectionCard';
 import styles from './ObjectTypeSectionCard.module.css';
 
@@ -9,6 +10,12 @@ function BindingBadge({ status }) {
     return <span className={styles.badgePartial}>{status}</span>;
   }
   return <span className={styles.badgeUnbound}>Unbound</span>;
+}
+
+function SubtypeCountBadge({ count }) {
+  if (!count) return null;
+  const label = `${count} subtype${count === 1 ? '' : 's'}`;
+  return <span className={styles.badgeSubtypes}>{label}</span>;
 }
 
 function AttributeRowMenu({ attributeId, onCreateSubtypesFromAttribute }) {
@@ -62,6 +69,7 @@ function AttributeRowMenu({ attributeId, onCreateSubtypesFromAttribute }) {
 
 export default function AttributesBindingsSection({
   objectTypeId,
+  splitState,
   selectedAttributeId,
   selectedBindingId,
   onSelectAttribute,
@@ -70,6 +78,9 @@ export default function AttributesBindingsSection({
 }) {
   const [activeTab, setActiveTab] = useState('attributes');
   const objectType = getObjectType(objectTypeId);
+  const showSubtypesColumn = Boolean(
+    splitState && getAllSubtypeEntries(splitState).length > 0,
+  );
 
   return (
     <ObjectTypeSectionCard
@@ -114,6 +125,7 @@ export default function AttributesBindingsSection({
                 <th>Name</th>
                 <th>Data type</th>
                 <th>Bindings</th>
+                {showSubtypesColumn ? <th>Subtypes</th> : null}
                 <th>Source</th>
                 <th aria-label="Actions" />
               </tr>
@@ -137,6 +149,13 @@ export default function AttributesBindingsSection({
                   <td>
                     <BindingBadge status={row.bindingStatus} />
                   </td>
+                  {showSubtypesColumn ? (
+                    <td>
+                      <SubtypeCountBadge
+                        count={getSubtypeCountForAttribute(splitState, row.id)}
+                      />
+                    </td>
+                  ) : null}
                   <td>{row.source}</td>
                   <td className={styles.rowMenuCell}>
                     <AttributeRowMenu

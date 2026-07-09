@@ -1,4 +1,4 @@
-import { ObjectTypeIcon } from '../../components/icons/ContextModelIcons';
+import TaxonomyStackIcon from '../../components/icons/TaxonomyStackIcon';
 import styles from './PrototypeCover.module.css';
 
 const VERSIONS = [
@@ -41,9 +41,7 @@ export default function PrototypeCover({ onOpen }) {
       <div className={styles.inner}>
         <header className={styles.header}>
           <div className={styles.brandMark} aria-hidden>
-            <span className={styles.brandIcon}>
-              <ObjectTypeIcon size={28} monochrome />
-            </span>
+            <TaxonomyStackIcon size={52} />
           </div>
           <h1 className={styles.title}>Taxonomy Builder</h1>
           <p className={styles.subtitle}>

@@ -24,18 +24,6 @@
   margin-bottom: 16px;
 }
 
-.brandIcon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
-  background: #1b6fd1;
-  color: #fff;
-  box-shadow: 0 3px 10px rgba(27, 111, 209, 0.35);
-}
-
 .title {
   margin: 0 0 10px;
   font-size: 2.125rem;

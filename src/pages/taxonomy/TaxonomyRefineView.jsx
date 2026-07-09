@@ -25,7 +25,7 @@ export default function TaxonomyRefineView({
   onNavigateToParent,
 }) {
   const [rightCollapsed, setRightCollapsed] = useState(false);
-  const [bottomCollapsed, setBottomCollapsed] = useState(false);
+  const [bottomCollapsed, setBottomCollapsed] = useState(true);
   const [bottomTab, setBottomTab] = useState('preview');
   const [previewSubtypeId, setPreviewSubtypeId] = useState(subtypeId);
   const subtypesSectionRef = useRef(null);
@@ -95,6 +95,7 @@ export default function TaxonomyRefineView({
           {/* <OverviewSection objectTypeId={objectTypeId} /> */}
           <AttributesBindingsSection
             objectTypeId={objectTypeId}
+            splitState={splitState}
             selectedAttributeId={selectedAttributeId}
             selectedBindingId={selectedBindingId}
             onSelectAttribute={selectAttribute}

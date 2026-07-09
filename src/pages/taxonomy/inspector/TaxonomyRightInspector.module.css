@@ -9,10 +9,21 @@
 }
 
 .headerTitle {
-  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 12px;
+  box-sizing: border-box;
   font-size: 13px;
   font-weight: 700;
   color: #0f172a;
+}
+
+.collapseBtn {
+  font-size: 17px;
+  line-height: 1;
+  padding: 10px 12px;
+  min-width: 40px;
 }
 
 .heading {

@@ -15,7 +15,6 @@ function getValueKey(item) {
 export default function SubtypeDistribution({
   items,
   totalRows: totalRowsOverride,
-  totalUniqueCount,
   label,
   selectable = false,
   selectedValues = null,
@@ -26,10 +25,11 @@ export default function SubtypeDistribution({
   const totalRows =
     totalRowsOverride ?? items.reduce((sum, item) => sum + (item.recordCount ?? 0), 0);
   const selectedSet = selectedValues instanceof Set ? selectedValues : new Set(selectedValues ?? []);
-  const uniqueTotal = totalUniqueCount ?? items.length;
+  const uniqueTotal = items.length;
   const canExpand = items.length > visibleLimit;
   const visibleItems = showAll || !canExpand ? items : items.slice(0, visibleLimit);
-  const showTruncationNote = uniqueTotal > visibleItems.length;
+  const hiddenCount = items.length - visibleLimit;
+  const showTruncationNote = canExpand && !showAll;
 
   useEffect(() => {
     setShowAll(false);
@@ -112,7 +112,7 @@ export default function SubtypeDistribution({
 
       {canExpand && !showAll && (
         <button type="button" className={styles.showAllBtn} onClick={() => setShowAll(true)}>
-          Show all
+          Show more ({hiddenCount})
         </button>
       )}
     </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import TaxonomyStackIcon from '../../../components/icons/TaxonomyStackIcon';
 import {
   getAttribute,
   getAttributeSplitCandidate,
@@ -12,7 +13,7 @@ import {
   hasSubtypesForAttribute,
 } from '../context/ObjectTypeWorkspaceContext';
 import DetailKpis from './DetailKpis';
-import GeneratedSubtypeList from './GeneratedSubtypeList';
+import GeneratedSubtypePanel from './GeneratedSubtypePanel';
 import SubtypeDistribution from './SubtypeDistribution';
 import styles from './SubtypesSection.module.css';
 
@@ -37,12 +38,12 @@ export default function AttributeWorkflowPanel({
   canGenerate,
   isGenerating,
   isRegenerating,
-  onPreview,
-  onManage,
   onRegenerate,
   onDeleteSplit,
   onOpenTaxonomy,
   onOpenObjectType,
+  onPreviewSubtype,
+  onDeleteSubtype,
 }) {
   const objectType = getObjectType(objectTypeId);
   const selectedAttribute = selectedAttributeId
@@ -57,26 +58,62 @@ export default function AttributeWorkflowPanel({
   const candidate = selectedAttributeId
     ? getAttributeSplitCandidate(objectType, selectedAttributeId)
     : null;
+  const distributionItems = detectedValues.length ? detectedValues : [];
+  const previewValueCount = distributionItems.length;
   const uniqueValues = selectedAttributeId
-    ? getDetectedValueCount(objectType, selectedAttributeId)
+    ? previewValueCount || getDetectedValueCount(objectType, selectedAttributeId)
     : 0;
   const totalRows = selectedAttributeId
     ? getAttributeTotalRows(objectType, selectedAttributeId)
     : 0;
-  const distributionItems = detectedValues.length ? detectedValues : [];
   const visibleSubtypes = activeSplit?.subtypes.filter((subtype) => !subtype.hidden) ?? [];
+  const usedValues = new Set(visibleSubtypes.map((subtype) => subtype.matchingValue));
+  const unusedValues = distributionItems.filter((item) => !usedValues.has(item.value));
 
   const [selectedValues, setSelectedValues] = useState(() => new Set());
+  const [selectedUnusedValues, setSelectedUnusedValues] = useState(() => new Set());
+  const [isEditingSelection, setIsEditingSelection] = useState(false);
+  const [editSelectedValues, setEditSelectedValues] = useState(() => new Set());
 
   useEffect(() => {
     setSelectedValues(new Set(distributionItems.map((item) => item.value)));
+    setSelectedUnusedValues(new Set());
+    setIsEditingSelection(false);
   }, [selectedAttributeId, objectTypeId]);
+
+  useEffect(() => {
+    setSelectedUnusedValues(new Set());
+  }, [hasGenerated, unusedValues.length]);
 
   const selectedCount = distributionItems.filter((item) => selectedValues.has(item.value)).length;
   const canGenerateSelection = canGenerate && selectedCount > 0;
+  const editSelectedCount = distributionItems.filter((item) =>
+    editSelectedValues.has(item.value),
+  ).length;
+  const selectedUnusedCount = unusedValues.filter((item) =>
+    selectedUnusedValues.has(item.value),
+  ).length;
 
   const handleToggleValue = (valueKey) => {
     setSelectedValues((prev) => {
+      const next = new Set(prev);
+      if (next.has(valueKey)) next.delete(valueKey);
+      else next.add(valueKey);
+      return next;
+    });
+  };
+
+  const handleToggleUnusedValue = (valueKey) => {
+    setSelectedUnusedValues((prev) => {
+      const next = new Set(prev);
+      if (next.has(valueKey)) next.delete(valueKey);
+      else next.add(valueKey);
+      return next;
+    });
+  };
+
+  const handleToggleEditValue = (valueKey) => {
+    setEditSelectedValues((prev) => {
       const next = new Set(prev);
       if (next.has(valueKey)) next.delete(valueKey);
       else next.add(valueKey);
@@ -92,12 +129,55 @@ export default function AttributeWorkflowPanel({
     onGenerate(matchingValues);
   };
 
+  const handleStartEditSelection = () => {
+    setEditSelectedValues(new Set(visibleSubtypes.map((subtype) => subtype.matchingValue)));
+    setIsEditingSelection(true);
+  };
+
+  const handleCancelEditSelection = () => {
+    setIsEditingSelection(false);
+  };
+
+  const handleUpdateSubtypes = () => {
+    if (!editSelectedCount || isRegenerating) return;
+    const matchingValues = distributionItems
+      .map((item) => item.value)
+      .filter((value) => editSelectedValues.has(value));
+    onRegenerate(matchingValues);
+    setIsEditingSelection(false);
+  };
+
+  const handleAddUnusedSubtypes = () => {
+    if (!selectedUnusedCount || isRegenerating) return;
+    const matchingValues = [
+      ...visibleSubtypes.map((subtype) => subtype.matchingValue),
+      ...unusedValues
+        .map((item) => item.value)
+        .filter((value) => selectedUnusedValues.has(value)),
+    ];
+    onRegenerate(matchingValues);
+    setSelectedUnusedValues(new Set());
+  };
+
   if (!selectedAttribute) {
     return (
       <div className={styles.detailEmpty}>
-        <p className={styles.detailEmptyTitle}>Choose an attribute to generate subtypes.</p>
+        <svg className={styles.detailEmptyIcon} viewBox="0 0 24 24" fill="none" aria-hidden>
+          <path
+            d="M4 4l7.07 16.97 2.51-7.39 7.39-2.51L4 4z"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M13 13l6 6"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            strokeLinecap="round"
+          />
+        </svg>
         <p className={styles.detailEmptyCopy}>
-          Select an attribute on the left to preview the object subtypes that will be created.
+          Select an attribute to preview potential object subtypes.
         </p>
       </div>
     );
@@ -111,22 +191,21 @@ export default function AttributeWorkflowPanel({
             <h4 className={styles.detailAttribute}>{selectedAttribute.name}</h4>
             <div className={styles.detailSummarySwap} key={hasGenerated ? 'generated' : 'preview'}>
               {hasGenerated ? (
-                <p className={`${styles.detailSummary} ${styles.workflowSummaryEnter}`}>
-                  <span className={styles.statusGenerated}>Subtypes generated</span>
-                  {activeSplit?.taxonomy && (
-                    <>
-                      {' '}
-                      · organised by{' '}
-                      <button
-                        type="button"
-                        className={styles.inlineLinkBtn}
-                        onClick={() => onOpenTaxonomy?.(activeSplit.taxonomy.id)}
-                      >
-                        {activeSplit.taxonomy.name}
-                      </button>
-                    </>
-                  )}
-                </p>
+                isEditingSelection ? (
+                  <p className={`${styles.detailSummary} ${styles.workflowSummaryEnter}`}>
+                    Update which values become subtypes.
+                  </p>
+                ) : activeSplit?.taxonomy ? (
+                  <button
+                    type="button"
+                    className={`${styles.detailTaxonomyLink} ${styles.workflowSummaryEnter}`}
+                    onClick={() => onOpenTaxonomy?.(activeSplit.taxonomy.id)}
+                    aria-label={`Open taxonomy ${activeSplit.taxonomy.name}`}
+                  >
+                    <TaxonomyStackIcon size={22} title="" />
+                    <span>{activeSplit.taxonomy.name}</span>
+                  </button>
+                ) : null
               ) : (
                 <p className={`${styles.detailSummary} ${styles.workflowSummaryEnter}`}>
                   {buildPreviewSummary(
@@ -146,16 +225,41 @@ export default function AttributeWorkflowPanel({
 
         <div
           className={styles.workflowContentStage}
-          key={hasGenerated ? 'generated-content' : 'preview-content'}
+          key={
+            hasGenerated
+              ? isEditingSelection
+                ? 'edit-content'
+                : 'generated-content'
+              : 'preview-content'
+          }
         >
           {hasGenerated ? (
-            <div className={styles.workflowContentEnter}>
-              <GeneratedSubtypeList
-                subtypes={visibleSubtypes}
-                totalRows={totalRows}
-                onOpenObjectType={onOpenObjectType}
-              />
-            </div>
+            isEditingSelection ? (
+              <div className={styles.workflowContentEnter}>
+                <SubtypeDistribution
+                  label="Object subtypes"
+                  items={distributionItems}
+                  totalRows={totalRows}
+                  selectable
+                  selectedValues={editSelectedValues}
+                  onToggleValue={handleToggleEditValue}
+                />
+              </div>
+            ) : (
+              <div className={styles.workflowContentEnter}>
+                <GeneratedSubtypePanel
+                  subtypes={visibleSubtypes}
+                  unusedValues={unusedValues}
+                  selectedUnusedValues={selectedUnusedValues}
+                  onToggleUnusedValue={handleToggleUnusedValue}
+                  onAddUnusedSubtypes={handleAddUnusedSubtypes}
+                  isAddingSubtypes={isRegenerating}
+                  onOpenObjectType={onOpenObjectType}
+                  onPreviewSubtype={onPreviewSubtype}
+                  onDeleteSubtype={onDeleteSubtype}
+                />
+              </div>
+            )
           ) : (
             <div className={styles.workflowContentEnter}>
               {distributionItems.length > 0 && (
@@ -163,7 +267,6 @@ export default function AttributeWorkflowPanel({
                   label="Potential object subtypes"
                   items={distributionItems}
                   totalRows={totalRows}
-                  totalUniqueCount={uniqueValues}
                   selectable
                   selectedValues={selectedValues}
                   onToggleValue={handleToggleValue}
@@ -180,51 +283,74 @@ export default function AttributeWorkflowPanel({
 
       <div
         className={`${styles.detailFooter} ${styles.workflowFooterEnter}`}
-        key={hasGenerated ? 'generated-footer' : 'preview-footer'}
+        key={
+          hasGenerated
+            ? isEditingSelection
+              ? 'edit-footer'
+              : 'generated-footer'
+            : 'preview-footer'
+        }
       >
         {hasGenerated ? (
-          <>
-            <button type="button" className={styles.secondaryBtn} onClick={onPreview}>
-              Preview
-            </button>
-            <button type="button" className={styles.secondaryBtn} onClick={onManage}>
-              Manage
-            </button>
+          isEditingSelection ? (
+            <div className={styles.detailFooterActions}>
+              <button
+                type="button"
+                className={styles.secondaryBtn}
+                disabled={isRegenerating}
+                onClick={handleCancelEditSelection}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className={styles.primaryBtn}
+                disabled={!editSelectedCount || isRegenerating}
+                onClick={handleUpdateSubtypes}
+              >
+                {isRegenerating ? (
+                  <>
+                    <span className={styles.btnSpinner} aria-hidden />
+                    Updating…
+                  </>
+                ) : (
+                  `Update ${editSelectedCount} subtype${editSelectedCount === 1 ? '' : 's'}`
+                )}
+              </button>
+            </div>
+          ) : (
+            <div className={styles.detailFooterActions}>
+              <button
+                type="button"
+                className={styles.secondaryBtn}
+                disabled={isRegenerating}
+                onClick={handleStartEditSelection}
+              >
+                Edit selection
+              </button>
+              <button type="button" className={styles.dangerBtn} onClick={onDeleteSplit}>
+                Delete All ({visibleSubtypes.length})
+              </button>
+            </div>
+          )
+        ) : (
+          <div className={styles.detailFooterActions}>
             <button
               type="button"
-              className={styles.secondaryBtn}
-              disabled={isRegenerating}
-              onClick={onRegenerate}
+              className={styles.primaryBtn}
+              disabled={!canGenerateSelection || isGenerating}
+              onClick={handleGenerate}
             >
-              {isRegenerating ? (
+              {isGenerating ? (
                 <>
-                  <span className={styles.btnSpinnerDark} aria-hidden />
-                  Regenerating…
+                  <span className={styles.btnSpinner} aria-hidden />
+                  Generating…
                 </>
               ) : (
-                'Regenerate'
+                `Generate ${selectedCount} Subtype${selectedCount === 1 ? '' : 's'}`
               )}
             </button>
-            <button type="button" className={styles.dangerBtn} onClick={onDeleteSplit}>
-              Delete
-            </button>
-          </>
-        ) : (
-          <button
-            type="button"
-            className={styles.primaryBtn}
-            disabled={!canGenerateSelection || isGenerating}
-            onClick={handleGenerate}
-          >
-            {isGenerating ? (
-              <>
-                <span className={styles.btnSpinner} aria-hidden />
-                Generating…
-              </>
-            ) : (
-              `Generate ${selectedCount} Subtype${selectedCount === 1 ? '' : 's'}`
-            )}
-          </button>
+          </div>
         )}
       </div>
     </div>

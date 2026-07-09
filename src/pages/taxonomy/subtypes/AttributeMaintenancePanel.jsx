@@ -1,13 +1,12 @@
-import { getAttribute, getObjectType } from '../../../data/mockObjectTypes';
-import GeneratedSubtypeList from './GeneratedSubtypeList';
+import { getAttribute, getDetectedValues, getObjectType } from '../../../data/mockObjectTypes';
+import GeneratedSubtypePanel from './GeneratedSubtypePanel';
 import styles from './SubtypesSection.module.css';
 
 export default function AttributeMaintenancePanel({
   objectTypeId,
   attributeId,
   split,
-  onPreview,
-  onManage,
+  onPreviewSubtype,
   onRegenerate,
   onDelete,
   onOpenTaxonomy,
@@ -17,7 +16,10 @@ export default function AttributeMaintenancePanel({
   const objectType = getObjectType(objectTypeId);
   const attribute = getAttribute(objectType, attributeId);
   const visibleSubtypes = split.subtypes.filter((subtype) => !subtype.hidden);
-  const totalRows = visibleSubtypes.reduce((sum, subtype) => sum + subtype.recordCount, 0);
+  const usedValues = new Set(visibleSubtypes.map((subtype) => subtype.matchingValue));
+  const unusedValues = getDetectedValues(objectType, attributeId).filter(
+    (item) => !usedValues.has(item.value),
+  );
 
   return (
     <div className={styles.detailPanel}>
@@ -42,20 +44,15 @@ export default function AttributeMaintenancePanel({
           </p>
         </div>
 
-        <GeneratedSubtypeList
+        <GeneratedSubtypePanel
           subtypes={visibleSubtypes}
-          totalRows={totalRows}
+          unusedValues={unusedValues}
           onOpenObjectType={onOpenObjectType}
+          onPreviewSubtype={onPreviewSubtype}
         />
       </div>
 
       <div className={styles.detailFooter}>
-        <button type="button" className={styles.secondaryBtn} onClick={onPreview}>
-          Preview
-        </button>
-        <button type="button" className={styles.secondaryBtn} onClick={onManage}>
-          Manage
-        </button>
         <button
           type="button"
           className={styles.secondaryBtn}
@@ -72,7 +69,7 @@ export default function AttributeMaintenancePanel({
           )}
         </button>
         <button type="button" className={styles.dangerBtn} onClick={onDelete}>
-          Delete
+          Delete All ({visibleSubtypes.length})
         </button>
       </div>
     </div>

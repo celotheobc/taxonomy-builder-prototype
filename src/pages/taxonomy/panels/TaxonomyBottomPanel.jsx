@@ -58,7 +58,12 @@ export default function TaxonomyBottomPanel({
               </button>
             ))}
           </div>
-          <button type="button" className={styles.collapseBtn} onClick={onToggle}>
+          <button
+            type="button"
+            className={`${styles.collapseBtn} ${localStyles.collapseBtn}`}
+            onClick={onToggle}
+            aria-label={collapsed ? 'Expand bottom panel' : 'Collapse bottom panel'}
+          >
             {collapsed ? '▴' : '▾'}
           </button>
         </header>

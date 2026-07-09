@@ -82,7 +82,7 @@ export default function SplitDetailPanel({
       <div className={styles.detailEmpty}>
         <p className={styles.detailEmptyTitle}>Choose an attribute to generate subtypes.</p>
         <p className={styles.detailEmptyCopy}>
-          Select an attribute on the left to preview the object subtypes that will be created.
+          Select an attribute to preview potential object subtypes.
         </p>
       </div>
     );

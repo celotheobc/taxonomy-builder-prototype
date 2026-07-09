@@ -24,7 +24,12 @@ export default function TaxonomyRightInspector({
       <div className={inspectorStyles.panel}>
         <header className={inspectorStyles.panelHeader}>
           <span className={styles.headerTitle}>Inspector</span>
-          <button type="button" className={inspectorStyles.collapseBtn} onClick={onToggle}>
+          <button
+            type="button"
+            className={`${inspectorStyles.collapseBtn} ${styles.collapseBtn}`}
+            onClick={onToggle}
+            aria-label={collapsed ? 'Expand inspector' : 'Collapse inspector'}
+          >
             {collapsed ? '◂' : '▸'}
           </button>
         </header>

@@ -29,6 +29,7 @@
   flex-shrink: 0;
   width: calc(100% + var(--inspector-handle-width));
   margin-right: calc(-1 * var(--inspector-handle-width));
+  border-right: 1px solid var(--celonis-border);
   z-index: 5;
 }
 

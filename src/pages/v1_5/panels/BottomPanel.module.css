@@ -24,11 +24,13 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  min-height: 40px;
   padding: 0 8px;
   flex-shrink: 0;
   position: relative;
   z-index: 2;
   isolation: isolate;
+  box-sizing: border-box;
 }
 
 .header::after {
@@ -118,7 +120,7 @@
 
 .table th,
 .table td {
-  padding: 8px 12px;
+  padding: 6px 12px;
   text-align: left;
   border-bottom: 1px solid var(--celonis-border);
 }

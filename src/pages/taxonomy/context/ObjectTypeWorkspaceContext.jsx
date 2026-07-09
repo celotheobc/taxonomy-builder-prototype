@@ -12,11 +12,10 @@ export const SUBTYPES_UI_MODE = {
   MANAGEMENT: 'management',
 };
 
-function createEmptySplitState(objectTypeId) {
-  const objectType = getObjectType(objectTypeId);
+function createEmptySplitState() {
   return {
     uiMode: SUBTYPES_UI_MODE.CREATION,
-    selectedAttributeId: objectType?.defaultSplitAttributeId ?? null,
+    selectedAttributeId: null,
     splitsByAttributeId: {},
   };
 }
@@ -33,6 +32,10 @@ export function getSplitForAttribute(state, attributeId) {
 export function hasSubtypesForAttribute(state, attributeId) {
   const split = getSplitForAttribute(state, attributeId);
   return getVisibleSubtypes(split).length > 0;
+}
+
+export function getSubtypeCountForAttribute(state, attributeId) {
+  return getVisibleSubtypes(getSplitForAttribute(state, attributeId)).length;
 }
 
 export function getAllSubtypeEntries(state) {
@@ -90,11 +93,10 @@ export function ObjectTypeWorkspaceProvider({ children }) {
   }, [updateSplitState]);
 
   const addAnotherSplit = useCallback((objectTypeId) => {
-    const objectType = getObjectType(objectTypeId);
     updateSplitState(objectTypeId, (current) => ({
       ...current,
       uiMode: SUBTYPES_UI_MODE.CREATION,
-      selectedAttributeId: objectType?.defaultSplitAttributeId ?? null,
+      selectedAttributeId: null,
     }));
   }, [updateSplitState]);
 

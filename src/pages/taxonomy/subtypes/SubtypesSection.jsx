@@ -62,13 +62,24 @@ export default function SubtypesSection({
     onTaxonomyGenerated?.(taxonomy);
   };
 
-  const handleRegenerate = async () => {
+  const handleRegenerate = async (selectedMatchingValues) => {
     if (!activeAttributeId || isRegenerating) return;
+
+    const splitStateNow = getSplitState(objectTypeId);
+    const activeSplit = splitStateNow.splitsByAttributeId?.[activeAttributeId];
+    const matchingValues =
+      selectedMatchingValues?.length > 0
+        ? selectedMatchingValues
+        : (activeSplit?.subtypes ?? [])
+            .filter((subtype) => !subtype.hidden)
+            .map((subtype) => subtype.matchingValue);
+    if (!matchingValues.length) return;
+
     setIsRegenerating(true);
     await new Promise((resolve) => {
       window.setTimeout(resolve, GENERATION_DELAY_MS);
     });
-    const taxonomy = regenerateSubtypes(objectTypeId, activeAttributeId);
+    const taxonomy = regenerateSubtypes(objectTypeId, activeAttributeId, matchingValues);
     setIsRegenerating(false);
     if (taxonomy) onTaxonomyGenerated?.(taxonomy);
   };
@@ -78,15 +89,6 @@ export default function SubtypesSection({
     if (window.confirm('Delete all subtypes generated from this attribute?')) {
       deleteSplitForAttribute(objectTypeId, activeAttributeId);
     }
-  };
-
-  const handlePreviewAttribute = () => {
-    const entry = subtypeEntries.find((item) => item.splitAttributeId === activeAttributeId);
-    if (entry) onPreviewSubtype?.(entry.subtype.id);
-  };
-
-  const handleManageAttribute = () => {
-    setSubtypesUiMode(objectTypeId, SUBTYPES_UI_MODE.MANAGEMENT);
   };
 
   const cardActions = (
@@ -129,12 +131,12 @@ export default function SubtypesSection({
             canGenerate={canGenerate}
             isGenerating={isGenerating}
             isRegenerating={isRegenerating}
-            onPreview={handlePreviewAttribute}
-            onManage={handleManageAttribute}
             onRegenerate={handleRegenerate}
             onDeleteSplit={handleDeleteSplit}
             onOpenTaxonomy={onOpenTaxonomy}
             onOpenObjectType={(subtypeId) => onOpenObjectType?.(objectTypeId, subtypeId)}
+            onPreviewSubtype={onPreviewSubtype}
+            onDeleteSubtype={(subtypeId) => deleteSubtype(objectTypeId, subtypeId)}
             leftWidth={leftWidth}
             onAdjustLeftWidth={adjustLeftWidth}
           />

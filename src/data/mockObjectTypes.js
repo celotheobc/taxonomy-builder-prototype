@@ -31,8 +31,8 @@ const JIRA_ISSUE = {
     status: { distinctValueCount: 5, recommendation: 'Recommended', uniquenessPercent: 28 },
     priority: { distinctValueCount: 4, recommendation: 'Recommended', uniquenessPercent: 22 },
     team: { distinctValueCount: 18, recommendation: 'Caution', uniquenessPercent: 4 },
-    assignee: { distinctValueCount: 82, recommendation: 'Caution', uniquenessPercent: 1 },
-    'created-date': { distinctValueCount: 2000, recommendation: 'Not recommended', uniquenessPercent: 27 },
+    assignee: { distinctValueCount: 12, recommendation: 'Caution', uniquenessPercent: 1 },
+    'created-date': { distinctValueCount: 10, recommendation: 'Not recommended', uniquenessPercent: 27 },
   },
   attributes: [
     { id: 'issue-type', name: 'Issue Type', dataType: 'STRING', bindingStatus: 'Bound', source: 'ISSUES.ISSUE_TYPE' },
@@ -111,7 +111,9 @@ Work items for agile delivery — epics, stories, bugs, and tasks.
     status: [
       { value: 'To Do', recordCount: 1204 },
       { value: 'In Progress', recordCount: 892 },
-      { value: 'Done', recordCount: 5919 },
+      { value: 'Done', recordCount: 5529 },
+      { value: 'Blocked', recordCount: 234 },
+      { value: 'Backlog', recordCount: 156 },
     ],
     priority: [
       { value: 'Highest', recordCount: 312 },
@@ -125,16 +127,45 @@ Work items for agile delivery — epics, stories, bugs, and tasks.
       { value: 'Ops', recordCount: 982 },
       { value: 'Design', recordCount: 745 },
       { value: 'Data', recordCount: 540 },
+      { value: 'Security', recordCount: 318 },
+      { value: 'Mobile', recordCount: 276 },
+      { value: 'Infrastructure', recordCount: 241 },
+      { value: 'QA', recordCount: 198 },
+      { value: 'Growth', recordCount: 164 },
+      { value: 'Support', recordCount: 142 },
+      { value: 'Finance', recordCount: 118 },
+      { value: 'Legal', recordCount: 96 },
+      { value: 'Research', recordCount: 84 },
+      { value: 'Customer Success', recordCount: 72 },
+      { value: 'DevOps', recordCount: 61 },
+      { value: 'Analytics', recordCount: 48 },
+      { value: 'Content', recordCount: 37 },
     ],
     assignee: [
       { value: 'Alex Chen', recordCount: 412 },
       { value: 'Sam Rivera', recordCount: 388 },
       { value: 'Jordan Lee', recordCount: 351 },
+      { value: 'Morgan Blake', recordCount: 296 },
+      { value: 'Riley Park', recordCount: 274 },
+      { value: 'Casey Nguyen', recordCount: 248 },
+      { value: 'Taylor Brooks', recordCount: 221 },
+      { value: 'Jamie Ortiz', recordCount: 205 },
+      { value: 'Avery Kim', recordCount: 189 },
+      { value: 'Quinn Patel', recordCount: 172 },
+      { value: 'Drew Morgan', recordCount: 158 },
+      { value: 'Skyler Reed', recordCount: 141 },
     ],
     'created-date': [
       { value: '2024-01-15', recordCount: 890 },
       { value: '2024-03-22', recordCount: 812 },
       { value: '2024-06-08', recordCount: 298 },
+      { value: '2024-02-03', recordCount: 276 },
+      { value: '2024-04-17', recordCount: 254 },
+      { value: '2024-05-29', recordCount: 231 },
+      { value: '2024-07-11', recordCount: 208 },
+      { value: '2024-08-24', recordCount: 187 },
+      { value: '2024-09-06', recordCount: 165 },
+      { value: '2024-10-19', recordCount: 142 },
     ],
   },
   subtypeTemplates: {
@@ -238,6 +269,29 @@ Manufacturing plants used in supply chain and operations analysis.
       { value: 'Europe', recordCount: 39 },
       { value: 'Asia', recordCount: 52 },
     ],
+    'factory-type': [
+      { value: 'Assembly', recordCount: 42 },
+      { value: 'Component', recordCount: 31 },
+      { value: 'Distribution', recordCount: 18 },
+    ],
+    status: [
+      { value: 'Active', recordCount: 84 },
+      { value: 'Inactive', recordCount: 7 },
+    ],
+    'factory-name': [
+      { value: 'Lyon Plant', recordCount: 12 },
+      { value: 'Munich Works', recordCount: 18 },
+      { value: 'Barcelona Hub', recordCount: 9 },
+      { value: 'Osaka Factory', recordCount: 14 },
+      { value: 'Shenzhen Site', recordCount: 31 },
+    ],
+    'factory-id': [
+      { value: 'FAC-EU-001', recordCount: 12 },
+      { value: 'FAC-EU-002', recordCount: 18 },
+      { value: 'FAC-EU-003', recordCount: 9 },
+      { value: 'FAC-AP-001', recordCount: 14 },
+      { value: 'FAC-AP-002', recordCount: 31 },
+    ],
   },
   subtypeTemplates: {
     country: [
@@ -277,16 +331,17 @@ export function getDetectedValues(objectType, attributeId) {
 }
 
 export function getDetectedValueCount(objectType, attributeId) {
+  const values = getDetectedValues(objectType, attributeId);
+  if (values.length) return values.length;
   const candidate = objectType.splitCandidates?.[attributeId];
   if (candidate?.distinctValueCount != null) return candidate.distinctValueCount;
-  return getDetectedValues(objectType, attributeId).length;
+  return 0;
 }
 
 export function canGenerateSubtypesFromAttribute(objectType, attributeId) {
-  const candidate = getAttributeSplitCandidate(objectType, attributeId);
-  if (candidate.recommendation === 'Not recommended') return false;
-  const values = getDetectedValues(objectType, attributeId);
-  return values.length > 0 && Boolean(objectType.subtypeTemplates?.[attributeId]?.length);
+  const attribute = getAttribute(objectType, attributeId);
+  if (!attribute || attribute.bindingStatus === 'Unbound') return false;
+  return getDetectedValues(objectType, attributeId).length > 0;
 }
 
 export function getAttributeSplitCandidate(objectType, attributeId) {
@@ -324,7 +379,19 @@ export function formatUniquenessPercent(percent) {
 }
 
 export function buildSubtypeTemplates(objectType, attributeId, selectedMatchingValues = null) {
-  const templates = (objectType.subtypeTemplates[attributeId] ?? []).map((subtype) => ({
+  const predefined = objectType.subtypeTemplates?.[attributeId] ?? [];
+  const templates = (
+    predefined.length
+      ? predefined
+      : getDetectedValues(objectType, attributeId).map((item) => ({
+          id: `${attributeId}-${String(item.value)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')}`,
+          label: item.value,
+          matchingValue: item.value,
+          recordCount: item.recordCount,
+        }))
+  ).map((subtype) => ({
     ...subtype,
     hidden: false,
   }));

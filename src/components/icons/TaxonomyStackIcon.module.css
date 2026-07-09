@@ -1,0 +1,51 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  width: var(--stack-size, 52px);
+  height: var(--stack-size, 52px);
+}
+
+.tile {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--stack-size, 52px) * 0.72);
+  height: calc(var(--stack-size, 52px) * 0.72);
+  border-radius: 12px;
+  background: #1b6fd1;
+  color: #fff;
+}
+
+.tileBack {
+  top: 0;
+  left: 0;
+  opacity: 0.42;
+  z-index: 1;
+}
+
+.tileMid {
+  top: calc(var(--stack-size, 52px) * 0.1);
+  left: calc(var(--stack-size, 52px) * 0.1);
+  opacity: 0.68;
+  z-index: 2;
+}
+
+.tileFront {
+  top: calc(var(--stack-size, 52px) * 0.2);
+  left: calc(var(--stack-size, 52px) * 0.2);
+  z-index: 3;
+  box-shadow: 0 3px 10px rgba(27, 111, 209, 0.35);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
