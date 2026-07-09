@@ -52,7 +52,7 @@
   text-transform: uppercase;
   color: #94a3b8;
   border-bottom: 1px solid #e8edf3;
-  background: #fafbfc;
+  background: #fff;
 }
 
 .splitColumnHeader {
@@ -63,7 +63,7 @@
   min-height: 40px;
   padding: 0 12px 0 16px;
   border-bottom: 1px solid #e8edf3;
-  background: #fafbfc;
+  background: #fff;
   box-sizing: border-box;
 }
 
@@ -343,7 +343,7 @@
 
 .kpiRowCompact {
   display: grid;
-  grid-template-columns: repeat(2, 99px);
+  grid-template-columns: repeat(2, 114px);
   gap: 8px;
   flex-shrink: 0;
 }
@@ -637,10 +637,20 @@
   margin-left: auto;
 }
 
-.detailTaxonomyLink {
+.detailTaxonomyRow {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.detailTaxonomyLabel {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.detailTaxonomyNameLink {
   padding: 0;
   border: none;
   background: transparent;
@@ -651,16 +661,57 @@
   text-align: left;
 }
 
-.detailTaxonomyLink:hover {
+.detailTaxonomyNameLink:hover {
   color: #1558a8;
 }
 
-.detailTaxonomyLink span {
-  line-height: 1.3;
+.availableRow:hover {
+  background: #f8fafc;
+}
+
+.availableCreateBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 4px 10px;
+  border: 1px solid #dbe3ee;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.availableRow:hover .availableCreateBtn,
+.availableRow:focus-within .availableCreateBtn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.availableCreateBtn:hover:not(:disabled) {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.availableCreateBtn:disabled:not(.availableCreateBtnVisible) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.availableCreateBtnVisible {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .attrSubtypeBadge {
-  align-self: flex-start;
+  flex-shrink: 0;
 }
 
 .detailEmptyCopy {
@@ -678,6 +729,26 @@
   font-style: italic;
   text-align: right;
   white-space: nowrap;
+}
+
+.detailSummaryStack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.detailLead {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #64748b;
+}
+
+.detailSectionIntro {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .detailSectionHeader {
@@ -917,7 +988,7 @@
 }
 
 .generatedSubtypeTable col:nth-child(2) {
-  width: 72px;
+  width: 128px;
 }
 
 .generatedSubtypeTable col:nth-child(3) {
@@ -927,6 +998,7 @@
 .generatedSubtypeTable .subtypeTableSectionHead {
   text-align: left;
   padding-left: 12px;
+  white-space: nowrap;
 }
 
 .generatedSubtypeTable .subtypeTableRowsHead,
@@ -1266,6 +1338,10 @@
 .subtypeTableActionsCell {
   text-align: right;
   white-space: nowrap;
+}
+
+.generatedSubtypeTable .availableRow .subtypeTableActionsCell {
+  width: 108px;
 }
 
 .subtypeTableActions {

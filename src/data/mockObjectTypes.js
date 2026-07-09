@@ -26,13 +26,54 @@ const JIRA_ISSUE = {
   },
   defaultSplitAttributeId: 'issue-type',
   splitCandidates: {
-    'issue-id': { distinctValueCount: 7500, recommendation: 'Not recommended', uniquenessPercent: 100 },
-    'issue-type': { distinctValueCount: 4, recommendation: 'Recommended', uniquenessPercent: 33 },
-    status: { distinctValueCount: 5, recommendation: 'Recommended', uniquenessPercent: 28 },
-    priority: { distinctValueCount: 4, recommendation: 'Recommended', uniquenessPercent: 22 },
-    team: { distinctValueCount: 18, recommendation: 'Caution', uniquenessPercent: 4 },
-    assignee: { distinctValueCount: 12, recommendation: 'Caution', uniquenessPercent: 1 },
-    'created-date': { distinctValueCount: 10, recommendation: 'Not recommended', uniquenessPercent: 27 },
+    'issue-id': {
+      distinctValueCount: 7500,
+      recommendation: 'Not recommended',
+      uniquenessPercent: 100,
+      reason: 'IDs identify individual records, not reusable object subtypes.',
+    },
+    'issue-type': {
+      distinctValueCount: 4,
+      recommendation: 'Recommended',
+      uniquenessPercent: 33,
+      reason:
+        'Recommended because it has a small set of stable business categories that describe different kinds of Jira issues.',
+    },
+    status: {
+      distinctValueCount: 5,
+      recommendation: 'Caution',
+      uniquenessPercent: 28,
+      reason:
+        'Caution because it has few values, but it may describe lifecycle state rather than object subtype.',
+    },
+    priority: {
+      distinctValueCount: 4,
+      recommendation: 'Recommended',
+      uniquenessPercent: 22,
+      reason:
+        'Recommended because priority levels are stable categories that can imply different handling and analysis.',
+    },
+    team: {
+      distinctValueCount: 18,
+      recommendation: 'Caution',
+      uniquenessPercent: 4,
+      reason:
+        'Caution because teams may be useful for filtering or ownership, but usually do not define different object types.',
+    },
+    assignee: {
+      distinctValueCount: 12,
+      recommendation: 'Caution',
+      uniquenessPercent: 1,
+      reason:
+        'Caution because assignees are useful for ownership and filtering, but rarely represent distinct object subtypes.',
+    },
+    'created-date': {
+      distinctValueCount: 10,
+      recommendation: 'Not recommended',
+      uniquenessPercent: 27,
+      reason:
+        'Not recommended because dates change over time and are better used for filtering or time analysis.',
+    },
   },
   attributes: [
     { id: 'issue-type', name: 'Issue Type', dataType: 'STRING', bindingStatus: 'Bound', source: 'ISSUES.ISSUE_TYPE' },
@@ -199,12 +240,46 @@ const FACTORY = {
   },
   defaultSplitAttributeId: 'country',
   splitCandidates: {
-    'factory-id': { distinctValueCount: 91, recommendation: 'Not recommended', uniquenessPercent: 100 },
-    'factory-name': { distinctValueCount: 91, recommendation: 'Caution', uniquenessPercent: 100 },
-    country: { distinctValueCount: 6, recommendation: 'Recommended', uniquenessPercent: 7 },
-    region: { distinctValueCount: 2, recommendation: 'Recommended', uniquenessPercent: 2 },
-    'factory-type': { distinctValueCount: 3, recommendation: 'Recommended', uniquenessPercent: 3 },
-    status: { distinctValueCount: 2, recommendation: 'Caution', uniquenessPercent: 2 },
+    'factory-id': {
+      distinctValueCount: 91,
+      recommendation: 'Not recommended',
+      uniquenessPercent: 100,
+      reason: 'IDs identify individual records, not reusable object subtypes.',
+    },
+    'factory-name': {
+      distinctValueCount: 91,
+      recommendation: 'Not recommended',
+      uniquenessPercent: 100,
+      reason: 'Factory names identify individual sites, not stable subtype categories.',
+    },
+    country: {
+      distinctValueCount: 6,
+      recommendation: 'Recommended',
+      uniquenessPercent: 7,
+      reason:
+        'Recommended because it has a clear categorical structure and can later be organised into taxonomy groups such as Europe and Asia.',
+    },
+    region: {
+      distinctValueCount: 2,
+      recommendation: 'Recommended',
+      uniquenessPercent: 2,
+      reason:
+        'Recommended because regions group factories into stable business categories for reporting and analysis.',
+    },
+    'factory-type': {
+      distinctValueCount: 3,
+      recommendation: 'Recommended',
+      uniquenessPercent: 3,
+      reason:
+        'Recommended because factory types describe distinct operational categories with different behaviour and attributes.',
+    },
+    status: {
+      distinctValueCount: 2,
+      recommendation: 'Caution',
+      uniquenessPercent: 2,
+      reason:
+        'Caution because operational status may be useful for filtering, but may describe lifecycle state rather than object subtype.',
+    },
   },
   attributes: [
     { id: 'factory-id', name: 'Factory ID', dataType: 'STRING', bindingStatus: 'Bound', source: 'FACTORIES.FACTORY_ID' },
@@ -351,19 +426,43 @@ export function getAttributeSplitCandidate(objectType, attributeId) {
   const values = getDetectedValues(objectType, attributeId);
   const attribute = getAttribute(objectType, attributeId);
   if (!attribute || attribute.bindingStatus === 'Unbound') {
-    return { distinctValueCount: 0, recommendation: 'Not recommended', uniquenessPercent: 0 };
+    return {
+      distinctValueCount: 0,
+      recommendation: 'Not recommended',
+      uniquenessPercent: 0,
+      reason: 'This attribute is not bound to source data.',
+    };
   }
   if (!values.length) {
-    return { distinctValueCount: 0, recommendation: 'Not recommended', uniquenessPercent: 0 };
+    return {
+      distinctValueCount: 0,
+      recommendation: 'Not recommended',
+      uniquenessPercent: 0,
+      reason: 'No attribute values are available to create object subtypes.',
+    };
   }
   if (values.length > 50) {
-    return { distinctValueCount: values.length, recommendation: 'Caution', uniquenessPercent: 5 };
+    return {
+      distinctValueCount: values.length,
+      recommendation: 'Caution',
+      uniquenessPercent: 5,
+      reason: 'High cardinality may create too many subtypes to manage as object types.',
+    };
   }
-  return { distinctValueCount: values.length, recommendation: 'Recommended', uniquenessPercent: 25 };
+  return {
+    distinctValueCount: values.length,
+    recommendation: 'Recommended',
+    uniquenessPercent: 25,
+    reason: 'This attribute has a manageable set of categorical values that can become object subtypes.',
+  };
 }
 
-export function formatUniqueValueCount(count) {
-  return `${count.toLocaleString()} unique value${count === 1 ? '' : 's'}`;
+export function getAttributeRecommendationReason(objectType, attributeId) {
+  return getAttributeSplitCandidate(objectType, attributeId).reason ?? '';
+}
+
+export function formatSubtypeOptionCount(count) {
+  return `${count.toLocaleString()} subtype option${count === 1 ? '' : 's'}`;
 }
 
 export function getAttributeTotalRows(objectType, attributeId) {
@@ -406,7 +505,7 @@ export function buildTaxonomyAsset(objectType, attributeId, subtypes) {
     id: `taxonomy-${objectType.id}-${attributeId}`,
     name: `${objectType.name} by ${attribute?.name ?? 'Attribute'}`,
     type: 'Taxonomy',
-    status: 'Generated',
+    status: 'Created',
     referenceKey: `taxonomy.${objectType.id}.${attributeId.replace(/-/g, '_')}`,
     createdBy: 'System',
     lastUpdatedBy: 'System',
@@ -417,6 +516,6 @@ export function buildTaxonomyAsset(objectType, attributeId, subtypes) {
     splitAttributeName: attribute?.name ?? '',
     subtypeCount: subtypes.filter((s) => !s.hidden).length,
     subtypes,
-    description: `This taxonomy was generated from the ${objectType.name} Object Type by splitting the ${attribute?.name ?? 'selected'} attribute.`,
+    description: `Created taxonomy organising ${subtypes.filter((s) => !s.hidden).length} subtype object${subtypes.filter((s) => !s.hidden).length === 1 ? '' : 's'} from the ${attribute?.name ?? 'selected'} attribute on ${objectType.name}.`,
   };
 }

@@ -86,7 +86,7 @@ export default function SubtypesSection({
 
   const handleDeleteSplit = () => {
     if (!activeAttributeId) return;
-    if (window.confirm('Delete all subtypes generated from this attribute?')) {
+    if (window.confirm('Delete all subtypes created from this attribute?')) {
       deleteSplitForAttribute(objectTypeId, activeAttributeId);
     }
   };

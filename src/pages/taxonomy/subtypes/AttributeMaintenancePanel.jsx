@@ -1,4 +1,4 @@
-import { getAttribute, getDetectedValues, getObjectType } from '../../../data/mockObjectTypes';
+import { getAttribute, getAttributeTotalRows, getDetectedValues, getObjectType } from '../../../data/mockObjectTypes';
 import GeneratedSubtypePanel from './GeneratedSubtypePanel';
 import styles from './SubtypesSection.module.css';
 
@@ -11,44 +11,44 @@ export default function AttributeMaintenancePanel({
   onDelete,
   onOpenTaxonomy,
   onOpenObjectType,
+  onDeleteSubtype,
   isRegenerating,
 }) {
   const objectType = getObjectType(objectTypeId);
   const attribute = getAttribute(objectType, attributeId);
   const visibleSubtypes = split.subtypes.filter((subtype) => !subtype.hidden);
   const usedValues = new Set(visibleSubtypes.map((subtype) => subtype.matchingValue));
-  const unusedValues = getDetectedValues(objectType, attributeId).filter(
+  const availableValues = getDetectedValues(objectType, attributeId).filter(
     (item) => !usedValues.has(item.value),
   );
+  const totalRows = getAttributeTotalRows(objectType, attributeId);
 
   return (
     <div className={styles.detailPanel}>
       <div className={styles.detailBody}>
         <div className={styles.detailIntro}>
           <h4 className={styles.detailAttribute}>{attribute?.name}</h4>
-          <p className={styles.detailSummary}>
-            <span className={styles.statusGenerated}>Subtypes generated</span>
-            {split.taxonomy && (
-              <>
-                {' '}
-                · organised by{' '}
-                <button
-                  type="button"
-                  className={styles.inlineLinkBtn}
-                  onClick={() => onOpenTaxonomy?.(split.taxonomy.id)}
-                >
-                  {split.taxonomy.name}
-                </button>
-              </>
-            )}
-          </p>
+          {split.taxonomy ? (
+          <div className={styles.detailTaxonomyRow}>
+            <span className={styles.detailTaxonomyLabel}>Linked taxonomy:</span>
+            <button
+              type="button"
+              className={styles.detailTaxonomyNameLink}
+              onClick={() => onOpenTaxonomy?.(split.taxonomy.id)}
+            >
+              {split.taxonomy.name}
+            </button>
+          </div>
+        ) : null}
         </div>
 
         <GeneratedSubtypePanel
           subtypes={visibleSubtypes}
-          unusedValues={unusedValues}
+          availableValues={availableValues}
+          totalRows={totalRows}
           onOpenObjectType={onOpenObjectType}
           onPreviewSubtype={onPreviewSubtype}
+          onDeleteSubtype={onDeleteSubtype}
         />
       </div>
 
@@ -62,14 +62,14 @@ export default function AttributeMaintenancePanel({
           {isRegenerating ? (
             <>
               <span className={styles.btnSpinnerDark} aria-hidden />
-              Regenerating…
+              Updating…
             </>
           ) : (
-            'Regenerate'
+            'Edit selection'
           )}
         </button>
         <button type="button" className={styles.dangerBtn} onClick={onDelete}>
-          Delete All ({visibleSubtypes.length})
+          Delete all ({visibleSubtypes.length})
         </button>
       </div>
     </div>

@@ -10,7 +10,7 @@ export default function SubtypeNavList({
   const objectType = getObjectType(objectTypeId);
 
   return (
-    <nav className={styles.navList} aria-label="Generated subtypes">
+    <nav className={styles.navList} aria-label="Created subtypes">
       <div className={styles.navListHeader}>
         <span className={styles.navListEyebrow}>Object subtypes</span>
         <span className={styles.navListBaseName}>{objectType.name}</span>

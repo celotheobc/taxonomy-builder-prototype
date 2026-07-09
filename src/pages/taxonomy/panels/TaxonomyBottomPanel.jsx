@@ -6,8 +6,8 @@ import localStyles from './TaxonomyBottomPanel.module.css';
 
 const TABS = [
   { id: 'preview', label: 'Data Preview' },
-  { id: 'taxonomy', label: 'Generated Taxonomy' },
-  { id: 'values', label: 'Source Values', countKey: 'values' },
+  { id: 'taxonomy', label: 'Created taxonomy' },
+  { id: 'values', label: 'Subtype mapping', countKey: 'values' },
 ];
 
 function tabLabel(tab, counts) {
@@ -130,11 +130,11 @@ export default function TaxonomyBottomPanel({
                       </div>
                     </dl>
                     <p className={localStyles.readOnlyNote}>
-                      Generated behind the scenes when subtypes are created. Structural editing happens on the Object Type.
+                      Created automatically when subtypes are created. Structural editing happens on the Object Type.
                     </p>
                   </>
                 ) : (
-                  <p className={styles.empty}>Generate subtypes to create a taxonomy asset.</p>
+                  <p className={styles.empty}>Create subtypes to add a linked taxonomy asset.</p>
                 )}
               </div>
             )}
@@ -144,7 +144,8 @@ export default function TaxonomyBottomPanel({
                 {splitAttribute ? (
                   <>
                     <p className={localStyles.lead}>
-                      Distinct values from <strong>{splitAttribute.name}</strong> mapped to subtypes.
+                      Attribute values mapped to created subtype object types from{' '}
+                      <strong>{splitAttribute.name}</strong>.
                     </p>
                     <table className={styles.table}>
                       <thead>
@@ -166,7 +167,7 @@ export default function TaxonomyBottomPanel({
                     </table>
                   </>
                 ) : (
-                  <p className={styles.empty}>No source values until subtypes are generated.</p>
+                  <p className={styles.empty}>No subtype mapping until subtypes are created.</p>
                 )}
               </div>
             )}

@@ -1,22 +1,19 @@
 import tableStyles from '../sections/ObjectTypeSectionCard.module.css';
 import { DeleteIcon, OpenIcon, PreviewIcon } from './SubtypeRowIcons';
+import { formatSubtypeRowStats } from './subtypeRowStats';
 import styles from './SubtypesSection.module.css';
 
 export default function GeneratedSubtypePanel({
   subtypes,
-  unusedValues,
-  selectedUnusedValues,
-  onToggleUnusedValue,
-  onAddUnusedSubtypes,
-  isAddingSubtypes,
+  availableValues,
+  totalRows,
+  onCreateAvailableSubtype,
+  isCreatingSubtypes,
+  creatingValue,
   onOpenObjectType,
   onPreviewSubtype,
   onDeleteSubtype,
 }) {
-  const selectedUnusedSet =
-    selectedUnusedValues instanceof Set ? selectedUnusedValues : new Set(selectedUnusedValues ?? []);
-  const selectedUnusedCount = unusedValues.filter((item) => selectedUnusedSet.has(item.value)).length;
-
   return (
     <>
       <div className={styles.detailSection}>
@@ -31,7 +28,7 @@ export default function GeneratedSubtypePanel({
               <thead>
                 <tr>
                   <th className={styles.subtypeTableSectionHead}>
-                    Generated object subtypes ({subtypes.length})
+                    Created subtypes ({subtypes.length})
                   </th>
                   <th className={styles.subtypeTableRowsHead}>Rows</th>
                   <th className={styles.subtypeTableActionsHead} aria-label="Actions" />
@@ -47,7 +44,7 @@ export default function GeneratedSubtypePanel({
                       </div>
                     </td>
                     <td className={styles.subtypeTableNumeric}>
-                      {subtype.recordCount.toLocaleString()}
+                      {formatSubtypeRowStats(subtype.recordCount, totalRows)}
                     </td>
                     <td className={styles.subtypeTableActionsCell}>
                       <div className={styles.subtypeTableActions}>
@@ -55,7 +52,7 @@ export default function GeneratedSubtypePanel({
                           type="button"
                           className={`${styles.subtypeTableIconBtn} ${styles.subtypeTableIconBtnPrimary}`}
                           aria-label={`Open ${subtype.label}`}
-                          title="Open Object Type"
+                          title="Open subtype object type"
                           onClick={() => onOpenObjectType?.(subtype.id)}
                         >
                           <OpenIcon />
@@ -72,8 +69,8 @@ export default function GeneratedSubtypePanel({
                         <button
                           type="button"
                           className={`${styles.subtypeTableIconBtn} ${styles.subtypeTableIconBtnDanger}`}
-                          aria-label={`Remove ${subtype.label} from subtypes`}
-                          title="Remove from subtypes"
+                          aria-label={`Remove ${subtype.label} from created subtypes`}
+                          title="Move back to available"
                           onClick={() => onDeleteSubtype?.(subtype.id)}
                         >
                           <DeleteIcon />
@@ -89,26 +86,6 @@ export default function GeneratedSubtypePanel({
       </div>
 
       <div className={`${styles.detailSection} ${styles.detailSectionSpaced}`}>
-        {selectedUnusedCount > 0 && (
-          <div className={styles.detailSectionHeader}>
-            <span />
-            <button
-              type="button"
-              className={styles.addUnusedBtn}
-              disabled={isAddingSubtypes}
-              onClick={onAddUnusedSubtypes}
-            >
-              {isAddingSubtypes ? (
-                <>
-                  <span className={styles.btnSpinnerDark} aria-hidden />
-                  Adding…
-                </>
-              ) : (
-                `Add ${selectedUnusedCount} subtype${selectedUnusedCount === 1 ? '' : 's'}`
-              )}
-            </button>
-          </div>
-        )}
         <div className={styles.generatedTableCard}>
           <div className={styles.subtypeTableWrap}>
             <table className={`${tableStyles.table} ${styles.generatedSubtypeTable}`}>
@@ -120,38 +97,40 @@ export default function GeneratedSubtypePanel({
               <thead>
                 <tr>
                   <th className={styles.subtypeTableSectionHead}>
-                    Unused values ({unusedValues.length})
+                    Available to create ({availableValues.length})
                   </th>
                   <th className={styles.subtypeTableRowsHead}>Rows</th>
-                  <th className={styles.subtypeTableActionsHead} aria-hidden />
+                  <th className={styles.subtypeTableActionsHead} aria-label="Actions" />
                 </tr>
               </thead>
               <tbody>
-                {unusedValues.map((item) => {
-                  const isSelected = selectedUnusedSet.has(item.value);
+                {availableValues.map((item) => {
+                  const isCreatingThis = isCreatingSubtypes && creatingValue === item.value;
                   return (
-                    <tr
-                      key={item.value}
-                      className={isSelected ? styles.unusedRowSelected : undefined}
-                    >
+                    <tr key={item.value} className={styles.availableRow}>
                       <td>
-                        <div className={styles.subtypeTableNameCell}>
-                          <label className={styles.unusedCheckboxLabel}>
-                            <input
-                              type="checkbox"
-                              className={styles.distributionCheckbox}
-                              checked={isSelected}
-                              onChange={() => onToggleUnusedValue?.(item.value)}
-                            />
-                            <span className={styles.srOnly}>Add {item.value} as subtype</span>
-                          </label>
-                          <span className={styles.subtypeTableNameStatic}>{item.value}</span>
-                        </div>
+                        <span className={styles.subtypeTableNameStatic}>{item.value}</span>
                       </td>
                       <td className={styles.subtypeTableNumeric}>
-                        {item.recordCount.toLocaleString()}
+                        {formatSubtypeRowStats(item.recordCount, totalRows)}
                       </td>
-                      <td className={styles.subtypeTableActionsCell} aria-hidden />
+                      <td className={styles.subtypeTableActionsCell}>
+                        <button
+                          type="button"
+                          className={`${styles.availableCreateBtn} ${isCreatingThis ? styles.availableCreateBtnVisible : ''}`}
+                          disabled={isCreatingSubtypes}
+                          onClick={() => onCreateAvailableSubtype?.(item.value)}
+                        >
+                          {isCreatingThis ? (
+                            <>
+                              <span className={styles.btnSpinnerDark} aria-hidden />
+                              Creating…
+                            </>
+                          ) : (
+                            'Create subtype'
+                          )}
+                        </button>
+                      </td>
                     </tr>
                   );
                 })}

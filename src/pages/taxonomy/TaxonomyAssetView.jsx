@@ -13,7 +13,7 @@ export default function TaxonomyAssetView({ taxonomyId, onOpenObjectType }) {
   const { rightWidth } = usePanelDimensionsV5();
 
   if (!taxonomy) {
-    return <div className={styles.missing}>Taxonomy asset not found. Generate subtypes from an Object Type first.</div>;
+    return <div className={styles.missing}>Taxonomy asset not found. Create subtypes from an Object Type first.</div>;
   }
 
   const visibleSubtypes = taxonomy.subtypes.filter((subtype) => !subtype.hidden);
@@ -27,7 +27,7 @@ export default function TaxonomyAssetView({ taxonomyId, onOpenObjectType }) {
               <p className={styles.eyebrow}>Taxonomy</p>
               <h1 className={styles.title}>{taxonomy.name}</h1>
               <p className={styles.subtitle}>
-                Organises subtypes generated from{' '}
+                Organises subtype object types created from{' '}
                 <button
                   type="button"
                   className={styles.linkBtn}
@@ -43,9 +43,9 @@ export default function TaxonomyAssetView({ taxonomyId, onOpenObjectType }) {
           <section className={styles.card}>
             <h2 className={styles.cardTitle}>Parent object</h2>
             <p className={styles.lead}>
-              This taxonomy was generated when <strong>{taxonomy.sourceObjectTypeName}</strong> was
+              This taxonomy was created when <strong>{taxonomy.sourceObjectTypeName}</strong> was
               split by <strong>{taxonomy.splitAttributeName}</strong>. The taxonomy organises the
-              resulting object subtypes.
+              resulting subtype object types.
             </p>
             <button
               type="button"

@@ -151,7 +151,7 @@ export function ManageEmptyState() {
     <div className={styles.detailEmpty}>
       <p className={styles.detailEmptyTitle}>No subtypes have been created yet.</p>
       <p className={styles.detailEmptyCopy}>
-        Generate subtypes from an attribute to begin.
+        Create subtypes from an attribute to begin.
       </p>
     </div>
   );

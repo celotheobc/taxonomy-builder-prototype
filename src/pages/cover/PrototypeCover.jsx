@@ -6,7 +6,7 @@ const VERSIONS = [
     id: 'v1',
     title: 'Object type taxonomy',
     description:
-      'Split object types into subtypes from attribute values, with generated taxonomy assets, By Attribute / By Subtype workflows, subtype object pages, and nested navigation in the Context Model shell.',
+      'Split object types into subtypes from attribute values, with created taxonomy assets, By Attribute / By Subtype workflows, subtype object pages, and nested navigation in the Context Model shell.',
     tag: 'v1',
     objectTypeId: 'jira-issue',
   },
@@ -45,8 +45,8 @@ export default function PrototypeCover({ onOpen }) {
           </div>
           <h1 className={styles.title}>Taxonomy Builder</h1>
           <p className={styles.subtitle}>
-            Split object types into subtypes from existing attribute values. Taxonomies are generated
-            as supporting metadata.
+            Split object types into subtypes from existing attribute values. Taxonomies are created
+            automatically to organise subtype object types.
           </p>
         </header>
 

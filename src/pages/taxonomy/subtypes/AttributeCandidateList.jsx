@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import {
-  formatUniqueValueCount,
+  formatSubtypeOptionCount,
   getAttributeSplitCandidate,
   getDetectedValueCount,
   getObjectType,
@@ -99,6 +99,7 @@ export default function AttributeCandidateList({
               const isActive = selectedAttributeId === attribute.id;
               const subtypeCount = getSubtypeCountForAttribute(splitState, attribute.id);
               const uniqueCount = getDetectedValueCount(objectType, attribute.id);
+              const showRecommendationBadge = showBadge && subtypeCount === 0;
 
               return (
                 <li key={attribute.id}>
@@ -110,18 +111,17 @@ export default function AttributeCandidateList({
                   >
                     <span className={styles.attrItemHeader}>
                       <span className={styles.attrItemTitle}>{attribute.name}</span>
-                      {showBadge ? (
+                      {subtypeCount > 0 ? (
+                        <span className={`${cardStyles.badgeSubtypes} ${styles.attrSubtypeBadge}`}>
+                          {subtypeCount} subtype{subtypeCount === 1 ? '' : 's'}
+                        </span>
+                      ) : showRecommendationBadge ? (
                         <span className={`${styles.recommendationBadge} ${badgeClass}`}>
                           {candidate.recommendation}
                         </span>
                       ) : null}
                     </span>
-                    <span className={styles.attrItemMeta}>{formatUniqueValueCount(uniqueCount)}</span>
-                    {subtypeCount > 0 && (
-                      <span className={`${cardStyles.badgeSubtypes} ${styles.attrSubtypeBadge}`}>
-                        {subtypeCount} subtype{subtypeCount === 1 ? '' : 's'}
-                      </span>
-                    )}
+                    <span className={styles.attrItemMeta}>{formatSubtypeOptionCount(uniqueCount)}</span>
                   </button>
                 </li>
               );

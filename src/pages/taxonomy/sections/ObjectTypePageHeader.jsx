@@ -53,7 +53,7 @@ export default function ObjectTypePageHeader({
                 className={styles.taxonomyLink}
                 onClick={() => onOpenTaxonomy?.(taxonomy.id)}
               >
-                Taxonomy: {taxonomy.name}
+                Linked taxonomy: {taxonomy.name}
               </button>
             ))}
           </div>

@@ -1,12 +1,8 @@
 import { useEffect, useState } from 'react';
 import styles from './SubtypesSection.module.css';
+import { formatSubtypeRowStats } from './subtypeRowStats';
 
 const DEFAULT_VISIBLE_LIMIT = 8;
-
-function formatPercent(recordCount, totalRows) {
-  if (!totalRows) return '0%';
-  return `${((recordCount / totalRows) * 100).toFixed(totalRows >= 1000 ? 0 : 1)}%`;
-}
 
 function getValueKey(item) {
   return item.value ?? item.matchingValue ?? item.label;
@@ -16,6 +12,7 @@ export default function SubtypeDistribution({
   items,
   totalRows: totalRowsOverride,
   label,
+  lead,
   selectable = false,
   selectedValues = null,
   onToggleValue,
@@ -37,13 +34,13 @@ export default function SubtypeDistribution({
 
   return (
     <div className={styles.detailSection}>
-      {(label || showTruncationNote) && (
-        <div className={styles.detailSectionHeader}>
-          {label ? <span className={styles.detailLabel}>{label}</span> : <span />}
+      {(label || lead || showTruncationNote) && (
+        <div className={styles.detailSectionIntro}>
+          {label ? <span className={styles.detailLabel}>{label}</span> : null}
+          {lead ? <p className={styles.detailLead}>{lead}</p> : null}
           {showTruncationNote && (
             <span className={styles.detailTruncationNote}>
-              Distribution shown for {visibleItems.length} of {uniqueTotal.toLocaleString()} unique
-              values.
+              Showing {visibleItems.length} of {uniqueTotal.toLocaleString()} subtype options.
             </span>
           )}
         </div>
@@ -85,7 +82,7 @@ export default function SubtypeDistribution({
                   />
                 </div>
                 <span className={styles.distributionStats}>
-                  {rows.toLocaleString()} rows ({formatPercent(rows, totalRows)})
+                  {formatSubtypeRowStats(rows, totalRows)}
                 </span>
               </li>
             );
@@ -96,7 +93,7 @@ export default function SubtypeDistribution({
               <div className={styles.distributionHeader}>
                 <span className={styles.distributionName}>{name}</span>
                 <span className={styles.distributionStats}>
-                  {rows.toLocaleString()} rows ({formatPercent(rows, totalRows)})
+                  {formatSubtypeRowStats(rows, totalRows)}
                 </span>
               </div>
               <div className={styles.distributionTrack} aria-hidden>
