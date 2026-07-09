@@ -1,0 +1,263 @@
+.root {
+  position: fixed;
+  left: 68px;
+  bottom: 96px;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.panel {
+  width: min(380px, calc(100vw - 88px));
+  max-height: min(70vh, 560px);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--celonis-border);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 16px 40px rgba(26, 31, 54, 0.16);
+  overflow: hidden;
+  transform-origin: 0% 100%;
+  animation: panelIn 0.44s cubic-bezier(0.22, 1.04, 0.36, 1) both;
+}
+
+@keyframes panelIn {
+  0% {
+    opacity: 0;
+    transform: translate(-6px, 42px) scale(0.9);
+    box-shadow: 0 4px 12px rgba(26, 31, 54, 0.08);
+  }
+  58% {
+    opacity: 1;
+    transform: translate(2px, -5px) scale(1.012);
+    box-shadow: 0 20px 44px rgba(26, 31, 54, 0.18);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+    box-shadow: 0 16px 40px rgba(26, 31, 54, 0.16);
+  }
+}
+
+.titleRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.progressLabel {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--celonis-primary-light);
+  color: var(--celonis-primary);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid var(--celonis-border);
+}
+
+.panelHeaderIdentity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.panelAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  object-fit: cover;
+  object-position: center top;
+  border: 1px solid var(--celonis-border);
+  background: #f1f5f9;
+  flex-shrink: 0;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--celonis-text-muted);
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--celonis-text);
+}
+
+.closeBtn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--celonis-text-muted);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.closeBtn:hover {
+  background: var(--celonis-bg);
+  color: var(--celonis-text);
+}
+
+.routeTabs {
+  display: flex;
+  gap: 6px;
+  padding: 10px 16px 0;
+}
+
+.routeTab {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid var(--celonis-border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--celonis-text-muted);
+  cursor: pointer;
+}
+
+.routeTabActive {
+  border-color: var(--celonis-primary-muted);
+  background: var(--celonis-primary-light);
+  color: var(--celonis-primary);
+}
+
+.progressBar {
+  height: 4px;
+  margin: 12px 16px 0;
+  border-radius: 999px;
+  background: var(--celonis-bg);
+  overflow: hidden;
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  background: var(--celonis-primary);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.panelBody {
+  flex: 1;
+  overflow: auto;
+  padding: 12px 16px;
+}
+
+.stepList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--celonis-border);
+  color: var(--celonis-text-muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.step:last-child {
+  border-bottom: none;
+}
+
+.stepDone {
+  color: var(--celonis-text);
+}
+
+.stepCurrent {
+  color: var(--celonis-text);
+  background: linear-gradient(90deg, var(--celonis-primary-light), transparent);
+  margin: 0 -8px;
+  padding: 10px 8px;
+  border-radius: 8px;
+  border-bottom-color: transparent;
+}
+
+.stepMarker {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--celonis-border);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--celonis-text-muted);
+  background: #fff;
+}
+
+.stepDone .stepMarker {
+  border-color: #86efac;
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.stepCurrent .stepMarker {
+  border-color: var(--celonis-primary-muted);
+  background: var(--celonis-primary-light);
+  color: var(--celonis-primary);
+}
+
+.stepText {
+  flex: 1;
+}
+
+.panelFooter {
+  padding: 12px 16px 16px;
+  border-top: 1px solid var(--celonis-border);
+}
+
+.hint {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--celonis-text-muted);
+}
+
+.finishBtn {
+  margin-top: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--celonis-primary-muted);
+  border-radius: 8px;
+  background: var(--celonis-primary-light);
+  color: var(--celonis-primary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.finishBtn:hover {
+  background: #e8f0ff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .progressFill {
+    animation: none;
+    transition: none;
+  }
+}

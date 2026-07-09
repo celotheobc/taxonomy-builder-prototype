@@ -1,0 +1,11 @@
+.page {
+  flex: 1;
+  padding: 20px 24px;
+  background: #fff;
+}
+
+.title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+}

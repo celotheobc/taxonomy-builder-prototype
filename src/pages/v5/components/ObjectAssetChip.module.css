@@ -1,0 +1,29 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 4px 2px 2px;
+  border: 1px solid var(--celonis-border, #e2e8f0);
+  background: #fff;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--celonis-text);
+  white-space: nowrap;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  background: #eff6ff;
+  color: #1b6fd1;
+}
+
+.label {
+  line-height: 1.2;
+}

@@ -1,0 +1,22 @@
+.wrap {
+  padding: 32px;
+  max-width: 720px;
+  margin: 40px auto;
+  font-family: system-ui, sans-serif;
+}
+
+.wrap h1 {
+  color: #b91c1c;
+}
+
+pre {
+  font-size: 12px;
+  overflow: auto;
+  background: #f4f5f7;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.hint {
+  color: #6b7280;
+}

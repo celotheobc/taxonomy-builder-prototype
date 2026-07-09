@@ -1,0 +1,183 @@
+.root {
+  position: relative;
+}
+
+.rootExpansion {
+  width: auto;
+  flex-shrink: 0;
+}
+
+.trigger {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #c7dcf5;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--celonis-primary);
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(26, 31, 54, 0.1);
+  transition:
+    border-color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition);
+}
+
+.trigger:hover,
+.triggerOpen {
+  border-color: var(--celonis-primary);
+  background: var(--celonis-primary-light);
+  box-shadow: 0 2px 8px rgba(27, 111, 209, 0.18);
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 30;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid var(--celonis-border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(26, 31, 54, 0.14);
+  animation: popIn 0.18s ease;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hint {
+  margin: 0 0 8px;
+  font-size: 11px;
+  color: var(--celonis-text-muted);
+}
+
+.triggerHeader {
+  width: 28px;
+  height: 28px;
+  font-size: 1.15rem;
+  border-radius: 6px;
+  box-shadow: none;
+}
+
+.triggerHeader:hover,
+.triggerHeader.triggerOpen {
+  box-shadow: 0 1px 4px rgba(27, 111, 209, 0.14);
+}
+
+.triggerLabeled {
+  width: auto;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 12px 0 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.triggerIcon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.triggerLabel {
+  line-height: 1;
+}
+
+.popoverAlignRight {
+  left: auto;
+  right: 0;
+}
+
+.popoverWide {
+  min-width: 340px;
+}
+
+.triggerToolbar {
+  box-shadow: none;
+  border-color: #c7dcf5;
+}
+
+.triggerToolbar:hover,
+.triggerToolbar.triggerOpen {
+  box-shadow: none;
+}
+
+.popoverHeader {
+  min-width: 320px;
+}
+
+.createRow {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--celonis-border);
+}
+
+.createBtn {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--celonis-border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--celonis-primary);
+  cursor: pointer;
+  transition:
+    border-color var(--transition),
+    background var(--transition);
+}
+
+.createBtn:hover {
+  border-color: var(--celonis-primary);
+  background: var(--celonis-primary-light);
+}
+
+.triggerExpansion {
+  width: auto;
+  height: 32px;
+  padding: 0 10px;
+  justify-content: center;
+  border-radius: 7px;
+  border-color: transparent;
+  box-shadow: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--celonis-text);
+  background: transparent;
+}
+
+.triggerExpansion:hover,
+.triggerExpansion.triggerOpen {
+  border-color: #d8dee6;
+  background: #f4f6f8;
+  box-shadow: none;
+  color: var(--celonis-text);
+}
+
+.triggerExpansion .triggerIcon {
+  color: var(--celonis-primary);
+  font-size: 1.1rem;
+}
+
+.popoverExpansion {
+  width: 320px;
+  padding: 12px;
+}
+
+.createRowExpansion {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #eef1f5;
+}

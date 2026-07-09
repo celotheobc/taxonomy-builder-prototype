@@ -1,0 +1,53 @@
+.guide {
+  background: rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.toggle {
+  width: 100%;
+  text-align: left;
+  padding: 10px 24px;
+  border: none;
+  background: transparent;
+  color: #e8f2fc;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.body {
+  padding: 0 24px 14px;
+  color: #dbeafe;
+  font-size: 13px;
+  line-height: 1.55;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.lead {
+  margin: 0 0 8px;
+  color: #eff6ff;
+}
+
+.body ol {
+  margin: 0 0 10px;
+  padding-left: 20px;
+}
+
+.body li {
+  margin-bottom: 6px;
+}
+
+.note {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.85;
+  font-style: italic;
+}

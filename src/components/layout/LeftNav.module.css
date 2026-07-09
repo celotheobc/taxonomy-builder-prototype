@@ -1,0 +1,58 @@
+.nav {
+  width: 52px;
+  background: #1a1f36;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0;
+  gap: 4px;
+}
+
+.logo {
+  width: 32px;
+  height: 32px;
+  background: var(--celonis-primary);
+  color: #fff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.nav button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: background var(--transition), color var(--transition);
+}
+
+.nav button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.nav button.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.navIcon {
+  display: block;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.avatar {
+  font-size: 11px !important;
+  font-weight: 600;
+  background: #374151 !important;
+  color: #fff !important;
+}

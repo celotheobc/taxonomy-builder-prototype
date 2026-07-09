@@ -1,0 +1,63 @@
+.dependencyDivider {
+  margin: 24px 0 0;
+  padding: 0;
+  border: none;
+  border-top: 1px solid #e8edf3;
+}
+
+.listRow,
+.listRowStatic {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  border-bottom: 1px solid #e8edf3;
+  background: transparent;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #1e293b;
+  text-align: left;
+}
+
+.listRow {
+  cursor: pointer;
+  font: inherit;
+}
+
+.listRow:focus-visible {
+  outline: 2px solid var(--celonis-primary);
+  outline-offset: -2px;
+}
+
+.listRow:hover,
+.listRow:focus-visible {
+  background: #f8fafc;
+}
+
+.listRowSelected {
+  background: #f1f5f9;
+}
+
+.inventoryList li:last-child .listRow,
+.inventoryList li:last-child.listRowStatic {
+  border-bottom: none;
+}
+
+.listEmpty {
+  margin: 0;
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.dependencyIcon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}

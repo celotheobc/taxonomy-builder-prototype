@@ -1,0 +1,67 @@
+.wrap {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  position: relative;
+  background: #fff;
+  overflow: hidden;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.canvas :global(.react-flow) {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+.wrap :global(.react-flow__background) {
+  opacity: 0.85;
+}
+
+.wrap :global(.react-flow__controls) {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  left: auto;
+  top: auto;
+  width: auto;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 8px rgba(26, 31, 54, 0.1);
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  overflow: hidden;
+}
+
+.wrap :global(.react-flow__controls-button) {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-bottom: 1px solid #d1d5db;
+  background: #fff;
+}
+
+.wrap :global(.react-flow__controls-button:last-child) {
+  border-bottom: none;
+}
+
+.wrap :global(.react-flow__controls-button:hover) {
+  background: #f3f4f6;
+}
+
+.wrap :global(.react-flow__node-processLaneLayer) {
+  pointer-events: none !important;
+}
+
+.wrap :global(.react-flow__node) {
+  cursor: default;
+}
+
+.wrap :global(.react-flow__node.selectable) {
+  cursor: pointer;
+}

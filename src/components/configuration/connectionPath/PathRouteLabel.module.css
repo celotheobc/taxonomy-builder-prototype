@@ -1,0 +1,41 @@
+.pathRoute {
+  color: var(--celonis-text);
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.pathSegment {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pathArrow {
+  color: var(--celonis-text-muted);
+  font-weight: 500;
+}
+
+.pathObject {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.addIndicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--event-green);
+  border: 1.5px solid var(--event-green);
+  border-radius: 4px;
+  flex-shrink: 0;
+}

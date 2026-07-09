@@ -1,0 +1,117 @@
+.panel {
+  margin-bottom: 12px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.warning {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+}
+
+.warningIcon {
+  font-size: 18px;
+}
+
+.warning p {
+  margin: 4px 0 0;
+  color: var(--warning-text);
+  font-size: 13px;
+}
+
+.routes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.routeCard {
+  padding: 14px;
+  border-radius: var(--radius);
+  border: 2px solid var(--celonis-border);
+  background: var(--celonis-surface);
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.routeCard.routeA {
+  border-color: #93c5fd;
+}
+
+.routeCard.routeB {
+  border-color: var(--celonis-primary-muted);
+}
+
+.routeBadge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.routeA .routeBadge {
+  color: #2563eb;
+}
+
+.routeB .routeBadge {
+  color: var(--celonis-primary-hover);
+}
+
+.path {
+  margin: 8px 0 12px;
+  font-size: 13px;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--celonis-text-muted);
+}
+
+.keepBtn {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  color: #fff;
+  transition: opacity var(--transition), transform var(--transition);
+}
+
+.routeA .keepBtn {
+  background: #2563eb;
+}
+
+.routeB .keepBtn {
+  background: var(--celonis-primary-hover);
+}
+
+.keepBtn:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.hint {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--celonis-text-muted);
+}
+
+.resolvedNote {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--event-green);
+  font-weight: 500;
+}

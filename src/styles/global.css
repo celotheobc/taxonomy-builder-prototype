@@ -1,0 +1,59 @@
+:root {
+  --celonis-primary: #1b6fd1;
+  --celonis-primary-hover: #1558a8;
+  --celonis-primary-light: #e8f2fc;
+  --celonis-primary-muted: #c7dcf5;
+  --celonis-primary-ring: rgba(27, 111, 209, 0.12);
+  --celonis-purple: var(--celonis-primary);
+  --celonis-purple-hover: var(--celonis-primary-hover);
+  --celonis-bg: #f4f5f7;
+  --celonis-surface: #ffffff;
+  --celonis-border: #d1d5db;
+  --celonis-text: #1a1f36;
+  --celonis-text-muted: #6b7280;
+  --object-blue: #1b6fd1;
+  --object-blue-light: #e8f2fc;
+  --event-green: #0d8a5b;
+  --event-green-light: #e6f5ef;
+  --metric-red: #c41e5a;
+  --metric-red-light: #fce8ef;
+  --warning-bg: #fff8e6;
+  --warning-border: #f5d565;
+  --warning-text: #7a5c00;
+  --shadow-sm: 0 1px 3px rgba(26, 31, 54, 0.08);
+  --shadow-md: 0 4px 12px rgba(26, 31, 54, 0.12);
+  --radius: 8px;
+  --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--celonis-text);
+  background: var(--celonis-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input {
+  font-family: inherit;
+}

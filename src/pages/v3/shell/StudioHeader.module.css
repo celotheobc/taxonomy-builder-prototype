@@ -1,0 +1,79 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #d1d5db;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.skeletonTrail {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.skeletonGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.skeletonSep {
+  color: #c8ced8;
+  font-size: 13px;
+  line-height: 1;
+  user-select: none;
+}
+
+.skeletonBar {
+  display: block;
+  height: 8px;
+  border-radius: 999px;
+  background: #d8dde5;
+  flex-shrink: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.preview {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--celonis-text);
+  cursor: pointer;
+}
+
+.preview:hover {
+  color: var(--celonis-primary);
+}
+
+.deploy {
+  padding: 6px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--celonis-text);
+  cursor: pointer;
+}
+
+.deploy:hover {
+  border-color: #b8c0cc;
+  background: #fafbfc;
+}

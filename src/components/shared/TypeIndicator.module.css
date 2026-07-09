@@ -1,0 +1,35 @@
+.dot {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+}
+
+.iconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.object {
+  color: #1b6fd1;
+}
+
+.event {
+  color: #2db87a;
+}
+
+.relationship {
+  color: #059669;
+}
+
+.process {
+  color: #7c3aed;
+}
+
+.metric {
+  background: #e85a82;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}

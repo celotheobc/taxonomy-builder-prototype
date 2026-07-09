@@ -1,0 +1,59 @@
+.wrap {
+  position: fixed;
+  right: 0;
+  bottom: -33px;
+  z-index: 9999;
+  pointer-events: none;
+  animation: toastyPop 1.2s ease forwards;
+}
+
+.guy {
+  display: block;
+  width: auto;
+  height: 264px;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 6px 14px rgba(15, 23, 42, 0.28));
+}
+
+@keyframes toastyPop {
+  0% {
+    transform: translate(110%, 24px) scale(0.85);
+    opacity: 0;
+  }
+
+  12% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+
+  78% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(28px, 12px) scale(0.96);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap {
+    animation: toastyFade 1.2s ease forwards;
+  }
+
+  @keyframes toastyFade {
+    0% {
+      opacity: 0;
+    }
+
+    15%,
+    85% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+}

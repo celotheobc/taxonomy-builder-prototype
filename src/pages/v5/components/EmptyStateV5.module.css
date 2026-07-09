@@ -1,0 +1,120 @@
+.root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  width: 100%;
+  padding: 24px 32px;
+  box-sizing: border-box;
+  text-align: center;
+  animation: fadeIn 0.35s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.content {
+  width: 100%;
+  max-width: 720px;
+  margin: auto;
+}
+
+.searchBlock {
+  max-width: 100%;
+}
+
+.subtitleWide {
+  max-width: 100%;
+}
+
+.iconHero {
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconInner {
+  display: none;
+}
+
+.sectionLabel {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--celonis-text-muted);
+  margin-bottom: 10px;
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.startChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--celonis-border);
+  background: #fff;
+  color: var(--celonis-text);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    border-color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition);
+}
+
+.startChip:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.chipIcon {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.chipIconObject {
+  background: #eff6ff;
+  color: #1b6fd1;
+}
+
+.chipIconProcess {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+
+.chipLabel {
+  line-height: 1.2;
+}
+
+.chipSection {
+  width: 100%;
+}
+
+.processSection {
+  width: 100%;
+  margin-top: 24px;
+}

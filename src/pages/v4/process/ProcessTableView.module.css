@@ -1,0 +1,84 @@
+.wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: #fff;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.table th,
+.table td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--celonis-border);
+}
+
+.table th {
+  font-weight: 600;
+  color: var(--celonis-text-muted);
+  background: #f8f9fb;
+  position: sticky;
+  top: 0;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--celonis-text-muted);
+}
+
+.badgeObject,
+.badgeEvent {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badgeObject {
+  background: #e8f2ff;
+  color: #1b6fd1;
+}
+
+.badgeEvent {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.selectCol {
+  width: 36px;
+  text-align: center;
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--celonis-primary);
+}
+
+.rowSelectable {
+  cursor: pointer;
+}
+
+.rowSelectable:hover {
+  background: #f8fafc;
+}
+
+.rowSelected {
+  background: var(--celonis-primary-light);
+}
+
+.rowSelected:hover {
+  background: #dbeafe;
+}

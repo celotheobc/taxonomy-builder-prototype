@@ -1,0 +1,13 @@
+.editor {
+  width: 100%;
+  min-height: 160px;
+  border: none;
+  padding: 16px 20px 20px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  color: #334155;
+  resize: vertical;
+  box-sizing: border-box;
+  background: #fff;
+}

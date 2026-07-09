@@ -1,0 +1,97 @@
+.rail {
+  width: 280px;
+  padding: 16px;
+  background: var(--celonis-bg);
+  border-left: 1px solid var(--celonis-border);
+  overflow-y: auto;
+}
+
+.card {
+  background: var(--celonis-surface);
+  border: 1px solid var(--celonis-border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.card h3 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.card dl {
+  margin: 0;
+  font-size: 12px;
+}
+
+.card dt {
+  color: var(--celonis-text-muted);
+  margin-top: 8px;
+}
+
+.card dt:first-child {
+  margin-top: 0;
+}
+
+.card dd {
+  margin: 2px 0 0;
+}
+
+.draft {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.card code {
+  font-size: 11px;
+  word-break: break-all;
+}
+
+.switch {
+  display: flex;
+  margin: 8px 0;
+}
+
+.linkBtn {
+  border: none;
+  background: none;
+  color: var(--celonis-primary);
+  font-size: 12px;
+  padding: 0;
+}
+
+.card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+}
+
+.card li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--celonis-border);
+}
+
+.time {
+  grid-column: 1;
+  color: var(--celonis-text-muted);
+  font-size: 11px;
+}
+
+.success {
+  color: var(--event-green);
+  font-weight: 600;
+}
+
+.failed {
+  color: #dc2626;
+  font-weight: 600;
+}

@@ -1,0 +1,53 @@
+*** DO NOT double-click index.html — it will show a blank page. ***
+
+See START HERE.txt in this folder.
+
+This is a React app. It must run through a small local web server.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EASIEST (macOS): Double-click this file in Finder:
+
+    Start Prototype.command
+
+If macOS says the file is from an unidentified developer:
+  → Right-click → Open → Open
+
+Keep the Terminal window open while you use the prototype.
+Your browser should open to http://127.0.0.1:5199/
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ALTERNATIVE (Terminal):
+
+  cd "/Users/theobonhamcarter/Documents/1. Design/Cursor Projects/PerspectiveBuilder"
+  npm install
+  npm run dev
+
+Then open http://127.0.0.1:5199/ in your browser.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+REQUIREMENT: Node.js must be installed (https://nodejs.org/)
+
+To stop the server: press Ctrl+C in the Terminal window.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+HOW TO TEST (click journey)
+
+Route A — build + resolve yourself:
+  1. Click "Sales Order" to start
+  2. Use + on ghost nodes: add Customer, Delivery, Delivery Item
+  3. Status becomes "Needs resolution" — two coloured routes appear
+  4. Click scissors on an edge (Pattern B) OR "Keep this route" (Pattern A)
+  5. Status becomes Valid
+
+Route B — shortcut (pre-loaded conflict):
+  1. Switch tab to "Resolve Route Ambiguity"
+  2. Graph already shows the conflict — prune or select a route
+
+See the collapsible "How to test" panel in the app for full steps.
+
+Note: There is no separate "add cycle" button. Ambiguity appears when
+both routes to Delivery Item exist in the included graph.

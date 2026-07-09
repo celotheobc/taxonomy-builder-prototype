@@ -1,0 +1,29 @@
+.root {
+  pointer-events: none;
+  user-select: none;
+}
+
+.svg {
+  display: block;
+  overflow: visible;
+}
+
+.track {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  opacity: 0.9;
+}
+
+.endCap {
+  fill: #fff;
+  stroke-width: 2.5;
+}
+
+.interchange {
+  stroke: #cbd5e1;
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+  stroke-linejoin: round;
+  opacity: 0.8;
+}

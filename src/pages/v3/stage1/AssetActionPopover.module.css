@@ -1,0 +1,93 @@
+.root {
+  position: relative;
+}
+
+.trigger {
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--celonis-primary);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.trigger:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.trigger:not(:disabled):hover,
+.triggerOpen {
+  background: var(--celonis-primary-hover);
+}
+
+.triggerSecondary {
+  color: #1e293b;
+  background: #fff;
+  border: 1px solid #d1d5db;
+}
+
+.triggerSecondary:not(:disabled):hover,
+.triggerSecondary.triggerOpen {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.menu {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  min-width: 220px;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(26, 31, 54, 0.14);
+  animation: popIn 0.18s ease;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.menuItem,
+.menuItemNew {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: left;
+  color: #1e293b;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.menuItem:hover,
+.menuItemNew:hover {
+  background: #f3f4f6;
+}
+
+.menuItemNew {
+  font-weight: 600;
+  color: var(--celonis-primary);
+}
+
+.divider {
+  height: 1px;
+  margin: 4px 6px;
+  background: #e5e7eb;
+}

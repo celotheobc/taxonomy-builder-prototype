@@ -1,0 +1,26 @@
+.handleX,
+.handleY {
+  flex-shrink: 0;
+  z-index: 2;
+  background: transparent;
+  transition: background var(--transition);
+}
+
+.handleX {
+  width: 6px;
+  margin-left: -3px;
+  cursor: col-resize;
+}
+
+.handleY {
+  height: 6px;
+  margin-top: -3px;
+  cursor: row-resize;
+}
+
+.handleX:hover,
+.handleX:active,
+.handleY:hover,
+.handleY:active {
+  background: rgba(27, 111, 209, 0.18);
+}

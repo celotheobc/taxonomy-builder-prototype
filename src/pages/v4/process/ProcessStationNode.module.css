@@ -1,0 +1,102 @@
+.root {
+  position: relative;
+  width: 72px;
+  height: 34px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.handle {
+  opacity: 0;
+  width: 6px;
+  height: 6px;
+  min-width: 6px;
+  min-height: 6px;
+  border: none;
+  background: transparent;
+}
+
+.root :global(.react-flow__handle-top),
+.root :global(.react-flow__handle-bottom),
+.root :global(.react-flow__handle-left),
+.root :global(.react-flow__handle-right) {
+  top: 50%;
+  left: 50%;
+  right: auto;
+  transform: translate(-50%, -50%);
+}
+
+.station {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: #fff;
+  box-shadow:
+    0 0 0 2px var(--lane-color, #0d9488),
+    0 2px 8px rgba(26, 31, 54, 0.1);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.stationInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0d9488;
+  overflow: hidden;
+}
+
+.stationInner :global(.puckTop) {
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 50% !important;
+}
+
+.stationInner :global(.cmPickerPlus),
+.stationInner :global(.cmPickerCheck),
+.stationInner :global(.cmPickerMinus) {
+  background: rgba(13, 148, 136, 0.92) !important;
+}
+
+.selected .station {
+  box-shadow:
+    0 0 0 2px var(--lane-color, #0d9488),
+    0 0 0 5px rgba(27, 111, 209, 0.2),
+    0 4px 12px rgba(27, 111, 209, 0.16);
+}
+
+.iconSvg {
+  width: 14px;
+  height: 14px;
+  color: #fff;
+}
+
+.label {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 72px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.labelText {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--celonis-text-muted);
+  line-height: 1.25;
+}
+
+.root:hover .station {
+  transform: translateY(-1px);
+}

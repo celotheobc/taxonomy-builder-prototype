@@ -1,0 +1,52 @@
+.tree {
+  width: 200px;
+  flex-shrink: 0;
+  padding: 12px;
+  border-right: 1px solid var(--celonis-border);
+  background: #fff;
+  overflow-y: auto;
+}
+
+.breadcrumb {
+  margin: 0 0 12px;
+  font-size: 10px;
+  color: var(--celonis-text-muted);
+  line-height: 1.4;
+}
+
+.header {
+  margin: 14px 0 6px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--celonis-text-muted);
+}
+
+.item {
+  display: block;
+  width: 100%;
+  padding: 7px 10px;
+  margin-bottom: 2px;
+  font-size: 12px;
+  text-align: left;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--celonis-text);
+  cursor: pointer;
+}
+
+.item:hover {
+  background: #f1f5f9;
+}
+
+.itemActive {
+  background: var(--celonis-primary-light);
+  color: var(--celonis-primary-hover);
+  font-weight: 600;
+}
+
+.indent {
+  padding-left: 20px;
+}

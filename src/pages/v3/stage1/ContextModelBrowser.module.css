@@ -1,0 +1,54 @@
+.browser {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  background: #fff;
+}
+
+.canvasRow {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.graphHost {
+  flex: 1;
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+}
+
+.graphHost.selectionActive {
+  box-shadow:
+    inset 0 0 0 2px var(--celonis-primary),
+    0 0 0 4px rgba(27, 111, 209, 0.12);
+}
+
+.floatingAction {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  z-index: 5;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--celonis-primary);
+  background: #fff;
+  border: 1px solid var(--celonis-border);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(26, 31, 54, 0.1);
+  cursor: pointer;
+}
+
+.floatingAction:hover {
+  border-color: var(--celonis-primary-muted);
+  background: var(--celonis-primary-light);
+}

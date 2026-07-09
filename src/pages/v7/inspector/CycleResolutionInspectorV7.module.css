@@ -1,0 +1,264 @@
+.loopList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.loopCard.loopCardRecommended {
+  /* border-color: #a2d3b3; */
+  /* border-left-width: 4px; */
+  /* border-left-color: #4ade80; */
+  background: #f3fbf6;
+}
+
+.loopCard.loopCardRecommended.loopCardPreviewing {
+  border-color: #cbd5e1;
+  border-left-width: 1px;
+  border-left-color: #cbd5e1;
+  background: #f1f5f9;
+}
+
+.loopCard.loopCardRecommended.loopCardHover {
+  border-color: #cbd5e1;
+  border-left-width: 1px;
+  border-left-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.optionBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.optionBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+
+.optionBadgeRecommended {
+  color: #047857;
+  background: #d1fae5;
+  border: 1px solid #6ee7b7;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.optionBadgeCycle {
+  color: #b45309;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+}
+
+.loopCard {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    border-style 0.15s ease;
+}
+
+.loopCardHover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.loopCardPreviewing {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+  box-shadow: none;
+}
+
+.loopCard:has(.loopRemoveSecondary:hover),
+.loopCard:has(.loopRemoveSecondary:focus-visible),
+.loopCardRemoveHover {
+  border-style: dashed;
+  border-color: #fca5a5;
+  background: #fff1f2;
+}
+
+.loopCard.loopCardRecommended:has(.loopRemoveSecondary:hover),
+.loopCard.loopCardRecommended:has(.loopRemoveSecondary:focus-visible),
+.loopCard.loopCardRecommended.loopCardRemoveHover {
+  border-left-width: 1px;
+  background: #fff1f2;
+}
+
+.loopCardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.loopName {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--celonis-text);
+  word-break: break-word;
+}
+
+.loopHint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--celonis-text-muted);
+}
+
+.objectsAddedLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.objectsAddedLabel {
+  color: var(--celonis-text-muted);
+  font-weight: 500;
+}
+
+.objectChipRow {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.pathObjects {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pathObjectAdd {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--celonis-text-muted);
+}
+
+.connectMeta {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--celonis-text-muted);
+}
+
+.connectMetaLabel {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--celonis-text-muted);
+  margin-bottom: 2px;
+}
+
+.keepCard {
+  margin-top: 8px;
+}
+
+.loopCommitSecondary {
+  width: 100%;
+  padding: 6px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #f8fafc;
+  font-size: 12px;
+  font-weight: 500;
+  color: #475569;
+  cursor: pointer;
+  text-align: center;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.loopCommitSecondary:hover,
+.loopCommitSecondary:focus-visible {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.loopActions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  margin-top: 2px;
+}
+
+.loopPreviewPrimary {
+  width: 100%;
+  padding: 6px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1e293b;
+  cursor: pointer;
+  text-align: center;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.loopPreviewPrimary:hover,
+.loopPreviewPrimary:focus-visible {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.loopCardPreviewing .loopPreviewPrimary {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.loopRemoveSecondary {
+  width: 100%;
+  padding: 6px 12px;
+  border: 1px solid #fecdd3;
+  border-radius: 6px;
+  background: #fff7f7;
+  font-size: 12px;
+  font-weight: 500;
+  color: #dc2626;
+  cursor: pointer;
+  text-align: center;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.loopRemoveSecondary:hover,
+.loopRemoveSecondary:focus-visible {
+  background: #fff1f2;
+  border-color: #fca5a5;
+}

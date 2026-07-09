@@ -1,0 +1,149 @@
+.overlay {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: min(520px, calc(100% - 24px));
+  pointer-events: none;
+}
+
+.alert {
+  pointer-events: auto;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 8px 12px;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(26, 31, 54, 0.1);
+  width: 100%;
+}
+
+.alertIcon {
+  font-size: 14px;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.alertText strong {
+  display: block;
+  font-size: 12px;
+  line-height: 1.3;
+  color: #92400e;
+}
+
+.alertText p {
+  margin: 2px 0 0;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #b45309;
+}
+
+.routeRow {
+  pointer-events: auto;
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.routeBtn {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 2px 8px rgba(26, 31, 54, 0.1);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.routeBtn.route-a {
+  border-color: #93c5fd;
+}
+
+.routeBtn.route-b {
+  border-color: var(--celonis-primary-muted);
+}
+
+.routeBtn:hover,
+.routeBtn:focus-visible,
+.routeBtnHovered {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(26, 31, 54, 0.14);
+}
+
+.routeBtn.route-a:hover,
+.routeBtn.route-a:focus-visible,
+.routeBtn.route-a.routeBtnHovered {
+  background: #eff6ff;
+  border-color: #2563eb;
+}
+
+.routeBtn.route-b:hover,
+.routeBtn.route-b:focus-visible,
+.routeBtn.route-b.routeBtnHovered {
+  background: var(--celonis-primary-light);
+  border-color: var(--celonis-primary);
+}
+
+.routeBadge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.route-a .routeBadge {
+  color: #2563eb;
+}
+
+.route-b .routeBadge {
+  color: var(--celonis-primary-hover);
+}
+
+.routePath {
+  font-size: 10px;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  color: #6b7280;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.routeAction {
+  font-size: 10px;
+  font-weight: 600;
+  color: #9f1239;
+  line-height: 1.25;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.routeBtn.route-a .routeAction {
+  color: #1d4ed8;
+}
+
+.routeBtn.route-b .routeAction {
+  color: var(--celonis-primary-hover);
+}

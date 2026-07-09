@@ -1,0 +1,89 @@
+.module {
+  background: var(--celonis-surface);
+  border: 1px solid var(--celonis-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.patternToggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: var(--celonis-text-muted);
+  flex-wrap: wrap;
+}
+
+.patternToggle button {
+  padding: 6px 12px;
+  border: 1px solid var(--celonis-border);
+  background: var(--celonis-surface);
+  border-radius: 6px;
+  font-size: 12px;
+  transition:
+    border-color var(--transition),
+    background var(--transition);
+}
+
+.patternToggle button.active {
+  border-color: var(--celonis-primary);
+  background: var(--celonis-primary-light);
+  color: var(--celonis-primary);
+  font-weight: 600;
+}
+
+.moduleCanvas {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.graphSurface {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.graphStack {
+  position: relative;
+}
+
+.emptyOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.emptyOverlay > * {
+  pointer-events: auto;
+  flex: 1;
+  min-height: 0;
+}

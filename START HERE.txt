@@ -1,0 +1,26 @@
+╔══════════════════════════════════════════════════════════════╗
+║  PERSPECTIVE BUILDER — HOW TO RUN (read this first)          ║
+╚══════════════════════════════════════════════════════════════╝
+
+  ✗  DO NOT double-click index.html  → blank page, will not work
+
+  ✓  DO one of these instead:
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │  macOS: Double-click  →  Start Prototype.command             │
+  │  (Right-click → Open if macOS blocks it)                     │
+  └──────────────────────────────────────────────────────────────┘
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │  Terminal:                                                   │
+  │    cd to this folder                                         │
+  │    npm install                                               │
+  │    npm run dev                                                 │
+  │  Then open:  http://127.0.0.1:5199/                          │
+  └──────────────────────────────────────────────────────────────┘
+
+  You need Node.js: https://nodejs.org/
+
+  Keep the Terminal window open while using the app.
+
+  If port 5199 is busy, close other prototypes and try again.

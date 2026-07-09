@@ -1,0 +1,55 @@
+.issuesWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px 16px;
+}
+
+.tableWrap {
+  padding: 12px 16px 16px;
+}
+
+.metaBlock {
+  padding: 16px 20px 20px;
+}
+
+.metaList {
+  margin: 0;
+  padding: 0;
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13px;
+}
+
+.metaRow dt {
+  margin: 0;
+  color: #94a3b8;
+}
+
+.metaRow dd {
+  margin: 0;
+  color: #1e293b;
+  font-weight: 500;
+  text-align: right;
+}
+
+.readOnlyNote {
+  margin: 14px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.lead {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #64748b;
+}
