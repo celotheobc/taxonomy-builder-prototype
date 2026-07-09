@@ -4,6 +4,13 @@ import {
   buildTaxonomyAsset,
   getObjectType,
 } from '../../../data/mockObjectTypes';
+import { buildSeedHierarchyState, buildSeedWorkspaceState } from '../../../data/seedWorkspaceState';
+import {
+  UNGROUPED_GROUP_ID,
+  createEmptyHierarchy,
+  createGroupId,
+  getUngroupedMemberIds,
+} from '../../../data/taxonomyHierarchy';
 
 const ObjectTypeWorkspaceContext = createContext(null);
 
@@ -54,11 +61,9 @@ function withDefaults(state, objectTypeId) {
 }
 
 export function ObjectTypeWorkspaceProvider({ children }) {
-  const [splitByObjectId, setSplitByObjectId] = useState({
-    'jira-issue': createEmptySplitState('jira-issue'),
-    factory: createEmptySplitState('factory'),
-  });
+  const [splitByObjectId, setSplitByObjectId] = useState(buildSeedWorkspaceState);
   const [taxonomyOverrides, setTaxonomyOverrides] = useState({});
+  const [taxonomyHierarchyById, setTaxonomyHierarchyById] = useState(buildSeedHierarchyState);
 
   const updateSplitState = useCallback((objectTypeId, updater) => {
     setSplitByObjectId((prev) => {
@@ -224,6 +229,76 @@ export function ObjectTypeWorkspaceProvider({ children }) {
     });
   }, [updateSplitState]);
 
+  const updateTaxonomyHierarchy = useCallback((taxonomyId, updater) => {
+    setTaxonomyHierarchyById((prev) => {
+      const current = prev[taxonomyId] ?? createEmptyHierarchy();
+      const next = typeof updater === 'function' ? updater(current) : updater;
+      return { ...prev, [taxonomyId]: next };
+    });
+  }, []);
+
+  const getTaxonomyHierarchy = useCallback(
+    (taxonomyId) => taxonomyHierarchyById[taxonomyId] ?? createEmptyHierarchy(),
+    [taxonomyHierarchyById],
+  );
+
+  const addTaxonomyGroup = useCallback((taxonomyId, { label, parentId = null, description = '' }) => {
+    const trimmed = label?.trim();
+    if (!trimmed) return null;
+    const group = {
+      id: createGroupId(trimmed),
+      label: trimmed,
+      description,
+      parentId,
+      memberIds: [],
+    };
+    updateTaxonomyHierarchy(taxonomyId, (current) => ({
+      groups: [...current.groups, group],
+    }));
+    return group.id;
+  }, [updateTaxonomyHierarchy]);
+
+  const renameTaxonomyGroup = useCallback((taxonomyId, groupId, label) => {
+    const trimmed = label?.trim();
+    if (!trimmed) return;
+    updateTaxonomyHierarchy(taxonomyId, (current) => ({
+      groups: current.groups.map((group) =>
+        group.id === groupId ? { ...group, label: trimmed } : group,
+      ),
+    }));
+  }, [updateTaxonomyHierarchy]);
+
+  const updateTaxonomyGroupDescription = useCallback((taxonomyId, groupId, description) => {
+    updateTaxonomyHierarchy(taxonomyId, (current) => ({
+      groups: current.groups.map((group) =>
+        group.id === groupId ? { ...group, description } : group,
+      ),
+    }));
+  }, [updateTaxonomyHierarchy]);
+
+  const addMembersToTaxonomyGroup = useCallback((taxonomyId, groupId, memberIds) => {
+    if (!memberIds?.length || groupId === UNGROUPED_GROUP_ID) return;
+    const uniqueIds = [...new Set(memberIds)];
+    updateTaxonomyHierarchy(taxonomyId, (current) => ({
+      groups: current.groups.map((group) =>
+        group.id === groupId
+          ? { ...group, memberIds: [...new Set([...group.memberIds, ...uniqueIds])] }
+          : group,
+      ),
+    }));
+  }, [updateTaxonomyHierarchy]);
+
+  const removeMemberFromTaxonomyGroup = useCallback((taxonomyId, groupId, memberId) => {
+    if (groupId === UNGROUPED_GROUP_ID) return;
+    updateTaxonomyHierarchy(taxonomyId, (current) => ({
+      groups: current.groups.map((group) =>
+        group.id === groupId
+          ? { ...group, memberIds: group.memberIds.filter((id) => id !== memberId) }
+          : group,
+      ),
+    }));
+  }, [updateTaxonomyHierarchy]);
+
   const updateTaxonomyMeta = useCallback((taxonomyId, patch) => {
     setTaxonomyOverrides((prev) => ({
       ...prev,
@@ -284,6 +359,12 @@ export function ObjectTypeWorkspaceProvider({ children }) {
       generatedTaxonomies,
       getTaxonomy,
       updateTaxonomyMeta,
+      getTaxonomyHierarchy,
+      addTaxonomyGroup,
+      renameTaxonomyGroup,
+      updateTaxonomyGroupDescription,
+      addMembersToTaxonomyGroup,
+      removeMemberFromTaxonomyGroup,
     }),
     [
       getSplitState,
@@ -302,6 +383,12 @@ export function ObjectTypeWorkspaceProvider({ children }) {
       generatedTaxonomies,
       getTaxonomy,
       updateTaxonomyMeta,
+      getTaxonomyHierarchy,
+      addTaxonomyGroup,
+      renameTaxonomyGroup,
+      updateTaxonomyGroupDescription,
+      addMembersToTaxonomyGroup,
+      removeMemberFromTaxonomyGroup,
     ],
   );
 

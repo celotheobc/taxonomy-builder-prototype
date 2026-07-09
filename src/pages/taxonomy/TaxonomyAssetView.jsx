@@ -1,107 +1,180 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { getAttributeTotalRows, getObjectType } from '../../data/mockObjectTypes';
+import { UNGROUPED_GROUP_ID } from '../../data/taxonomyHierarchy';
 import { useObjectTypeWorkspace } from './context/ObjectTypeWorkspaceContext';
 import TaxonomyEditorLayout from './layout/TaxonomyEditorLayout';
-import TaxonomyHierarchyEditor from './taxonomy/TaxonomyHierarchyEditor';
+import TaxonomyAssetInspector from './inspector/TaxonomyAssetInspector';
+import TaxonomyAssetBottomPanel from './panels/TaxonomyAssetBottomPanel';
+import SubtypesSplitLayout from './subtypes/SubtypesSplitLayout';
+import splitStyles from './subtypes/SubtypesSection.module.css';
+import { useSubtypesSplitWidth } from './subtypes/useSubtypesSplitWidth';
+import TaxonomyGroupDetailPanel from './taxonomy/TaxonomyGroupDetailPanel';
+import TaxonomyHierarchyNav from './taxonomy/TaxonomyHierarchyNav';
 import { usePanelDimensionsV5 } from '../v5/layout/usePanelDimensionsV5';
-import styles from './TaxonomyAssetView.module.css';
+import styles from './taxonomy/TaxonomyEditor.module.css';
 
-export default function TaxonomyAssetView({ taxonomyId, onOpenObjectType }) {
-  const { getTaxonomy, updateTaxonomyMeta } = useObjectTypeWorkspace();
+export default function TaxonomyAssetView({
+  taxonomyId,
+  onOpenObjectType,
+  onOpenSubtype,
+}) {
+  const {
+    getTaxonomy,
+    getTaxonomyHierarchy,
+    addTaxonomyGroup,
+    renameTaxonomyGroup,
+    updateTaxonomyGroupDescription,
+    addMembersToTaxonomyGroup,
+    removeMemberFromTaxonomyGroup,
+  } = useObjectTypeWorkspace();
+
   const taxonomy = getTaxonomy(taxonomyId);
+  const hierarchy = getTaxonomyHierarchy(taxonomyId);
+  const { leftWidth, adjustLeftWidth } = useSubtypesSplitWidth();
+  const { rightWidth, bottomHeight, adjustRightWidth, adjustBottomHeight } = usePanelDimensionsV5();
+
   const [rightCollapsed, setRightCollapsed] = useState(false);
   const [bottomCollapsed, setBottomCollapsed] = useState(true);
-  const { rightWidth } = usePanelDimensionsV5();
+  const [bottomTab, setBottomTab] = useState('preview');
+  const [selectedGroupId, setSelectedGroupId] = useState(UNGROUPED_GROUP_ID);
+  const [previewSubtypeId, setPreviewSubtypeId] = useState(null);
+
+  useEffect(() => {
+    const groups = getTaxonomyHierarchy(taxonomyId).groups;
+    setSelectedGroupId(groups[0]?.id ?? UNGROUPED_GROUP_ID);
+    setPreviewSubtypeId(null);
+    setBottomCollapsed(true);
+  }, [taxonomyId, getTaxonomyHierarchy]);
+
+  const subtypes = useMemo(
+    () => taxonomy?.subtypes.filter((subtype) => !subtype.hidden) ?? [],
+    [taxonomy],
+  );
+
+  const actualTotalRows = useMemo(() => {
+    if (!taxonomy) return 0;
+    const objectType = getObjectType(taxonomy.sourceObjectTypeId);
+    return getAttributeTotalRows(objectType, taxonomy.splitAttributeId);
+  }, [taxonomy]);
+
+  const previewSubtype = subtypes.find((subtype) => subtype.id === previewSubtypeId) ?? null;
 
   if (!taxonomy) {
     return <div className={styles.missing}>Taxonomy asset not found. Create subtypes from an Object Type first.</div>;
   }
 
-  const visibleSubtypes = taxonomy.subtypes.filter((subtype) => !subtype.hidden);
+  const openPreview = (subtypeId, tab = 'preview') => {
+    setPreviewSubtypeId(subtypeId);
+    setBottomTab(tab);
+    setBottomCollapsed(false);
+  };
 
   return (
     <TaxonomyEditorLayout
       mainContent={
         <div className={styles.workArea}>
-          <header className={styles.header}>
-            <div>
-              <p className={styles.eyebrow}>Taxonomy</p>
-              <h1 className={styles.title}>{taxonomy.name}</h1>
-              <p className={styles.subtitle}>
-                Organises subtype object types created from{' '}
-                <button
-                  type="button"
-                  className={styles.linkBtn}
-                  onClick={() => onOpenObjectType?.(taxonomy.sourceObjectTypeId)}
-                >
-                  {taxonomy.sourceObjectTypeName}
-                </button>
-              </p>
-            </div>
-            <span className={styles.statusBadge}>{taxonomy.status}</span>
+          <header className={styles.pageHeader}>
+            <p className={styles.eyebrow}>Taxonomy</p>
+            <h1 className={styles.pageTitle}>{taxonomy.name}</h1>
+            <p className={styles.pageSubtitle}>
+              Organise subtype members created from{' '}
+              <button
+                type="button"
+                className={styles.linkBtn}
+                onClick={() => onOpenObjectType?.(taxonomy.sourceObjectTypeId)}
+              >
+                {taxonomy.sourceObjectTypeName}
+              </button>{' '}
+              · split by {taxonomy.splitAttributeName}
+            </p>
           </header>
 
-          <section className={styles.card}>
-            <h2 className={styles.cardTitle}>Parent object</h2>
-            <p className={styles.lead}>
-              This taxonomy was created when <strong>{taxonomy.sourceObjectTypeName}</strong> was
-              split by <strong>{taxonomy.splitAttributeName}</strong>. The taxonomy organises the
-              resulting subtype object types.
-            </p>
-            <button
-              type="button"
-              className={styles.linkBtn}
-              onClick={() => onOpenObjectType?.(taxonomy.sourceObjectTypeId)}
-            >
-              Open {taxonomy.sourceObjectTypeName}
-            </button>
-          </section>
-
-          <section className={styles.card}>
-            <TaxonomyHierarchyEditor subtypes={visibleSubtypes} />
-          </section>
+          <div className={styles.editorShell}>
+            <SubtypesSplitLayout
+              leftWidth={leftWidth}
+              onAdjustLeftWidth={adjustLeftWidth}
+              left={
+                <div className={splitStyles.splitColumn}>
+                  <TaxonomyHierarchyNav
+                  taxonomyName={taxonomy.name}
+                  groups={hierarchy.groups}
+                  subtypes={subtypes}
+                  selectedGroupId={selectedGroupId}
+                  onSelectGroup={setSelectedGroupId}
+                />
+                </div>
+              }
+              right={
+                <div className={splitStyles.splitColumn}>
+                  <div className={splitStyles.splitColumnBody}>
+                    <TaxonomyGroupDetailPanel
+                  taxonomyId={taxonomy.id}
+                  taxonomyName={taxonomy.name}
+                  selectedGroupId={selectedGroupId}
+                  groups={hierarchy.groups}
+                  subtypes={subtypes}
+                  totalRows={actualTotalRows}
+                  onUpdateDescription={(groupId, description) =>
+                    updateTaxonomyGroupDescription(taxonomy.id, groupId, description)
+                  }
+                  onRenameGroup={(groupId, label) =>
+                    renameTaxonomyGroup(taxonomy.id, groupId, label)
+                  }
+                  onAddChildGroup={(parentId, label) => {
+                    const childId = addTaxonomyGroup(taxonomy.id, {
+                      label,
+                      parentId,
+                      description: '',
+                    });
+                    if (childId) setSelectedGroupId(childId);
+                  }}
+                  onAddMembers={(groupId, memberIds) =>
+                    addMembersToTaxonomyGroup(taxonomy.id, groupId, memberIds)
+                  }
+                  onRemoveMember={(groupId, memberId) =>
+                    removeMemberFromTaxonomyGroup(taxonomy.id, groupId, memberId)
+                  }
+                  onPreviewMember={(subtypeId) => openPreview(subtypeId, 'preview')}
+                  onOpenMember={(subtypeId) =>
+                    onOpenSubtype?.(taxonomy.sourceObjectTypeId, subtypeId)
+                  }
+                  onViewSourceRecords={(subtypeId) => openPreview(subtypeId, 'source')}
+                  onPreviewGroupMembers={(members) => {
+                    if (members[0]) openPreview(members[0].id, 'preview');
+                  }}
+                    />
+                  </div>
+                </div>
+              }
+            />
+          </div>
         </div>
       }
       rightInspector={
-        <aside className={styles.inspector} style={{ width: rightCollapsed ? 40 : rightWidth }}>
-          <header className={styles.inspectorHeader}>
-            <span>Inspector</span>
-            <button type="button" onClick={() => setRightCollapsed((v) => !v)}>
-              {rightCollapsed ? '◂' : '▸'}
-            </button>
-          </header>
-          {!rightCollapsed && (
-            <div className={styles.inspectorBody}>
-              <label className={styles.field}>
-                <span>Name</span>
-                <input
-                  type="text"
-                  value={taxonomy.name}
-                  onChange={(event) => updateTaxonomyMeta(taxonomy.id, { name: event.target.value })}
-                />
-              </label>
-              <label className={styles.field}>
-                <span>Description</span>
-                <textarea
-                  rows={5}
-                  value={taxonomy.description}
-                  onChange={(event) => updateTaxonomyMeta(taxonomy.id, { description: event.target.value })}
-                />
-              </label>
-              <dl className={styles.metaList}>
-                <div><dt>Reference key</dt><dd>{taxonomy.referenceKey}</dd></div>
-                <div><dt>Parent object</dt><dd>{taxonomy.sourceObjectTypeName}</dd></div>
-                <div><dt>Split attribute</dt><dd>{taxonomy.splitAttributeName}</dd></div>
-                <div><dt>Subtypes</dt><dd>{visibleSubtypes.length}</dd></div>
-              </dl>
-            </div>
-          )}
-        </aside>
+        <TaxonomyAssetInspector
+          taxonomy={taxonomy}
+          groups={hierarchy.groups}
+          subtypes={subtypes}
+          collapsed={rightCollapsed}
+          onToggle={() => setRightCollapsed((value) => !value)}
+          width={rightWidth}
+          onResizeWidth={adjustRightWidth}
+          onOpenObjectType={onOpenObjectType}
+        />
       }
       bottomPanel={
-        <section
-          className={styles.bottomStub}
-          style={{ height: bottomCollapsed ? 40 : 40 }}
-          aria-hidden
+        <TaxonomyAssetBottomPanel
+          activeTab={bottomTab}
+          onTabChange={setBottomTab}
+          collapsed={bottomCollapsed}
+          onToggle={() => setBottomCollapsed((value) => !value)}
+          height={bottomHeight}
+          onResizeHeight={adjustBottomHeight}
+          objectTypeId={taxonomy.sourceObjectTypeId}
+          previewSubtypeId={previewSubtypeId}
+          previewSubtypeLabel={previewSubtype?.label}
+          sourceAttributeName={taxonomy.splitAttributeName}
+          sourceRecords={previewSubtype ? [previewSubtype] : []}
         />
       }
     />

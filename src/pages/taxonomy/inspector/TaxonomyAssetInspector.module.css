@@ -1,0 +1,37 @@
+.headerTitle {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.collapseBtn {
+  margin-left: auto;
+}
+
+.heading {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.bodyText {
+  margin: 0 0 16px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #64748b;
+}
+
+.linkishBtn {
+  margin-top: 16px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1b6fd1;
+  cursor: pointer;
+}
+
+.linkishBtn:hover {
+  color: #1558a8;
+}

@@ -162,6 +162,7 @@ function TaxonomyBuilderShell({ onHome, initialObjectTypeId = 'jira-issue' }) {
                     <TaxonomyAssetView
                       taxonomyId={tab.taxonomyId}
                       onOpenObjectType={openObjectTypeTab}
+                      onOpenSubtype={openSubtypeObjectTab}
                     />
                   ) : null}
                 </div>

@@ -335,7 +335,9 @@ Manufacturing plants used in supply chain and operations analysis.
     country: [
       { value: 'France', recordCount: 12 },
       { value: 'Germany', recordCount: 18 },
+      { value: 'Italy', recordCount: 11 },
       { value: 'Spain', recordCount: 9 },
+      { value: 'Portugal', recordCount: 8 },
       { value: 'Japan', recordCount: 14 },
       { value: 'China', recordCount: 31 },
       { value: 'Thailand', recordCount: 7 },
@@ -372,7 +374,9 @@ Manufacturing plants used in supply chain and operations analysis.
     country: [
       { id: 'france', label: 'France', matchingValue: 'France', recordCount: 12, groupKey: 'europe' },
       { id: 'germany', label: 'Germany', matchingValue: 'Germany', recordCount: 18, groupKey: 'europe' },
+      { id: 'italy', label: 'Italy', matchingValue: 'Italy', recordCount: 11, groupKey: 'europe' },
       { id: 'spain', label: 'Spain', matchingValue: 'Spain', recordCount: 9, groupKey: 'europe' },
+      { id: 'portugal', label: 'Portugal', matchingValue: 'Portugal', recordCount: 8, groupKey: 'europe' },
       { id: 'japan', label: 'Japan', matchingValue: 'Japan', recordCount: 14, groupKey: 'asia' },
       { id: 'china', label: 'China', matchingValue: 'China', recordCount: 31, groupKey: 'asia' },
       { id: 'thailand', label: 'Thailand', matchingValue: 'Thailand', recordCount: 7, groupKey: 'asia' },
@@ -509,6 +513,7 @@ export function buildTaxonomyAsset(objectType, attributeId, subtypes) {
     referenceKey: `taxonomy.${objectType.id}.${attributeId.replace(/-/g, '_')}`,
     createdBy: 'System',
     lastUpdatedBy: 'System',
+    owner: 'Theo Bonham Carter',
     generatedAt: new Date().toISOString(),
     sourceObjectTypeId: objectType.id,
     sourceObjectTypeName: objectType.name,
