@@ -24,12 +24,8 @@ const RECOMMENDATION_CLASS = {
   'Not recommended': styles.badgeNotRecommended,
 };
 
-function buildPreviewSummary(valueCount, selectedCount) {
-  if (selectedCount === valueCount) {
-    return `This attribute can create ${valueCount} object subtype${valueCount === 1 ? '' : 's'}.`;
-  }
-
-  return `${selectedCount} of ${valueCount} object subtypes selected.`;
+function buildSelectionStatus(selectedCount, valueCount) {
+  return `${selectedCount} of ${valueCount} object subtype${valueCount === 1 ? '' : 's'} selected.`;
 }
 
 export default function AttributeWorkflowPanel({
@@ -170,12 +166,6 @@ export default function AttributeWorkflowPanel({
                   {recommendationReason ? (
                     <p className={styles.detailSummary}>{recommendationReason}</p>
                   ) : null}
-                  <p className={styles.detailSummary}>
-                    {buildPreviewSummary(
-                      distributionItems.length || uniqueValues,
-                      selectedCount,
-                    )}
-                  </p>
                 </div>
               )}
             </div>
@@ -206,7 +196,7 @@ export default function AttributeWorkflowPanel({
             <div className={styles.workflowContentEnter}>
               {distributionItems.length > 0 && (
                 <SubtypeDistribution
-                  label="Potential object subtypes"
+                  label={`${distributionItems.length} Potential object subtypes`}
                   lead="The following values will become object subtypes:"
                   items={distributionItems}
                   totalRows={totalRows}
@@ -237,23 +227,32 @@ export default function AttributeWorkflowPanel({
             </button>
           </div>
         ) : (
-          <div className={styles.detailFooterActions}>
-            <button
-              type="button"
-              className={styles.primaryBtn}
-              disabled={!canCreateSelection || isGenerating}
-              onClick={handleCreate}
-            >
-              {isGenerating ? (
-                <>
-                  <span className={styles.btnSpinner} aria-hidden />
-                  Creating…
-                </>
-              ) : (
-                `Create ${selectedCount} subtype${selectedCount === 1 ? '' : 's'}`
+          <>
+            <div className={styles.detailFooterStart}>
+              {distributionItems.length > 0 && (
+                <p className={styles.detailFooterStatus}>
+                  {buildSelectionStatus(selectedCount, distributionItems.length)}
+                </p>
               )}
-            </button>
-          </div>
+            </div>
+            <div className={styles.detailFooterActions}>
+              <button
+                type="button"
+                className={styles.primaryBtn}
+                disabled={!canCreateSelection || isGenerating}
+                onClick={handleCreate}
+              >
+                {isGenerating ? (
+                  <>
+                    <span className={styles.btnSpinner} aria-hidden />
+                    Creating…
+                  </>
+                ) : (
+                  `Create ${selectedCount} subtype${selectedCount === 1 ? '' : 's'}`
+                )}
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>

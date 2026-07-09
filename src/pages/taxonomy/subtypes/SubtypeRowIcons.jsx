@@ -15,13 +15,13 @@ export function OpenIcon() {
 export function PreviewIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+      <circle cx="6" cy="6" r="3.75" stroke="currentColor" strokeWidth="1.25" />
       <path
-        d="M1 7s2.2-4 6-4 6 4 6 4-2.2 4-6 4-6-4-6-4Z"
+        d="M9 9l3 3"
         stroke="currentColor"
         strokeWidth="1.25"
-        strokeLinejoin="round"
+        strokeLinecap="round"
       />
-      <circle cx="7" cy="7" r="1.75" stroke="currentColor" strokeWidth="1.25" />
     </svg>
   );
 }

@@ -629,6 +629,13 @@
   flex: 1;
 }
 
+.detailFooterStatus {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #64748b;
+}
+
 .detailFooterActions {
   display: flex;
   align-items: center;

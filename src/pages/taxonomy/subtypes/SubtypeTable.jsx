@@ -103,8 +103,8 @@ export default function SubtypeTable({
                     <button
                       type="button"
                       className={`${styles.subtypeTableIconBtn} ${styles.subtypeTableIconBtnPrimary}`}
-                      aria-label={`Open ${subtype.label}`}
-                      title="Open Object Type"
+                      aria-label={`Open ${subtype.label} in new tab`}
+                      title="Open in new tab"
                       onClick={() => onOpenObjectType?.(subtype.id)}
                     >
                       <OpenIcon />
@@ -112,8 +112,8 @@ export default function SubtypeTable({
                     <button
                       type="button"
                       className={styles.subtypeTableIconBtn}
-                      aria-label={`Preview rows for ${subtype.label}`}
-                      title="Preview rows"
+                      aria-label={`Preview data for ${subtype.label}`}
+                      title="Preview Data"
                       onClick={() => onPreviewSubtype?.(subtype.id)}
                     >
                       <PreviewIcon />
