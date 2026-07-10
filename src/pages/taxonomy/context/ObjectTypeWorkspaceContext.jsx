@@ -4,12 +4,10 @@ import {
   buildTaxonomyAsset,
   getObjectType,
 } from '../../../data/mockObjectTypes';
-import { buildSeedHierarchyState, buildSeedWorkspaceState } from '../../../data/seedWorkspaceState';
 import {
   UNGROUPED_GROUP_ID,
   createEmptyHierarchy,
   createGroupId,
-  getUngroupedMemberIds,
 } from '../../../data/taxonomyHierarchy';
 
 const ObjectTypeWorkspaceContext = createContext(null);
@@ -61,9 +59,12 @@ function withDefaults(state, objectTypeId) {
 }
 
 export function ObjectTypeWorkspaceProvider({ children }) {
-  const [splitByObjectId, setSplitByObjectId] = useState(buildSeedWorkspaceState);
+  const [splitByObjectId, setSplitByObjectId] = useState({
+    'jira-issue': createEmptySplitState(),
+    factory: createEmptySplitState(),
+  });
   const [taxonomyOverrides, setTaxonomyOverrides] = useState({});
-  const [taxonomyHierarchyById, setTaxonomyHierarchyById] = useState(buildSeedHierarchyState);
+  const [taxonomyHierarchyById, setTaxonomyHierarchyById] = useState({});
 
   const updateSplitState = useCallback((objectTypeId, updater) => {
     setSplitByObjectId((prev) => {
