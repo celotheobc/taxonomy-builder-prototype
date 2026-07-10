@@ -2,6 +2,13 @@ import { useState } from 'react';
 import { L1_QUICK_LINKS } from './studioAssets';
 import { SectionIcon } from '../../v3/shell/StudioIcons';
 import styles from '../../v3/shell/StudioL1Nav.module.css';
+import anim from './StudioL1Nav.anim.module.css';
+import {
+  childAssetKey,
+  getEnterDelay,
+  taxonomyAssetKey,
+  useL1NavEnterAnimations,
+} from './useL1NavEnterAnimations';
 
 function Chevron({ open }) {
   return (
@@ -32,7 +39,12 @@ function ObjectTypeIcon({ small = false }) {
   );
 }
 
+function enteringStyle(staggerIndex) {
+  return { '--nav-enter-delay': `${getEnterDelay(staggerIndex)}ms` };
+}
+
 export default function StudioL1Nav({ sections, activeAssetKey, onOpenAsset }) {
+  const { enteringKeys, expandedParents } = useL1NavEnterAnimations(sections);
   const [openSections, setOpenSections] = useState(() =>
     Object.fromEntries(sections.map((section) => [section.id, Boolean(section.defaultOpen)])),
   );
@@ -49,7 +61,8 @@ export default function StudioL1Nav({ sections, activeAssetKey, onOpenAsset }) {
     }));
   };
 
-  const isObjectGroupOpen = (assetId) => openObjectGroups[assetId] ?? true;
+  const isObjectGroupOpen = (assetId) =>
+    openObjectGroups[assetId] ?? expandedParents[assetId] ?? true;
 
   return (
     <aside className={styles.sidebar} aria-label="Context model assets">
@@ -113,6 +126,33 @@ export default function StudioL1Nav({ sections, activeAssetKey, onOpenAsset }) {
                     const key = assetKey(asset);
                     const active = key === activeAssetKey;
                     const hasChildren = asset.children?.length > 0;
+                    const taxonomyKey = taxonomyAssetKey(asset);
+                    const isTaxonomyEntering =
+                      section.id === 'taxonomies' && enteringKeys.has(taxonomyKey);
+                    const taxonomyStagger = enteringKeys.get(taxonomyKey) ?? 0;
+
+                    if (section.id === 'taxonomies') {
+                      return (
+                        <li
+                          key={asset.id}
+                          className={isTaxonomyEntering ? anim.navRowEnter : styles.assetGroup}
+                        >
+                          <div className={isTaxonomyEntering ? anim.navRowEnterInner : undefined}>
+                            <button
+                              type="button"
+                              className={`${active ? styles.assetActive : styles.asset} ${
+                                isTaxonomyEntering ? anim.navItemEnter : ''
+                              }`}
+                              style={isTaxonomyEntering ? enteringStyle(taxonomyStagger) : undefined}
+                              onClick={() => onOpenAsset?.(asset)}
+                            >
+                              <ObjectTypeIcon />
+                              <span className={styles.assetLabel}>{asset.label}</span>
+                            </button>
+                          </div>
+                        </li>
+                      );
+                    }
 
                     return (
                       <li key={asset.id} className={styles.assetGroup}>
@@ -142,16 +182,28 @@ export default function StudioL1Nav({ sections, activeAssetKey, onOpenAsset }) {
                             {asset.children.map((child) => {
                               const childKey = assetKey(child);
                               const childActive = childKey === activeAssetKey;
+                              const navChildKey = childAssetKey(child);
+                              const isEntering = enteringKeys.has(navChildKey);
+                              const staggerIndex = enteringKeys.get(navChildKey) ?? 0;
+
                               return (
-                                <li key={child.id}>
-                                  <button
-                                    type="button"
-                                    className={childActive ? styles.childAssetActive : styles.childAsset}
-                                    onClick={() => onOpenAsset?.(child)}
-                                  >
-                                    <ObjectTypeIcon small />
-                                    <span>{child.label}</span>
-                                  </button>
+                                <li
+                                  key={child.id}
+                                  className={isEntering ? anim.navRowEnter : undefined}
+                                >
+                                  <div className={isEntering ? anim.navRowEnterInner : undefined}>
+                                    <button
+                                      type="button"
+                                      className={`${
+                                        childActive ? styles.childAssetActive : styles.childAsset
+                                      } ${isEntering ? anim.navItemEnter : ''}`}
+                                      style={isEntering ? enteringStyle(staggerIndex) : undefined}
+                                      onClick={() => onOpenAsset?.(child)}
+                                    >
+                                      <ObjectTypeIcon small />
+                                      <span>{child.label}</span>
+                                    </button>
+                                  </div>
                                 </li>
                               );
                             })}
