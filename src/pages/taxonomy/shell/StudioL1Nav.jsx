@@ -164,6 +164,14 @@ export default function StudioL1Nav({ sections, activeAssetKey, onOpenAsset }) {
                           >
                             <ObjectTypeIcon />
                             <span className={styles.assetLabel}>{asset.label}</span>
+                            {hasChildren && (
+                              <span
+                                className={anim.subtypeCountChip}
+                                aria-label={`${asset.children.length} subtype${asset.children.length === 1 ? '' : 's'}`}
+                              >
+                                +{asset.children.length}
+                              </span>
+                            )}
                           </button>
                           {hasChildren && (
                             <button

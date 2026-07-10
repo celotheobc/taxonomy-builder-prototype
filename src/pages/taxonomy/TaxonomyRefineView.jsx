@@ -89,7 +89,6 @@ export default function TaxonomyRefineView({
           <ObjectTypePageHeader
             objectTypeId={objectTypeId}
             subtypeEntry={subtypeEntry}
-            onOpenTaxonomy={onOpenTaxonomy}
             onNavigateToParent={onNavigateToParent}
           />
           {/* <OverviewSection objectTypeId={objectTypeId} /> */}

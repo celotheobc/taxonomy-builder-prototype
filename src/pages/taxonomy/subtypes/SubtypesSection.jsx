@@ -108,7 +108,7 @@ export default function SubtypesSection({
         className={!isCreation ? styles.modeBtnActive : styles.modeBtn}
         onClick={() => setSubtypesUiMode(objectTypeId, SUBTYPES_UI_MODE.MANAGEMENT)}
       >
-        By Subtype
+        By Subtype and Taxonomy
       </button>
     </div>
   );

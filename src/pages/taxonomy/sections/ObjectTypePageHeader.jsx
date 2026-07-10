@@ -1,24 +1,12 @@
 import { getAttribute, getObjectType } from '../../../data/mockObjectTypes';
-import { useObjectTypeWorkspace } from '../context/ObjectTypeWorkspaceContext';
 import styles from './ObjectTypePageHeader.module.css';
 
 export default function ObjectTypePageHeader({
   objectTypeId,
   subtypeEntry = null,
-  onOpenTaxonomy,
   onNavigateToParent,
 }) {
   const objectType = getObjectType(objectTypeId);
-  const { getSplitState, getAllSubtypeEntries } = useObjectTypeWorkspace();
-  const subtypeEntries = getAllSubtypeEntries(getSplitState(objectTypeId));
-  const taxonomies = subtypeEntry?.taxonomy
-    ? [subtypeEntry.taxonomy]
-    : subtypeEntries
-        .map((entry) => entry.taxonomy)
-        .filter(
-          (taxonomy, index, list) =>
-            taxonomy && list.findIndex((item) => item?.id === taxonomy.id) === index,
-        );
 
   const splitAttribute = subtypeEntry
     ? getAttribute(objectType, subtypeEntry.splitAttributeId)
@@ -44,20 +32,6 @@ export default function ObjectTypePageHeader({
             )}
           </p>
         ) : null}
-        {taxonomies.length > 0 && (
-          <div className={styles.linkedAssets}>
-            {taxonomies.map((taxonomy) => (
-              <button
-                key={taxonomy.id}
-                type="button"
-                className={styles.taxonomyLink}
-                onClick={() => onOpenTaxonomy?.(taxonomy.id)}
-              >
-                Linked taxonomy: {taxonomy.name}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
       <div className={styles.actions} aria-label="Page actions">
         <button type="button" className={styles.iconBtn} aria-label="History">
