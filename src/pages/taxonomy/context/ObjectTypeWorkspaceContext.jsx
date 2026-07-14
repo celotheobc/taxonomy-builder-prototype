@@ -8,6 +8,7 @@ import {
   UNGROUPED_GROUP_ID,
   createEmptyHierarchy,
   createGroupId,
+  getDescendantGroupIds,
 } from '../../../data/taxonomyHierarchy';
 
 const ObjectTypeWorkspaceContext = createContext(null);
@@ -300,6 +301,16 @@ export function ObjectTypeWorkspaceProvider({ children }) {
     }));
   }, [updateTaxonomyHierarchy]);
 
+  const deleteTaxonomyGroup = useCallback((taxonomyId, groupId) => {
+    if (groupId === UNGROUPED_GROUP_ID) return;
+    updateTaxonomyHierarchy(taxonomyId, (current) => {
+      const toRemove = new Set(getDescendantGroupIds(groupId, current.groups));
+      return {
+        groups: current.groups.filter((group) => !toRemove.has(group.id)),
+      };
+    });
+  }, [updateTaxonomyHierarchy]);
+
   const updateTaxonomyMeta = useCallback((taxonomyId, patch) => {
     setTaxonomyOverrides((prev) => ({
       ...prev,
@@ -366,6 +377,7 @@ export function ObjectTypeWorkspaceProvider({ children }) {
       updateTaxonomyGroupDescription,
       addMembersToTaxonomyGroup,
       removeMemberFromTaxonomyGroup,
+      deleteTaxonomyGroup,
     }),
     [
       getSplitState,
@@ -390,6 +402,7 @@ export function ObjectTypeWorkspaceProvider({ children }) {
       updateTaxonomyGroupDescription,
       addMembersToTaxonomyGroup,
       removeMemberFromTaxonomyGroup,
+      deleteTaxonomyGroup,
     ],
   );
 

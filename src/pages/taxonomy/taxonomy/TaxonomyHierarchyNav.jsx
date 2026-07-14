@@ -61,6 +61,7 @@ export default function TaxonomyHierarchyNav({
   subtypes,
   selectedGroupId,
   onSelectGroup,
+  onCreateGroup,
 }) {
   const navTree = useMemo(() => buildNavTree(groups, subtypes), [groups, subtypes]);
   const [expandedIds, setExpandedIds] = useState(() => new Set());
@@ -85,7 +86,20 @@ export default function TaxonomyHierarchyNav({
   return (
     <nav className={styles.hierarchyNav} aria-label="Taxonomy hierarchy">
       <div className={styles.hierarchyHeader}>
-        <h3 className={styles.hierarchyTitle}>Hierarchy</h3>
+        <div className={styles.hierarchyHeaderRow}>
+          <h3 className={styles.hierarchyTitle}>Hierarchy</h3>
+          {onCreateGroup ? (
+            <button
+              type="button"
+              className={styles.hierarchyAddBtn}
+              onClick={onCreateGroup}
+              aria-label="Create group"
+              title="Create group"
+            >
+              +
+            </button>
+          ) : null}
+        </div>
         <p className={styles.hierarchyTaxonomyName}>{taxonomyName}</p>
       </div>
       <div className={styles.hierarchyBody}>

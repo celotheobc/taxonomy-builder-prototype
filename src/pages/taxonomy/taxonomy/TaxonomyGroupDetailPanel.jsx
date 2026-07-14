@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   UNGROUPED_GROUP_ID,
   getDirectMemberSubtypes,
@@ -9,28 +9,44 @@ import {
 import { OpenIcon, PreviewIcon } from '../subtypes/SubtypeRowIcons';
 import { formatSubtypeRowStats } from '../subtypes/subtypeRowStats';
 import AddMembersModal from './AddMembersModal';
+import MoveToGroupModal from './MoveToGroupModal';
 import styles from './TaxonomyEditor.module.css';
 
 export default function TaxonomyGroupDetailPanel({
-  taxonomyId,
-  taxonomyName,
   selectedGroupId,
   groups,
   subtypes,
   totalRows,
   onUpdateDescription,
   onRenameGroup,
+  onDeleteGroup,
   onAddChildGroup,
+  onCreateGroup,
   onAddMembers,
+  onMoveMemberToGroup,
   onRemoveMember,
   onPreviewMember,
   onOpenMember,
-  onViewSourceRecords,
-  onPreviewGroupMembers,
 }) {
   const [addMembersOpen, setAddMembersOpen] = useState(false);
+  const [moveMember, setMoveMember] = useState(null);
+  const [showOrganiseGuidance, setShowOrganiseGuidance] = useState(true);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [titleDraft, setTitleDraft] = useState('');
+  const titleInputRef = useRef(null);
   const isUngrouped = selectedGroupId === UNGROUPED_GROUP_ID;
   const group = isUngrouped ? null : getGroupById(groups, selectedGroupId);
+
+  useEffect(() => {
+    setIsEditingTitle(false);
+    setTitleDraft('');
+  }, [selectedGroupId]);
+
+  useEffect(() => {
+    if (!isEditingTitle) return;
+    titleInputRef.current?.focus();
+    titleInputRef.current?.select();
+  }, [isEditingTitle]);
 
   const members = useMemo(() => {
     if (isUngrouped) {
@@ -43,14 +59,33 @@ export default function TaxonomyGroupDetailPanel({
   }, [isUngrouped, group, groups, subtypes]);
 
   const title = isUngrouped ? 'Ungrouped' : group?.label ?? 'Group';
-  const description = isUngrouped
-    ? 'Subtype members that are not yet assigned to a business group. Move members into groups to organise this taxonomy.'
-    : group?.description ?? '';
 
-  const handleRename = () => {
+  const startTitleEdit = () => {
     if (isUngrouped || !group) return;
-    const nextLabel = window.prompt('Rename group', group.label);
-    if (nextLabel?.trim()) onRenameGroup(group.id, nextLabel.trim());
+    setTitleDraft(group.label);
+    setIsEditingTitle(true);
+  };
+
+  const commitTitleEdit = () => {
+    if (!group) return;
+    const trimmed = titleDraft.trim();
+    if (trimmed && trimmed !== group.label) {
+      onRenameGroup(group.id, trimmed);
+    }
+    setIsEditingTitle(false);
+  };
+
+  const cancelTitleEdit = () => {
+    setIsEditingTitle(false);
+    setTitleDraft(group?.label ?? '');
+  };
+
+  const handleDeleteGroup = () => {
+    if (isUngrouped || !group) return;
+    const confirmed = window.confirm(
+      `Delete "${group.label}"? Child groups will also be removed. Members stay in other groups or return to Ungrouped.`,
+    );
+    if (confirmed) onDeleteGroup(group.id);
   };
 
   const handleNewChild = () => {
@@ -59,28 +94,112 @@ export default function TaxonomyGroupDetailPanel({
     if (nextLabel?.trim()) onAddChildGroup(group.id, nextLabel.trim());
   };
 
+  const handleCreateGroup = () => {
+    const nextLabel = window.prompt('New group name', isUngrouped ? 'Planning' : '');
+    if (nextLabel?.trim()) onCreateGroup(nextLabel.trim());
+  };
+
   return (
     <div className={styles.groupDetail}>
       <header className={styles.groupDetailHeader}>
-        <p className={styles.groupDetailEyebrow}>Group details</p>
-        <h2 className={styles.groupDetailTitle}>{title}</h2>
+        <div className={styles.groupDetailIntro}>
+          <p className={styles.groupDetailEyebrow}>Group details</p>
+          {isUngrouped ? (
+            <h2 className={styles.groupDetailTitle}>{title}</h2>
+          ) : isEditingTitle ? (
+            <input
+              ref={titleInputRef}
+              className={styles.groupDetailTitleInput}
+              value={titleDraft}
+              onChange={(event) => setTitleDraft(event.target.value)}
+              onBlur={commitTitleEdit}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  event.preventDefault();
+                  commitTitleEdit();
+                }
+                if (event.key === 'Escape') {
+                  event.preventDefault();
+                  cancelTitleEdit();
+                }
+              }}
+              aria-label="Group name"
+            />
+          ) : (
+            <button
+              type="button"
+              className={styles.groupDetailTitleButton}
+              onClick={startTitleEdit}
+              aria-label={`Rename ${title}`}
+            >
+              {title}
+            </button>
+          )}
+        </div>
+        <div className={styles.groupDetailHeaderActions}>
+          {isUngrouped ? (
+            <button type="button" className={styles.primaryBtn} onClick={handleCreateGroup}>
+              Create group
+            </button>
+          ) : (
+            <>
+              <button
+                type="button"
+                className={styles.primaryBtn}
+                onClick={() => setAddMembersOpen(true)}
+              >
+                Add members
+              </button>
+              <button type="button" className={styles.secondaryBtn} onClick={handleNewChild}>
+                New child group
+              </button>
+              <button
+                type="button"
+                className={`${styles.textBtn} ${styles.textBtnDanger} ${styles.deleteGroupBtn}`}
+                onClick={handleDeleteGroup}
+              >
+                Delete group
+              </button>
+            </>
+          )}
+        </div>
       </header>
 
       <div className={styles.groupDetailBody}>
-        <section className={styles.docSection}>
-          <h3 className={styles.docSectionTitle}>Description</h3>
-          {isUngrouped ? (
-            <p className={styles.docText}>{description}</p>
-          ) : (
+        {isUngrouped && showOrganiseGuidance ? (
+          <section className={styles.docSection}>
+            <div className={styles.guidanceCard}>
+              <div className={styles.guidanceHeader}>
+                <h3 className={styles.guidanceTitle}>Organise these members</h3>
+                <button
+                  type="button"
+                  className={styles.guidanceDismiss}
+                  onClick={() => setShowOrganiseGuidance(false)}
+                  aria-label="Dismiss organise members guidance"
+                >
+                  ×
+                </button>
+              </div>
+              <ol className={styles.guidanceSteps}>
+                <li>Create a business group (e.g. Planning, Execution, Quality).</li>
+                <li>Select the group in the hierarchy, or use Move to group on each member.</li>
+                <li>Add members to the group — they can belong to more than one group.</li>
+              </ol>
+            </div>
+          </section>
+        ) : null}
+        {isUngrouped ? null : (
+          <section className={styles.docSection}>
+            <h3 className={styles.docSectionTitle}>Description</h3>
             <textarea
               className={styles.descriptionInput}
-              value={description}
+              value={group?.description ?? ''}
               rows={3}
               onChange={(event) => onUpdateDescription(group.id, event.target.value)}
               aria-label={`Description for ${title}`}
             />
-          )}
-        </section>
+          </section>
+        )}
 
         <section className={styles.docSection}>
           <h3 className={styles.docSectionTitle}>Members</h3>
@@ -112,6 +231,15 @@ export default function TaxonomyGroupDetailPanel({
                       )}
                     </div>
                     <div className={styles.memberActions}>
+                      {isUngrouped && (
+                        <button
+                          type="button"
+                          className={styles.moveToGroupBtn}
+                          onClick={() => setMoveMember(member)}
+                        >
+                          Move to group
+                        </button>
+                      )}
                       <button
                         type="button"
                         className={styles.iconBtn}
@@ -129,15 +257,6 @@ export default function TaxonomyGroupDetailPanel({
                         onClick={() => onOpenMember(member.id)}
                       >
                         <OpenIcon />
-                      </button>
-                      <button
-                        type="button"
-                        className={styles.iconBtn}
-                        title="View Source Records"
-                        aria-label={`View source records for ${member.label}`}
-                        onClick={() => onViewSourceRecords(member.id)}
-                      >
-                        ≡
                       </button>
                       {!isUngrouped && (
                         <button
@@ -159,45 +278,6 @@ export default function TaxonomyGroupDetailPanel({
             <p className={styles.docTextMuted}>No members in this group yet.</p>
           )}
         </section>
-
-        <section className={styles.docSection}>
-          <h3 className={styles.docSectionTitle}>Actions</h3>
-          <div className={styles.actionBar}>
-            {!isUngrouped && (
-              <>
-                <button
-                  type="button"
-                  className={styles.primaryBtn}
-                  onClick={() => setAddMembersOpen(true)}
-                >
-                  Add Members
-                </button>
-                <button type="button" className={styles.secondaryBtn} onClick={handleNewChild}>
-                  New Child Group
-                </button>
-                <button type="button" className={styles.secondaryBtn} onClick={handleRename}>
-                  Rename Group
-                </button>
-                <button
-                  type="button"
-                  className={styles.secondaryBtn}
-                  onClick={() => onPreviewGroupMembers(members)}
-                >
-                  Preview Members
-                </button>
-              </>
-            )}
-            {isUngrouped && members.length > 0 && (
-              <button
-                type="button"
-                className={styles.secondaryBtn}
-                onClick={() => onPreviewGroupMembers(members)}
-              >
-                Preview Members
-              </button>
-            )}
-          </div>
-        </section>
       </div>
 
       <AddMembersModal
@@ -207,6 +287,15 @@ export default function TaxonomyGroupDetailPanel({
         existingMemberIds={group?.memberIds ?? []}
         onClose={() => setAddMembersOpen(false)}
         onAdd={(memberIds) => onAddMembers(group.id, memberIds)}
+      />
+
+      <MoveToGroupModal
+        open={Boolean(moveMember)}
+        memberLabel={moveMember?.label ?? ''}
+        groups={groups}
+        onClose={() => setMoveMember(null)}
+        onMove={(groupId) => onMoveMemberToGroup(groupId, moveMember.id)}
+        onCreateGroup={handleCreateGroup}
       />
     </div>
   );

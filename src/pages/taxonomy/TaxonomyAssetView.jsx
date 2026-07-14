@@ -23,6 +23,7 @@ export default function TaxonomyAssetView({
     getTaxonomyHierarchy,
     addTaxonomyGroup,
     renameTaxonomyGroup,
+    deleteTaxonomyGroup,
     updateTaxonomyGroupDescription,
     addMembersToTaxonomyGroup,
     removeMemberFromTaxonomyGroup,
@@ -40,11 +41,19 @@ export default function TaxonomyAssetView({
   const [previewSubtypeId, setPreviewSubtypeId] = useState(null);
 
   useEffect(() => {
-    const groups = getTaxonomyHierarchy(taxonomyId).groups;
-    setSelectedGroupId(groups[0]?.id ?? UNGROUPED_GROUP_ID);
+    setSelectedGroupId(UNGROUPED_GROUP_ID);
     setPreviewSubtypeId(null);
     setBottomCollapsed(true);
-  }, [taxonomyId, getTaxonomyHierarchy]);
+  }, [taxonomyId]);
+
+  const handleCreateGroup = (label) => {
+    const groupId = addTaxonomyGroup(taxonomyId, {
+      label,
+      parentId: null,
+      description: '',
+    });
+    if (groupId) setSelectedGroupId(groupId);
+  };
 
   const subtypes = useMemo(
     () => taxonomy?.subtypes.filter((subtype) => !subtype.hidden) ?? [],
@@ -90,6 +99,7 @@ export default function TaxonomyAssetView({
           </header>
 
           <div className={styles.editorShell}>
+            <div className={styles.editorPanel}>
             <SubtypesSplitLayout
               leftWidth={leftWidth}
               onAdjustLeftWidth={adjustLeftWidth}
@@ -101,6 +111,10 @@ export default function TaxonomyAssetView({
                   subtypes={subtypes}
                   selectedGroupId={selectedGroupId}
                   onSelectGroup={setSelectedGroupId}
+                  onCreateGroup={() => {
+                    const label = window.prompt('New group name', 'Planning');
+                    if (label?.trim()) handleCreateGroup(label.trim());
+                  }}
                 />
                 </div>
               }
@@ -108,8 +122,6 @@ export default function TaxonomyAssetView({
                 <div className={splitStyles.splitColumn}>
                   <div className={splitStyles.splitColumnBody}>
                     <TaxonomyGroupDetailPanel
-                  taxonomyId={taxonomy.id}
-                  taxonomyName={taxonomy.name}
                   selectedGroupId={selectedGroupId}
                   groups={hierarchy.groups}
                   subtypes={subtypes}
@@ -120,6 +132,11 @@ export default function TaxonomyAssetView({
                   onRenameGroup={(groupId, label) =>
                     renameTaxonomyGroup(taxonomy.id, groupId, label)
                   }
+                  onDeleteGroup={(groupId) => {
+                    deleteTaxonomyGroup(taxonomy.id, groupId);
+                    setSelectedGroupId(UNGROUPED_GROUP_ID);
+                  }}
+                  onCreateGroup={handleCreateGroup}
                   onAddChildGroup={(parentId, label) => {
                     const childId = addTaxonomyGroup(taxonomy.id, {
                       label,
@@ -131,6 +148,9 @@ export default function TaxonomyAssetView({
                   onAddMembers={(groupId, memberIds) =>
                     addMembersToTaxonomyGroup(taxonomy.id, groupId, memberIds)
                   }
+                  onMoveMemberToGroup={(groupId, memberId) =>
+                    addMembersToTaxonomyGroup(taxonomy.id, groupId, [memberId])
+                  }
                   onRemoveMember={(groupId, memberId) =>
                     removeMemberFromTaxonomyGroup(taxonomy.id, groupId, memberId)
                   }
@@ -138,15 +158,12 @@ export default function TaxonomyAssetView({
                   onOpenMember={(subtypeId) =>
                     onOpenSubtype?.(taxonomy.sourceObjectTypeId, subtypeId)
                   }
-                  onViewSourceRecords={(subtypeId) => openPreview(subtypeId, 'source')}
-                  onPreviewGroupMembers={(members) => {
-                    if (members[0]) openPreview(members[0].id, 'preview');
-                  }}
-                    />
+                />
                   </div>
                 </div>
               }
             />
+            </div>
           </div>
         </div>
       }

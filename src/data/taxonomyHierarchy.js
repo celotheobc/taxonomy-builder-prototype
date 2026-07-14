@@ -71,6 +71,14 @@ export function getMemberGroups(memberId, groups) {
   return groups.filter((group) => group.memberIds.includes(memberId));
 }
 
+export function getDescendantGroupIds(groupId, groups) {
+  const ids = [groupId];
+  getChildGroups(groups, groupId).forEach((child) => {
+    getDescendantGroupIds(child.id, groups).forEach((id) => ids.push(id));
+  });
+  return ids;
+}
+
 export function getHierarchyDepth(groups) {
   if (!groups.length) return 0;
 

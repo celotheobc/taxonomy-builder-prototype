@@ -7,16 +7,19 @@ import {
 } from '../../../data/taxonomyHierarchy';
 import styles from './TaxonomyAssetInspector.module.css';
 
-function MetaRows({ rows }) {
+function MetaSection({ title, rows }) {
   return (
-    <dl className={inspectorStyles.metaRows}>
-      {rows.map((row) => (
-        <div key={row.label} className={inspectorStyles.metaRow}>
-          <dt className={inspectorStyles.metaLabel}>{row.label}</dt>
-          <dd className={inspectorStyles.metaValue}>{row.value}</dd>
-        </div>
-      ))}
-    </dl>
+    <section className={styles.metaSection}>
+      <h4 className={styles.metaSectionTitle}>{title}</h4>
+      <dl className={styles.metaRows}>
+        {rows.map((row) => (
+          <div key={row.label} className={styles.metaRow}>
+            <dt className={styles.metaLabel}>{row.label}</dt>
+            <dd className={styles.metaValue}>{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
   );
 }
 
@@ -57,32 +60,51 @@ export default function TaxonomyAssetInspector({
         </header>
 
         {!collapsed && (
-          <div className={inspectorStyles.panelBody}>
-            <h3 className={styles.heading}>Taxonomy</h3>
-            <p className={styles.bodyText}>{taxonomy.description}</p>
-            <MetaRows
+          <div className={styles.panelBody}>
+            <div className={styles.introBlock}>
+              <p className={styles.eyebrow}>Taxonomy</p>
+              <h3 className={styles.assetName}>{taxonomy.name}</h3>
+              <p className={styles.bodyText}>{taxonomy.description}</p>
+            </div>
+
+            <MetaSection
+              title="Source"
               rows={[
-                { label: 'Taxonomy name', value: taxonomy.name },
-                { label: 'Type', value: taxonomy.type },
-                { label: 'Status', value: taxonomy.status },
                 { label: 'Linked object type', value: taxonomy.sourceObjectTypeName },
                 { label: 'Source attribute', value: taxonomy.splitAttributeName },
+              ]}
+            />
+
+            <MetaSection
+              title="Hierarchy"
+              rows={[
+                { label: 'Groups', value: String(countGroups(groups)) },
+                { label: 'Assigned members', value: String(assignedCount) },
+                { label: 'Ungrouped members', value: String(ungroupedCount) },
+                { label: 'Hierarchy depth', value: String(getHierarchyDepth(groups)) },
+              ]}
+            />
+
+            <MetaSection
+              title="Asset"
+              rows={[
+                { label: 'Type', value: taxonomy.type },
+                { label: 'Status', value: taxonomy.status },
                 { label: 'Created by', value: taxonomy.createdBy },
                 { label: 'Owner', value: taxonomy.owner ?? '—' },
-                { label: 'Hierarchy depth', value: String(getHierarchyDepth(groups)) },
-                { label: 'Number of groups', value: String(countGroups(groups)) },
-                { label: 'Number of members', value: String(assignedCount) },
-                { label: 'Ungrouped members', value: String(ungroupedCount) },
                 { label: 'Reference key', value: taxonomy.referenceKey },
               ]}
             />
-            <button
-              type="button"
-              className={styles.linkishBtn}
-              onClick={() => onOpenObjectType?.(taxonomy.sourceObjectTypeId)}
-            >
-              Open {taxonomy.sourceObjectTypeName}
-            </button>
+
+            <div className={styles.footerActions}>
+              <button
+                type="button"
+                className={styles.linkBtn}
+                onClick={() => onOpenObjectType?.(taxonomy.sourceObjectTypeId)}
+              >
+                Open {taxonomy.sourceObjectTypeName}
+              </button>
+            </div>
           </div>
         )}
       </div>
