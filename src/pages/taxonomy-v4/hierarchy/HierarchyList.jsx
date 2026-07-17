@@ -27,6 +27,8 @@ export default function HierarchyList({
   onRenameDraftChange,
   onRenameConfirm,
   onRenameCancel,
+  enteringNodeIds,
+  expandingBranchParentIds,
 }) {
   const rowProps = {
     selectedId: selectedNodeId,
@@ -60,6 +62,8 @@ export default function HierarchyList({
       taxonomyName={taxonomyName}
       metadataVariant={metadataVariant}
       rowProps={rowProps}
+      enteringNodeIds={enteringNodeIds}
+      expandingBranchParentIds={expandingBranchParentIds}
     />
   );
 }

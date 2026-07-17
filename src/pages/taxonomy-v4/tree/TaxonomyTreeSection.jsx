@@ -11,6 +11,7 @@ import {
 import { useObjectTypeWorkspace } from '../context/ObjectTypeWorkspaceContext';
 import ObjectTypeSectionCard from '../sections/ObjectTypeSectionCard';
 import HierarchyList from '../hierarchy/HierarchyList';
+import { useHierarchyTreeAnimations } from '../hierarchy/useHierarchyTreeAnimations';
 import SplitModal from '../hierarchy/SplitModal';
 import styles from '../hierarchy/Hierarchy.module.css';
 
@@ -42,6 +43,11 @@ export default function TaxonomyTreeSection({
   const [renamingNodeId, setRenamingNodeId] = useState(null);
   const [renameDraft, setRenameDraft] = useState('');
   const [metadataVariant, setMetadataVariant] = useState('two-row');
+
+  const { enteringNodeIds, expandingBranchParentIds } = useHierarchyTreeAnimations(
+    treeState.nodes,
+    treeState.expandedNodeIds,
+  );
 
   const usedAttributeIds = useMemo(() => {
     if (!flow) return new Set();
@@ -135,8 +141,8 @@ export default function TaxonomyTreeSection({
         newAttributeId: attributeId,
       });
       setFlow({
-        mode: 'create',
-        step: 'values',
+        mode: 'replace',
+        step: 'create',
         parentId: flow.parentId,
         parentLabel: flow.parentLabel,
         attributeId,
@@ -259,6 +265,8 @@ export default function TaxonomyTreeSection({
             setRenamingNodeId(null);
             setRenameDraft('');
           }}
+          enteringNodeIds={enteringNodeIds}
+          expandingBranchParentIds={expandingBranchParentIds}
         />
       )}
 
@@ -285,7 +293,8 @@ export default function TaxonomyTreeSection({
           setFlow((current) => ({
             ...current,
             mode: 'replace',
-            step: 'attribute',
+            step: 'create',
+            attributeId: null,
           }))
         }
         onClose={closeFlow}

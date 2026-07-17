@@ -10,6 +10,24 @@ import { SubtypeRow } from './HierarchyRowParts';
 import SplitConfigBlock from './SplitConfigBlock';
 import { RootObjectRow, RootSplitMetaRow } from './RootObjectRow';
 import styles from './Hierarchy.module.css';
+import anim from './Hierarchy.anim.module.css';
+
+function getItemEnterProps(nodeId, branchParentId, enteringNodeIds, expandingBranchParentIds) {
+  const isEntering = enteringNodeIds.has(nodeId);
+  const isExpandReveal =
+    branchParentId != null && expandingBranchParentIds.has(branchParentId);
+  if (!isEntering && !isExpandReveal) return {};
+  return { className: anim.itemEnter };
+}
+
+function ExpandedBranch({ branchExpanding, children }) {
+  if (!branchExpanding) return children;
+  return (
+    <div className={anim.branchExpand}>
+      <div className={anim.branchExpandInner}>{children}</div>
+    </div>
+  );
+}
 
 function SplitConfigsForParent({
   parentId,
@@ -94,6 +112,9 @@ function HierarchyBranch({
   rootSplitAttributeId,
   rowProps,
   metadataVariant,
+  branchParentId = null,
+  enteringNodeIds = new Set(),
+  expandingBranchParentIds = new Set(),
 }) {
   return nodes.map((node, index) => {
     const isLast = index === nodes.length - 1;
@@ -122,8 +143,21 @@ function HierarchyBranch({
           })
         : null;
 
+    const itemEnter = getItemEnterProps(
+      node.id,
+      branchParentId,
+      enteringNodeIds,
+      expandingBranchParentIds,
+    );
+    const branchExpanding = expandingBranchParentIds.has(node.id);
+
     return (
-      <li key={node.id} role="treeitem" aria-expanded={hasChildren ? isExpanded : undefined}>
+      <li
+        key={node.id}
+        role="treeitem"
+        aria-expanded={hasChildren ? isExpanded : undefined}
+        className={itemEnter.className}
+      >
         <SubtypeRow
           node={node}
           allNodes={allNodes}
@@ -141,7 +175,7 @@ function HierarchyBranch({
         />
 
         {hasChildren && isExpanded ? (
-          <>
+          <ExpandedBranch branchExpanding={branchExpanding}>
             {metadataVariant === 'two-row' ? (
               <SplitConfigsForParent
                 parentId={node.id}
@@ -167,9 +201,12 @@ function HierarchyBranch({
                 rootSplitAttributeId={rootSplitAttributeId}
                 rowProps={rowProps}
                 metadataVariant={metadataVariant}
+                branchParentId={node.id}
+                enteringNodeIds={enteringNodeIds}
+                expandingBranchParentIds={expandingBranchParentIds}
               />
             </ul>
-          </>
+          </ExpandedBranch>
         ) : null}
       </li>
     );
@@ -186,6 +223,8 @@ export default function HierarchyView({
   taxonomyName,
   metadataVariant = 'two-row',
   rowProps,
+  enteringNodeIds = new Set(),
+  expandingBranchParentIds = new Set(),
 }) {
   const objectType = getObjectType(objectTypeId);
   const tree = buildNodeTree(nodes);
@@ -243,6 +282,9 @@ export default function HierarchyView({
           rootSplitAttributeId={rootSplitAttributeId}
           rowProps={mergedRowProps}
           metadataVariant={metadataVariant}
+          branchParentId={null}
+          enteringNodeIds={enteringNodeIds}
+          expandingBranchParentIds={expandingBranchParentIds}
         />
       </ul>
     </div>

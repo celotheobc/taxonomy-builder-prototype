@@ -1,5 +1,7 @@
 /** Central mock data for Object Type taxonomy prototype. */
 
+import { FACILITY_ATTRIBUTE_VALUES } from './facilityDemoRows.js';
+
 export const GROUP_LABELS = {
   europe: 'Europe',
   asia: 'Asia',
@@ -271,46 +273,46 @@ const FACILITY = {
   defaultSplitAttributeId: 'facility-type',
   splitCandidates: {
     'facility-id': {
-      distinctValueCount: 9,
+      distinctValueCount: 51,
       recommendation: 'Not recommended',
       uniquenessPercent: 100,
       reason: 'IDs identify individual records, not reusable object subtypes.',
     },
     'facility-name': {
-      distinctValueCount: 9,
+      distinctValueCount: 51,
       recommendation: 'Not recommended',
       uniquenessPercent: 100,
       reason: 'Facility names identify individual sites, not stable subtype categories.',
     },
     country: {
-      distinctValueCount: 9,
+      distinctValueCount: 16,
       recommendation: 'Caution',
-      uniquenessPercent: 11,
+      uniquenessPercent: 31,
       reason:
         'Caution because country creates many geographic subtypes; useful for regional taxonomies, not for operational facility kinds.',
     },
     city: {
-      distinctValueCount: 9,
+      distinctValueCount: 45,
       recommendation: 'Not recommended',
-      uniquenessPercent: 100,
+      uniquenessPercent: 88,
       reason: 'City values are too granular and identify sites, not reusable business subtypes.',
     },
     status: {
-      distinctValueCount: 1,
+      distinctValueCount: 5,
       recommendation: 'Caution',
-      uniquenessPercent: 11,
+      uniquenessPercent: 10,
       reason:
         'Caution because status describes lifecycle state rather than the kind of facility being modelled.',
     },
     'business-unit': {
-      distinctValueCount: 6,
+      distinctValueCount: 10,
       recommendation: 'Caution',
-      uniquenessPercent: 17,
+      uniquenessPercent: 20,
       reason:
         'Caution because business unit organises ownership, not the physical role of the facility.',
     },
     'opened-on': {
-      distinctValueCount: 9,
+      distinctValueCount: 51,
       recommendation: 'Not recommended',
       uniquenessPercent: 100,
       reason: 'Opened On is a date field—better for analysis filters than object subtypes.',
@@ -382,110 +384,38 @@ Sites across manufacturing, logistics, retail, and corporate operations.
 - **Facility** is the shared parent object type. All sites inherit Facility ID, Facility Name, Country, City, Status, Business Unit, and Opened On.
 - Object subtypes are **Manufacturing Facility**, **Warehouse**, **Distribution Centre**, **Retail Store**, and **Office**—each adds specialised attributes (production lines, loading docks, store format, etc.) without redefining the common Facility model.
 - Prefer **Facility Type** when creating the subtype hierarchy.`,
-  attributeValues: {
-    country: [
-      { value: 'Germany', recordCount: 1 },
-      { value: 'France', recordCount: 1 },
-      { value: 'Spain', recordCount: 1 },
-      { value: 'India', recordCount: 1 },
-      { value: 'Japan', recordCount: 1 },
-      { value: 'China', recordCount: 1 },
-      { value: 'Brazil', recordCount: 1 },
-      { value: 'Chile', recordCount: 1 },
-      { value: 'Argentina', recordCount: 1 },
-    ],
-    city: [
-      { value: 'Munich', recordCount: 1 },
-      { value: 'Lyon', recordCount: 1 },
-      { value: 'Madrid', recordCount: 1 },
-      { value: 'Bengaluru', recordCount: 1 },
-      { value: 'Osaka', recordCount: 1 },
-      { value: 'Shenzhen', recordCount: 1 },
-      { value: 'São Paulo', recordCount: 1 },
-      { value: 'Santiago', recordCount: 1 },
-      { value: 'Buenos Aires', recordCount: 1 },
-    ],
-    status: [{ value: 'Active', recordCount: 9 }],
-    'business-unit': [
-      { value: 'Automotive', recordCount: 1 },
-      { value: 'Consumer Products', recordCount: 2 },
-      { value: 'Retail', recordCount: 2 },
-      { value: 'Electronics', recordCount: 1 },
-      { value: 'Logistics', recordCount: 2 },
-      { value: 'Corporate', recordCount: 1 },
-    ],
-    'opened-on': [
-      { value: '2018-03-12', recordCount: 1 },
-      { value: '2020-06-18', recordCount: 1 },
-      { value: '2021-09-01', recordCount: 1 },
-      { value: '2019-11-15', recordCount: 1 },
-      { value: '2017-04-09', recordCount: 1 },
-      { value: '2022-01-20', recordCount: 1 },
-      { value: '2016-08-03', recordCount: 1 },
-      { value: '2023-02-14', recordCount: 1 },
-      { value: '2020-10-05', recordCount: 1 },
-    ],
-    'facility-type': [
-      { value: 'Manufacturing Facility', recordCount: 2 },
-      { value: 'Warehouse', recordCount: 1 },
-      { value: 'Distribution Centre', recordCount: 3 },
-      { value: 'Retail Store', recordCount: 2 },
-      { value: 'Office', recordCount: 1 },
-    ],
-    'facility-name': [
-      { value: 'Munich Manufacturing Facility', recordCount: 1 },
-      { value: 'Lyon Distribution Centre', recordCount: 1 },
-      { value: 'Madrid Retail Store', recordCount: 1 },
-      { value: 'Bengaluru Manufacturing Facility', recordCount: 1 },
-      { value: 'Osaka Warehouse', recordCount: 1 },
-      { value: 'Shenzhen Distribution Centre', recordCount: 1 },
-      { value: 'São Paulo Office', recordCount: 1 },
-      { value: 'Santiago Distribution Centre', recordCount: 1 },
-      { value: 'Buenos Aires Retail Store', recordCount: 1 },
-    ],
-    'facility-id': [
-      { value: 'FAC.EU.001', recordCount: 1 },
-      { value: 'FAC.EU.002', recordCount: 1 },
-      { value: 'FAC.EU.003', recordCount: 1 },
-      { value: 'FAC.AS.001', recordCount: 1 },
-      { value: 'FAC.AS.002', recordCount: 1 },
-      { value: 'FAC.AS.003', recordCount: 1 },
-      { value: 'FAC.SA.001', recordCount: 1 },
-      { value: 'FAC.SA.002', recordCount: 1 },
-      { value: 'FAC.SA.003', recordCount: 1 },
-    ],
-  },
+  attributeValues: FACILITY_ATTRIBUTE_VALUES,
   subtypeTemplates: {
     'facility-type': [
       {
         id: 'manufacturing-facility',
         label: 'Manufacturing Facility',
         matchingValue: 'Manufacturing Facility',
-        recordCount: 2,
+        recordCount: 29,
       },
       {
         id: 'warehouse',
         label: 'Warehouse',
         matchingValue: 'Warehouse',
-        recordCount: 1,
+        recordCount: 5,
       },
       {
         id: 'distribution-centre',
         label: 'Distribution Centre',
         matchingValue: 'Distribution Centre',
-        recordCount: 3,
+        recordCount: 6,
       },
       {
         id: 'retail-store',
         label: 'Retail Store',
         matchingValue: 'Retail Store',
-        recordCount: 2,
+        recordCount: 6,
       },
       {
         id: 'office',
         label: 'Office',
         matchingValue: 'Office',
-        recordCount: 1,
+        recordCount: 5,
       },
     ],
   },

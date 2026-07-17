@@ -260,7 +260,7 @@ export default function SplitModal({
   const objectType = getObjectType(objectTypeId);
   const isEdit = mode === 'edit';
   const isReplace = mode === 'replace';
-  const isUnifiedCreate = mode === 'create' && step === 'create';
+  const isUnifiedCreate = step === 'create' && !isEdit;
   const isLegacyAttributeStep = step === 'attribute';
   const isValuesStep = step === 'values' || isUnifiedCreate;
 
@@ -340,6 +340,7 @@ export default function SplitModal({
 
   const title = useMemo(() => {
     if (isUnifiedCreate) {
+      if (isReplace) return `Change split attribute for "${parentLabel}"`;
       return parentId ? `Split "${parentLabel}"` : 'Create subtype hierarchy';
     }
     if (step === 'attribute') {
@@ -357,12 +358,15 @@ export default function SplitModal({
 
   const description = useMemo(() => {
     if (isUnifiedCreate) {
+      if (isReplace) {
+        return `Choose a new attribute to split ${parentLabel}. Existing subtypes from the previous split will be removed when you confirm your choice.`;
+      }
       return parentId
         ? `Choose an attribute to split ${parentLabel} into more specific business concepts.`
         : 'Choose an attribute to split this object type into more specific business concepts.';
     }
     return null;
-  }, [isUnifiedCreate, parentId, parentLabel]);
+  }, [isUnifiedCreate, isReplace, parentId, parentLabel]);
 
   if (!open) return null;
 
@@ -401,6 +405,10 @@ export default function SplitModal({
   };
 
   const handleAttributePick = (nextId) => {
+    if (isReplace) {
+      onSelectAttribute?.(nextId);
+      return;
+    }
     setDraftAttributeId(nextId);
     onSelectAttribute?.(nextId);
   };
