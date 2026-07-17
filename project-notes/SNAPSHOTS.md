@@ -2,6 +2,33 @@
 
 Lightweight rollback points for major prototype iterations.
 
+## Taxonomy Builder — V3 complete (2026-07-16)
+
+**Date:** 2026-07-16  
+**Label:** `taxonomy-v3-complete`  
+**Location:** [`milestones/2026-07-16-taxonomy-v3-complete/`](../milestones/2026-07-16-taxonomy-v3-complete/)
+
+Polished recursive subtype hierarchy: multi-select modal, expandable tree, recursive nav, synced taxonomy page, shared `taxonomyTreeModel` state. V1 and V2 frozen.
+
+**Access:** Cover → v3 (featured) or restore from milestone folder
+
+**Pre-milestone:** [`milestones/2026-07-16-taxonomy-v3-pre/`](../milestones/2026-07-16-taxonomy-v3-pre/)
+
+---
+
+## Taxonomy Builder — V1 pre-V2 (2026-07-15)
+
+**Date:** 2026-07-15  
+**Git commit:** `2056dbc`  
+**Label:** `taxonomy-v1-pre-v2`  
+**Location:** [`milestones/2026-07-15-taxonomy-v2-pre/`](../milestones/2026-07-15-taxonomy-v2-pre/)
+
+Full snapshot of taxonomy pages, App router, and cover before V2 iteration. V1 preserved in `src/pages/taxonomy-v1/`.
+
+**Access:** Cover → v1 (archive) or restore from milestone folder
+
+---
+
 ## Cover — Prototype picker
 
 **Date:** 2026-06-11  

@@ -1,0 +1,13 @@
+.workArea {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 16px 20px 24px;
+  background: #fff;
+}
+
+.missingSubtype {
+  padding: 24px;
+  font-size: 14px;
+  color: #64748b;
+}

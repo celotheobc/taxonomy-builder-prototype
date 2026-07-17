@@ -1,6 +1,46 @@
 # Changelog
 
-Major iterations of the Perspective Builder offline prototype.
+Major iterations of the Perspective Builder and Taxonomy Builder offline prototypes.
+
+---
+
+## 2026-07-16 — Taxonomy Builder V3
+
+**What changed**
+- Added **V3** at `src/pages/taxonomy-v3/` building on frozen V2 recursive split model
+- Cover features **v3** (Factory demo); **v2 and v1** remain in archive accordion
+- Multi-select value modal, expandable hierarchy with chevrons/child counts, inline rename, delete confirmation
+- Recursive L1 navigation and taxonomy page synced to shared `taxonomyTreeModel` state
+- Bottom panel: breadcrumb preview, sibling switcher, hierarchy in Created Taxonomy, Subtype Mapping table
+- Milestone backups: `milestones/2026-07-16-taxonomy-v3-pre/`, `milestones/2026-07-16-taxonomy-v3-complete/`
+
+**Why**
+- Polish and complete the recursive specialisation workflow without redesigning the V2 interaction model
+
+**Files / areas touched**
+- `src/pages/taxonomy-v3/`, `src/data/taxonomyTreeModel.js`, `src/App.jsx`, `src/pages/cover/`
+
+---
+
+## 2026-07-15 — Taxonomy Builder V2
+
+**What changed**
+- Added **V2 iteration** at `src/pages/taxonomy-v2/` with V1 preserved at `src/pages/taxonomy-v1/`
+- Cover page now features **v2 on top** with **v1 in a collapsed archive accordion**
+- Compact attribute list with recommendation popovers, row counts, and “Already used” indicators
+- Improved preview copy (“The following object subtypes will be created”) and **Generate / Generating…** button
+- **Recursive subtype hierarchy** (~5 levels) with shared `HierarchyTree` components
+- **Multiple taxonomy tabs** per object type with “+” to add another split attribute
+- Third demo object: **Accounting Document** (process mining / SAP FI)
+- Taxonomy page **Organise / Structure** presentation toggle (existing group workflow preserved)
+- Milestone backup: `milestones/2026-07-15-taxonomy-v2-pre/`
+
+**Why**
+- Evolve the taxonomy authoring prototype from engineering and product feedback while keeping V1 comparable
+
+**Files / areas touched**
+- `src/pages/taxonomy-v1/`, `src/pages/taxonomy-v2/`, `src/pages/cover/`, `src/App.jsx`
+- `src/components/hierarchy/`, `src/data/mockObjectTypesV2.js`
 
 ---
 

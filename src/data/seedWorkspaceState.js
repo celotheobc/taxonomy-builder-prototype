@@ -22,15 +22,12 @@ function buildSplit(objectTypeId, attributeId, matchingValues) {
 
 export function buildSeedWorkspaceState() {
   const jiraSplit = buildSplit('jira-issue', 'issue-type', ['Epic', 'Story', 'Bug', 'Task']);
-  const factorySplit = buildSplit('factory', 'country', [
-    'France',
-    'Germany',
-    'Italy',
-    'Spain',
-    'Portugal',
-    'Japan',
-    'China',
-    'Thailand',
+  const facilitySplit = buildSplit('facility', 'facility-type', [
+    'Manufacturing Facility',
+    'Warehouse',
+    'Distribution Centre',
+    'Retail Store',
+    'Office',
   ]);
 
   return {
@@ -44,13 +41,13 @@ export function buildSeedWorkspaceState() {
         },
       },
     },
-    factory: {
+    facility: {
       uiMode: 'creation',
-      selectedAttributeId: 'country',
+      selectedAttributeId: 'facility-type',
       splitsByAttributeId: {
-        country: {
-          subtypes: factorySplit.subtypes,
-          taxonomy: factorySplit.taxonomy,
+        'facility-type': {
+          subtypes: facilitySplit.subtypes,
+          taxonomy: facilitySplit.taxonomy,
         },
       },
     },
@@ -60,6 +57,6 @@ export function buildSeedWorkspaceState() {
 export function buildSeedHierarchyState() {
   return {
     'taxonomy-jira-issue-issue-type': getDemoHierarchy('taxonomy-jira-issue-issue-type'),
-    'taxonomy-factory-country': getDemoHierarchy('taxonomy-factory-country'),
+    'taxonomy-facility-facility-type': getDemoHierarchy('taxonomy-facility-facility-type'),
   };
 }

@@ -1,0 +1,18 @@
+.tree {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid #e8edf3;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.empty {
+  margin: 0;
+  padding: 16px;
+  font-size: 13px;
+  color: #94a3b8;
+  border: 1px dashed #dbe3ee;
+  border-radius: 8px;
+}

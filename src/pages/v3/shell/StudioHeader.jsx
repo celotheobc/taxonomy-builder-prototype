@@ -18,7 +18,7 @@ function PlayIcon() {
 export default function StudioHeader() {
   return (
     <header className={styles.header}>
-      <nav className={styles.skeletonTrail} aria-label="Location">
+      <nav className={styles.skeletonTrail} aria-label="Navigation">
         {SKELETON_CRUMBS.map((width, index) => (
           <span key={index} className={styles.skeletonGroup}>
             {index > 0 ? (

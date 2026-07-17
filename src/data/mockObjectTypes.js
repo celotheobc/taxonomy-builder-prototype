@@ -3,9 +3,39 @@
 export const GROUP_LABELS = {
   europe: 'Europe',
   asia: 'Asia',
+  americas: 'Americas',
 };
 
-export const OBJECT_TYPE_IDS = ['jira-issue', 'factory'];
+export const OBJECT_TYPE_IDS = ['jira-issue', 'facility'];
+
+/** Attribute ids hidden from the Attributes table (still on the model for splits / data). */
+export const OBJECT_TYPE_ATTRIBUTES_TABLE_HIDDEN = {};
+
+function getAttributeDisplaySortRank(attribute) {
+  const name = attribute.name.trim();
+  if (/\bID$/i.test(name) || attribute.id.endsWith('-id')) return 0;
+  if (/\bName$/i.test(name) || attribute.id.endsWith('-name')) return 1;
+  return 2;
+}
+
+export function sortObjectTypeAttributes(attributes) {
+  return [...attributes].sort((a, b) => {
+    const rankDiff = getAttributeDisplaySortRank(a) - getAttributeDisplaySortRank(b);
+    if (rankDiff !== 0) return rankDiff;
+    return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+  });
+}
+
+export function getObjectTypeTableAttributes(objectType) {
+  if (!objectType) return [];
+  const hidden = new Set(OBJECT_TYPE_ATTRIBUTES_TABLE_HIDDEN[objectType.id] ?? []);
+  const visible = objectType.attributes.filter((attr) => !hidden.has(attr.id));
+  return sortObjectTypeAttributes(visible);
+}
+
+export function getSplitAttributeOptions(objectType, usedAttributeIds = new Set()) {
+  return getObjectTypeTableAttributes(objectType).filter((attr) => !usedAttributeIds.has(attr.id));
+}
 
 const JIRA_ISSUE = {
   id: 'jira-issue',
@@ -221,174 +251,259 @@ Work items for agile delivery — epics, stories, bugs, and tasks.
   inheritedRelationships: ['Issue belongs to Epic', 'Issue assigned to Sprint'],
 };
 
-const FACTORY = {
-  id: 'factory',
-  name: 'Factory',
-  label: 'Factory',
+const FACILITY = {
+  id: 'facility',
+  name: 'Facility',
+  label: 'Facility',
   domain: 'Operations',
   status: 'Draft',
   metadata: {
-    assetName: 'Factory',
+    assetName: 'Facility',
     status: 'Draft',
     type: 'Object Type',
-    referenceKey: 'factory',
+    referenceKey: 'facility',
     namespace: 'Custom',
     createdBy: 'Theo Bonham Carter',
     lastUpdatedBy: 'Theo Bonham Carter',
     description:
-      'Manufacturing sites and plants. Country is used to split factories into regional subtypes for reporting.',
+      'Physical sites across the operating network. Facility is the shared parent object—every site inherits the common Facility attributes, while object subtypes (Manufacturing Facility, Warehouse, and so on) add specialised fields without duplicating the shared definition.',
   },
-  defaultSplitAttributeId: 'country',
+  defaultSplitAttributeId: 'facility-type',
   splitCandidates: {
-    'factory-id': {
-      distinctValueCount: 91,
+    'facility-id': {
+      distinctValueCount: 9,
       recommendation: 'Not recommended',
       uniquenessPercent: 100,
       reason: 'IDs identify individual records, not reusable object subtypes.',
     },
-    'factory-name': {
-      distinctValueCount: 91,
+    'facility-name': {
+      distinctValueCount: 9,
       recommendation: 'Not recommended',
       uniquenessPercent: 100,
-      reason: 'Factory names identify individual sites, not stable subtype categories.',
+      reason: 'Facility names identify individual sites, not stable subtype categories.',
     },
     country: {
-      distinctValueCount: 6,
-      recommendation: 'Recommended',
-      uniquenessPercent: 7,
+      distinctValueCount: 9,
+      recommendation: 'Caution',
+      uniquenessPercent: 11,
       reason:
-        'Recommended because it has a clear categorical structure and can later be organised into taxonomy groups such as Europe and Asia.',
+        'Caution because country creates many geographic subtypes; useful for regional taxonomies, not for operational facility kinds.',
     },
-    region: {
-      distinctValueCount: 2,
-      recommendation: 'Recommended',
-      uniquenessPercent: 2,
-      reason:
-        'Recommended because regions group factories into stable business categories for reporting and analysis.',
-    },
-    'factory-type': {
-      distinctValueCount: 3,
-      recommendation: 'Recommended',
-      uniquenessPercent: 3,
-      reason:
-        'Recommended because factory types describe distinct operational categories with different behaviour and attributes.',
+    city: {
+      distinctValueCount: 9,
+      recommendation: 'Not recommended',
+      uniquenessPercent: 100,
+      reason: 'City values are too granular and identify sites, not reusable business subtypes.',
     },
     status: {
-      distinctValueCount: 2,
+      distinctValueCount: 1,
       recommendation: 'Caution',
-      uniquenessPercent: 2,
+      uniquenessPercent: 11,
       reason:
-        'Caution because operational status may be useful for filtering, but may describe lifecycle state rather than object subtype.',
+        'Caution because status describes lifecycle state rather than the kind of facility being modelled.',
+    },
+    'business-unit': {
+      distinctValueCount: 6,
+      recommendation: 'Caution',
+      uniquenessPercent: 17,
+      reason:
+        'Caution because business unit organises ownership, not the physical role of the facility.',
+    },
+    'opened-on': {
+      distinctValueCount: 9,
+      recommendation: 'Not recommended',
+      uniquenessPercent: 100,
+      reason: 'Opened On is a date field—better for analysis filters than object subtypes.',
+    },
+    'facility-type': {
+      distinctValueCount: 5,
+      recommendation: 'Recommended',
+      uniquenessPercent: 56,
+      reason:
+        'Recommended because facility types (Manufacturing Facility, Warehouse, Distribution Centre, Retail Store, Office) are stable business concepts that become object subtypes with their own specialised attributes.',
     },
   },
   attributes: [
-    { id: 'factory-id', name: 'Factory ID', dataType: 'STRING', bindingStatus: 'Bound', source: 'FACTORIES.FACTORY_ID' },
-    { id: 'factory-name', name: 'Factory Name', dataType: 'STRING', bindingStatus: 'Bound', source: 'FACTORIES.NAME' },
-    { id: 'country', name: 'Country', dataType: 'STRING', bindingStatus: 'Bound', source: 'FACTORIES.COUNTRY' },
-    { id: 'region', name: 'Region', dataType: 'STRING', bindingStatus: 'Bound', source: 'FACTORIES.REGION' },
-    { id: 'factory-type', name: 'Factory Type', dataType: 'STRING', bindingStatus: 'Bound', source: 'FACTORIES.TYPE' },
-    { id: 'status', name: 'Status', dataType: 'STRING', bindingStatus: 'Bound', source: 'FACTORIES.STATUS' },
+    { id: 'facility-id', name: 'Facility ID', dataType: 'STRING', bindingStatus: 'Bound', source: 'FACILITIES.FACILITY_ID' },
+    { id: 'facility-name', name: 'Facility Name', dataType: 'STRING', bindingStatus: 'Bound', source: 'FACILITIES.NAME' },
+    { id: 'country', name: 'Country', dataType: 'STRING', bindingStatus: 'Bound', source: 'FACILITIES.COUNTRY' },
+    { id: 'city', name: 'City', dataType: 'STRING', bindingStatus: 'Bound', source: 'FACILITIES.CITY' },
+    { id: 'status', name: 'Status', dataType: 'STRING', bindingStatus: 'Bound', source: 'FACILITIES.STATUS' },
+    { id: 'business-unit', name: 'Business Unit', dataType: 'STRING', bindingStatus: 'Bound', source: 'FACILITIES.BUSINESS_UNIT' },
+    { id: 'opened-on', name: 'Opened On', dataType: 'DATE', bindingStatus: 'Bound', source: 'FACILITIES.OPENED_ON' },
+    {
+      id: 'facility-type',
+      name: 'Facility Type',
+      dataType: 'STRING',
+      bindingStatus: 'Bound',
+      source: 'FACILITIES.FACILITY_TYPE',
+    },
   ],
   bindings: [
     {
-      id: 'factories-primary',
-      name: 'factories_binding',
-      table: 'FACTORIES',
+      id: 'facilities-primary',
+      name: 'facilities_binding',
+      table: 'FACILITIES',
       schema: 'OPS',
       status: 'Bound',
-      mappedColumns: '6 / 6',
+      mappedColumns: '8 / 8',
     },
   ],
   relationships: [
     {
-      id: 'factory-production-line',
-      name: 'Factory has Production Line',
-      target: 'Production Line',
+      id: 'facility-inventory-zone',
+      name: 'Facility has Inventory Zone',
+      target: 'Inventory Zone',
       cardinality: '1:N',
-      joinTable: 'FACTORIES → PRODUCTION_LINES',
+      joinTable: 'FACILITIES → INVENTORY_ZONES',
       type: 'Type-to-Type',
     },
     {
-      id: 'factory-shipment',
-      name: 'Factory ships goods',
-      target: 'Shipment Created',
+      id: 'facility-shipment',
+      name: 'Facility receives Shipment',
+      target: 'Shipment Received',
       cardinality: '1:N',
       joinTable: 'E2O',
       type: 'Object-to-Event',
     },
   ],
   graphNeighbors: [
-    { id: 'production-line', label: 'Production Line', kind: 'object', angle: -70 },
-    { id: 'shipment', label: 'Shipment Created', kind: 'event', angle: 10 },
-    { id: 'supplier', label: 'Supplier', kind: 'object', angle: 90 },
-    { id: 'region', label: 'Region', kind: 'object', angle: 170 },
+    { id: 'inventory-zone', label: 'Inventory Zone', kind: 'object', angle: -70 },
+    { id: 'shipment', label: 'Shipment Received', kind: 'event', angle: 10 },
+    { id: 'business-unit-entity', label: 'Business Unit', kind: 'object', angle: 90 },
+    { id: 'operating-calendar', label: 'Operating Calendar', kind: 'object', angle: 170 },
   ],
-  agentContext: `## Factory
+  agentContext: `## Facility
 
 ### Description
-Manufacturing plants used in supply chain and operations analysis.
+Sites across manufacturing, logistics, retail, and corporate operations.
 
 ### Special instructions
-- Subtypes are derived from **Country**. Future grouping may roll up to Europe and Asia regions.
-- Factory Type and Status remain on the base object type.`,
+- **Facility** is the shared parent object type. All sites inherit Facility ID, Facility Name, Country, City, Status, Business Unit, and Opened On.
+- Object subtypes are **Manufacturing Facility**, **Warehouse**, **Distribution Centre**, **Retail Store**, and **Office**—each adds specialised attributes (production lines, loading docks, store format, etc.) without redefining the common Facility model.
+- Prefer **Facility Type** when creating the subtype hierarchy.`,
   attributeValues: {
     country: [
-      { value: 'France', recordCount: 12 },
-      { value: 'Germany', recordCount: 18 },
-      { value: 'Italy', recordCount: 11 },
-      { value: 'Spain', recordCount: 9 },
-      { value: 'Portugal', recordCount: 8 },
-      { value: 'Japan', recordCount: 14 },
-      { value: 'China', recordCount: 31 },
-      { value: 'Thailand', recordCount: 7 },
+      { value: 'Germany', recordCount: 1 },
+      { value: 'France', recordCount: 1 },
+      { value: 'Spain', recordCount: 1 },
+      { value: 'India', recordCount: 1 },
+      { value: 'Japan', recordCount: 1 },
+      { value: 'China', recordCount: 1 },
+      { value: 'Brazil', recordCount: 1 },
+      { value: 'Chile', recordCount: 1 },
+      { value: 'Argentina', recordCount: 1 },
     ],
-    region: [
-      { value: 'Europe', recordCount: 39 },
-      { value: 'Asia', recordCount: 52 },
+    city: [
+      { value: 'Munich', recordCount: 1 },
+      { value: 'Lyon', recordCount: 1 },
+      { value: 'Madrid', recordCount: 1 },
+      { value: 'Bengaluru', recordCount: 1 },
+      { value: 'Osaka', recordCount: 1 },
+      { value: 'Shenzhen', recordCount: 1 },
+      { value: 'São Paulo', recordCount: 1 },
+      { value: 'Santiago', recordCount: 1 },
+      { value: 'Buenos Aires', recordCount: 1 },
     ],
-    'factory-type': [
-      { value: 'Assembly', recordCount: 42 },
-      { value: 'Component', recordCount: 31 },
-      { value: 'Distribution', recordCount: 18 },
+    status: [{ value: 'Active', recordCount: 9 }],
+    'business-unit': [
+      { value: 'Automotive', recordCount: 1 },
+      { value: 'Consumer Products', recordCount: 2 },
+      { value: 'Retail', recordCount: 2 },
+      { value: 'Electronics', recordCount: 1 },
+      { value: 'Logistics', recordCount: 2 },
+      { value: 'Corporate', recordCount: 1 },
     ],
-    status: [
-      { value: 'Active', recordCount: 84 },
-      { value: 'Inactive', recordCount: 7 },
+    'opened-on': [
+      { value: '2018-03-12', recordCount: 1 },
+      { value: '2020-06-18', recordCount: 1 },
+      { value: '2021-09-01', recordCount: 1 },
+      { value: '2019-11-15', recordCount: 1 },
+      { value: '2017-04-09', recordCount: 1 },
+      { value: '2022-01-20', recordCount: 1 },
+      { value: '2016-08-03', recordCount: 1 },
+      { value: '2023-02-14', recordCount: 1 },
+      { value: '2020-10-05', recordCount: 1 },
     ],
-    'factory-name': [
-      { value: 'Lyon Plant', recordCount: 12 },
-      { value: 'Munich Works', recordCount: 18 },
-      { value: 'Barcelona Hub', recordCount: 9 },
-      { value: 'Osaka Factory', recordCount: 14 },
-      { value: 'Shenzhen Site', recordCount: 31 },
+    'facility-type': [
+      { value: 'Manufacturing Facility', recordCount: 2 },
+      { value: 'Warehouse', recordCount: 1 },
+      { value: 'Distribution Centre', recordCount: 3 },
+      { value: 'Retail Store', recordCount: 2 },
+      { value: 'Office', recordCount: 1 },
     ],
-    'factory-id': [
-      { value: 'FAC-EU-001', recordCount: 12 },
-      { value: 'FAC-EU-002', recordCount: 18 },
-      { value: 'FAC-EU-003', recordCount: 9 },
-      { value: 'FAC-AP-001', recordCount: 14 },
-      { value: 'FAC-AP-002', recordCount: 31 },
+    'facility-name': [
+      { value: 'Munich Manufacturing Facility', recordCount: 1 },
+      { value: 'Lyon Distribution Centre', recordCount: 1 },
+      { value: 'Madrid Retail Store', recordCount: 1 },
+      { value: 'Bengaluru Manufacturing Facility', recordCount: 1 },
+      { value: 'Osaka Warehouse', recordCount: 1 },
+      { value: 'Shenzhen Distribution Centre', recordCount: 1 },
+      { value: 'São Paulo Office', recordCount: 1 },
+      { value: 'Santiago Distribution Centre', recordCount: 1 },
+      { value: 'Buenos Aires Retail Store', recordCount: 1 },
+    ],
+    'facility-id': [
+      { value: 'FAC.EU.001', recordCount: 1 },
+      { value: 'FAC.EU.002', recordCount: 1 },
+      { value: 'FAC.EU.003', recordCount: 1 },
+      { value: 'FAC.AS.001', recordCount: 1 },
+      { value: 'FAC.AS.002', recordCount: 1 },
+      { value: 'FAC.AS.003', recordCount: 1 },
+      { value: 'FAC.SA.001', recordCount: 1 },
+      { value: 'FAC.SA.002', recordCount: 1 },
+      { value: 'FAC.SA.003', recordCount: 1 },
     ],
   },
   subtypeTemplates: {
-    country: [
-      { id: 'france', label: 'France', matchingValue: 'France', recordCount: 12, groupKey: 'europe' },
-      { id: 'germany', label: 'Germany', matchingValue: 'Germany', recordCount: 18, groupKey: 'europe' },
-      { id: 'italy', label: 'Italy', matchingValue: 'Italy', recordCount: 11, groupKey: 'europe' },
-      { id: 'spain', label: 'Spain', matchingValue: 'Spain', recordCount: 9, groupKey: 'europe' },
-      { id: 'portugal', label: 'Portugal', matchingValue: 'Portugal', recordCount: 8, groupKey: 'europe' },
-      { id: 'japan', label: 'Japan', matchingValue: 'Japan', recordCount: 14, groupKey: 'asia' },
-      { id: 'china', label: 'China', matchingValue: 'China', recordCount: 31, groupKey: 'asia' },
-      { id: 'thailand', label: 'Thailand', matchingValue: 'Thailand', recordCount: 7, groupKey: 'asia' },
+    'facility-type': [
+      {
+        id: 'manufacturing-facility',
+        label: 'Manufacturing Facility',
+        matchingValue: 'Manufacturing Facility',
+        recordCount: 2,
+      },
+      {
+        id: 'warehouse',
+        label: 'Warehouse',
+        matchingValue: 'Warehouse',
+        recordCount: 1,
+      },
+      {
+        id: 'distribution-centre',
+        label: 'Distribution Centre',
+        matchingValue: 'Distribution Centre',
+        recordCount: 3,
+      },
+      {
+        id: 'retail-store',
+        label: 'Retail Store',
+        matchingValue: 'Retail Store',
+        recordCount: 2,
+      },
+      {
+        id: 'office',
+        label: 'Office',
+        matchingValue: 'Office',
+        recordCount: 1,
+      },
     ],
   },
-  inheritedAttributes: ['Factory ID', 'Factory Name', 'Region', 'Factory Type', 'Status'],
-  inheritedRelationships: ['Factory has Production Line', 'Factory ships goods'],
+  inheritedAttributes: [
+    'Facility ID',
+    'Facility Name',
+    'Country',
+    'City',
+    'Status',
+    'Business Unit',
+    'Opened On',
+  ],
+  inheritedRelationships: ['Facility has Inventory Zone', 'Facility receives Shipment'],
 };
 
 export const OBJECT_TYPES = {
   'jira-issue': JIRA_ISSUE,
-  factory: FACTORY,
+  facility: FACILITY,
 };
 
 export function getObjectType(id) {
@@ -466,7 +581,7 @@ export function getAttributeRecommendationReason(objectType, attributeId) {
 }
 
 export function formatSubtypeOptionCount(count) {
-  return `${count.toLocaleString()} subtype option${count === 1 ? '' : 's'}`;
+  return `${count.toLocaleString()} available value${count === 1 ? '' : 's'}`;
 }
 
 export function getAttributeTotalRows(objectType, attributeId) {

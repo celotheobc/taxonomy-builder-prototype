@@ -1,0 +1,77 @@
+.subtypeCountChip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.subtypeBranchRow {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.chevronSpacer {
+  width: 22px;
+  flex-shrink: 0;
+}
+
+.navRowEnter {
+  display: grid;
+  grid-template-rows: 0fr;
+  animation: navRowExpand 460ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.navRowEnterInner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.navItemEnter {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: navItemFadeUp 500ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--nav-enter-delay, 0ms);
+}
+
+@keyframes navRowExpand {
+  from {
+    grid-template-rows: 0fr;
+  }
+
+  to {
+    grid-template-rows: 1fr;
+  }
+}
+
+@keyframes navItemFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navRowEnter {
+    animation: none;
+    grid-template-rows: 1fr;
+  }
+
+  .navItemEnter {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

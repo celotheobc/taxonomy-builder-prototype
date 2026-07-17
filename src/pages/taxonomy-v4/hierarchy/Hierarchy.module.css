@@ -1,0 +1,1721 @@
+.hierarchyList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hierarchyRoot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 8px 16px 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  background: #fff;
+}
+
+.hierarchyTreeWrap {
+  --tree-guide-color: #cbd5e1;
+  --tree-guide-step: 16px;
+  --tree-chevron-width: 10px;
+  --tree-row-gap: 4px;
+  --tree-icon-width: 16px;
+  --tree-subtype-gap: 8px;
+  --row-meta-width: 168px;
+  --meta-col-split: 118px;
+  --meta-col-chip: 84px;
+  --meta-col-add: 122px;
+  --meta-col-taxonomy: minmax(150px, 220px);
+  --meta-col-gap: 12px;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  padding-bottom: 8px;
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) {
+  padding-left: 16px;
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .hierarchyRoot {
+  padding: 8px 16px 4px 0;
+}
+
+.treeGuides {
+  display: flex;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+.treeGuideCol {
+  position: relative;
+  width: var(--tree-guide-step);
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.treeGuideVert {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid var(--tree-guide-color);
+}
+
+.treeGuideVertHalf {
+  bottom: 50%;
+}
+
+.treeGuideHoriz {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 10px;
+  border-top: 1px solid var(--tree-guide-color);
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .treeGuideHoriz {
+  width: calc((var(--tree-guide-step) + var(--tree-chevron-width)) / 2);
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .hierarchyRowBody,
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .splitGroupBody {
+  grid-template-columns: var(--tree-chevron-width) minmax(0, 1fr) var(--row-meta-width);
+  gap: var(--tree-row-gap);
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .hierarchyRowWithActions .hierarchyRowBody {
+  grid-template-columns: var(--tree-chevron-width) minmax(0, 1fr) var(--row-meta-width) auto;
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .chevronBtn,
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .chevronBtnPlaceholder {
+  width: var(--tree-chevron-width);
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) {
+  --meta-band-width: 504px;
+  --meta-trailing-width: calc(
+    var(--meta-col-chip) + var(--meta-col-add) + 180px + var(--meta-col-gap) * 2
+  );
+  --row-actions-width: 0px;
+  --meta-band-offset-right: calc(var(--row-meta-width) + var(--row-actions-width) + 16px);
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .hierarchyRowWithActions,
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .hierarchyRootRowWithActions {
+  --row-actions-width: 88px;
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .hierarchyMetaBand {
+  width: var(--meta-band-width);
+  max-width: 100%;
+  pointer-events: auto;
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .hierarchyMetaBand .splitMetaColumns {
+  display: grid;
+  grid-template-columns:
+    var(--meta-col-split)
+    var(--meta-col-chip)
+    var(--meta-col-add)
+    minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--meta-col-gap);
+  width: 100%;
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .hierarchyMetaBandTrailing {
+  margin-left: auto;
+  flex-shrink: 0;
+  width: var(--meta-trailing-width);
+  max-width: 100%;
+  display: grid;
+  grid-template-columns:
+    var(--meta-col-chip)
+    var(--meta-col-add)
+    minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--meta-col-gap);
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .splitMetaTwoRow,
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .splitMetaTwoRowBody {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  gap: var(--tree-row-gap);
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .splitMetaTwoRowBody {
+  padding: 0 16px 6px 0;
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .splitMetaLabelIndent {
+  margin-left: calc(var(--tree-icon-width) + var(--tree-subtype-gap));
+  flex-shrink: 0;
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .rootSplitMetaRow.splitMetaTwoRow {
+  padding: 0 16px 6px 0;
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .hierarchyRowInlineMeta .hierarchyRowBody {
+  position: relative;
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .hierarchyRowInlineMeta .hierarchyMetaBand {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: var(--meta-band-offset-right);
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .hierarchyRootRowInline {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 8px 16px 4px 0;
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .hierarchyRootRowInline .hierarchyMetaBand {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: var(--meta-band-offset-right);
+}
+
+.hierarchyRow {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  min-height: 32px;
+  background: #fff;
+}
+
+.hierarchyRowBody {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) var(--row-meta-width);
+  align-items: center;
+  gap: 8px;
+  padding: 2px 16px 2px 0;
+}
+
+.hierarchyRowWithActions .hierarchyRowBody {
+  grid-template-columns: 20px minmax(0, 1fr) var(--row-meta-width) auto;
+}
+
+.hierarchyRow:hover,
+.hierarchyRowSelected {
+  background: #f8fafc;
+}
+
+.hierarchyRowSelected {
+  box-shadow: inset 3px 0 0 #1b6fd1;
+}
+
+.hierarchyRowInner {
+  display: contents;
+}
+
+.hierarchyIndent {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+
+.hierarchyGuide {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 10px;
+  width: 1px;
+  background: #e2e8f0;
+}
+
+.chevronBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.chevronBtn:hover {
+  background: #eef2f6;
+  color: #0f172a;
+}
+
+.chevronBtnPlaceholder {
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.chevron {
+  transition: transform 0.15s ease;
+}
+
+.chevronOpen {
+  transform: rotate(90deg);
+}
+
+.subtypeIcon {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: #1b6fd1;
+  flex-shrink: 0;
+}
+
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .hierarchyRowBody[data-nested='true'] .subtypeMain,
+.hierarchyTreeWrap:not(.hierarchyHeadersWrap) .splitConfigBody[data-nested='true'] {
+  margin-left: var(--tree-subtype-gap);
+}
+
+.subtypeMain {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.subtypeLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.subtypeMeta {
+  display: none;
+}
+
+.subtypeCountChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.rowMetaCol {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+  text-align: right;
+}
+
+.rowCountMeta {
+  font-size: 12px;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.rowActions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+}
+
+.rowIconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.rowIconBtn:hover {
+  background: #eef2f6;
+  color: #0f172a;
+}
+
+.rowIconBtn:focus-visible {
+  outline: 2px solid #1b6fd1;
+  outline-offset: 1px;
+}
+
+.hierarchyRow:hover .rowActions,
+.hierarchyRow:focus-within .rowActions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.rowAction {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+}
+
+.rowAction:hover {
+  background: #eef2f6;
+  color: #0f172a;
+}
+
+.rowActionDanger:hover {
+  color: #dc2626;
+  background: #fef2f2;
+}
+
+.moreMenu {
+  position: relative;
+}
+
+.moreMenuPanel {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 10;
+  min-width: 140px;
+  padding: 4px;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+}
+
+.moreMenuDivider {
+  height: 1px;
+  margin: 4px 0;
+  background: #eef2f6;
+}
+
+.moreMenuItem {
+  display: block;
+  width: 100%;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  text-align: left;
+  cursor: pointer;
+}
+
+.moreMenuItem:hover {
+  background: #f8fafc;
+}
+
+.moreMenuItemDanger {
+  color: #dc2626;
+}
+
+.renameField {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #1b6fd1;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.renameActions {
+  display: flex;
+  gap: 4px;
+}
+
+.renameBtn {
+  padding: 4px 8px;
+  border: 1px solid #dbe3ee;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.splitConfigItem {
+  list-style: none;
+}
+
+.splitConfigRow {
+  display: flex;
+  align-items: stretch;
+  min-height: auto;
+  background: transparent;
+}
+
+.splitConfigBody {
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: var(--tree-row-gap, 4px);
+}
+
+.splitConfigContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  padding: 2px 0 4px;
+}
+
+.splitConfigTitle {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.splitConfigSummary {
+  margin: 0;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.splitConfigTaxonomyLine {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.splitConfigTaxonomyLabel {
+  color: #94a3b8;
+}
+
+.splitConfigTaxonomyLink {
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1b6fd1;
+  cursor: pointer;
+}
+
+.splitConfigTaxonomyLink:hover {
+  color: #1558a8;
+  text-decoration: underline;
+}
+
+.splitConfigTaxonomyName {
+  font-weight: 600;
+  color: #64748b;
+}
+
+.splitConfigAddLink {
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1b6fd1;
+  cursor: pointer;
+}
+
+.splitConfigAddLink:hover {
+  text-decoration: underline;
+}
+
+.hierarchyRootRowInline {
+  min-height: 36px;
+  padding-top: 8px;
+  padding-bottom: 4px;
+}
+
+.hierarchyRootRowWithActions:hover,
+.hierarchyRootRowInline.hierarchyRootRowWithActions:hover {
+  background: #f8fafc;
+}
+
+.hierarchyRootRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-right: 16px;
+}
+
+.rootSplitMetaRow {
+  padding: 0 16px 6px 0;
+  min-height: 26px;
+}
+
+.rootRowActions {
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+}
+
+.hierarchyRootRowWithActions:hover .rootRowActions,
+.hierarchyRootRowInline.hierarchyRootRowWithActions:hover .rootRowActions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.futureHierarchyBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.splitMetaColumns {
+  display: grid;
+  grid-template-columns:
+    minmax(108px, 1.15fr)
+    minmax(72px, 0.65fr)
+    minmax(96px, 0.85fr)
+    minmax(148px, 1.35fr);
+  align-items: center;
+  gap: 8px 16px;
+  min-width: 0;
+  flex: 1;
+}
+
+.splitMetaColumnsInline {
+  min-width: 0;
+}
+
+.splitMetaColumnsStacked {
+  width: 100%;
+}
+
+.splitMetaColSplit {
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.splitMetaColChip {
+  display: flex;
+  align-items: center;
+}
+
+.splitMetaColAdd {
+  display: flex;
+  align-items: center;
+  min-height: 18px;
+}
+
+.splitMetaAddLink {
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1b6fd1;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.splitMetaAddLink:hover {
+  text-decoration: underline;
+}
+
+.splitMetaColTaxonomy {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.splitMetaTaxonomyLink,
+.splitMetaTaxonomyStatic {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1b6fd1;
+}
+
+.splitMetaTaxonomyLink {
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.splitMetaTaxonomyLink:hover {
+  color: #1558a8;
+  text-decoration: underline;
+}
+
+.splitMetaTaxonomyStatic {
+  color: #64748b;
+}
+
+.splitMetaTaxonomyLink span,
+.splitMetaTaxonomyStatic span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hierarchyRootName {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+.splitConfigBodyLabelAlign .splitMetaStacked {
+  margin-left: calc(var(--tree-icon-width) + var(--tree-subtype-gap));
+}
+
+.splitMetaInline {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+.splitMetaInlineItem {
+  white-space: nowrap;
+}
+
+.splitMetaInlineLabel,
+.splitMetaStackedLabel {
+  color: #94a3b8;
+}
+
+.splitMetaInlineLink,
+.splitMetaStackedLink {
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: inherit;
+  font-weight: 600;
+  color: #1b6fd1;
+  cursor: pointer;
+}
+
+.splitMetaInlineLink:hover,
+.splitMetaStackedLink:hover {
+  text-decoration: underline;
+}
+
+.splitMetaInlineText,
+.splitMetaStackedText {
+  font-weight: 600;
+  color: #64748b;
+}
+
+.splitMetaInlineAdd,
+.splitMetaStackedAdd {
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: inherit;
+  font-weight: 600;
+  color: #1b6fd1;
+  cursor: pointer;
+}
+
+.splitMetaInlineAdd:hover,
+.splitMetaStackedAdd:hover {
+  text-decoration: underline;
+}
+
+.splitMetaStacked {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  min-width: 0;
+  padding: 0 0 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+.splitMetaStackedItem {
+  white-space: nowrap;
+}
+
+.hierarchyRowInlineMeta .subtypeMain {
+  flex: 1;
+  min-width: 0;
+  padding-right: calc(var(--meta-band-width) + 8px);
+}
+
+.hierarchyMetaTwoRow .splitConfigBody {
+  padding-bottom: 2px;
+}
+
+.splitGroupRow {
+  display: flex;
+  align-items: stretch;
+  min-height: 32px;
+  background: transparent;
+}
+
+.splitGroupBody {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) var(--row-meta-width);
+  align-items: center;
+  gap: 8px;
+  padding: 2px 16px 2px 0;
+}
+
+.hierarchyRowHeaders .hierarchyRowBody {
+  padding-right: 16px;
+}
+
+.hierarchyRowHeaders .subtypeLabel {
+  font-weight: 500;
+}
+
+.hierarchyHeadersWrap {
+  --tree-guide-color: transparent;
+}
+
+.splitGroupMain {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.splitGroupDot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  flex-shrink: 0;
+}
+
+.splitGroupMetaSep {
+  font-size: 10px;
+  font-weight: 500;
+  color: #cbd5e1;
+  white-space: nowrap;
+}
+
+.splitGroupLabel {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.splitGroupStatus {
+  font-size: 10px;
+  font-weight: 500;
+  color: #b0bac5;
+  white-space: nowrap;
+}
+
+.splitGroupCountChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.splitGroupAddLink {
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.splitGroupAddLink:hover {
+  color: #1b6fd1;
+  text-decoration: underline;
+}
+
+.branchHeaderItem {
+  list-style: none;
+}
+
+.branchHeaderBlock {
+  padding-top: 10px;
+  padding-right: 16px;
+  padding-bottom: 0;
+}
+
+.branchHeaderTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.branchHeaderTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.branchHeaderStatus {
+  margin: 2px 0 8px;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.branchHeaderRule {
+  height: 1px;
+  margin-right: 0;
+  background: #f1f5f97d;
+}
+
+.branchHeaderAddBtn {
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.branchHeaderAddBtn:hover {
+  color: #1b6fd1;
+  text-decoration: underline;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.presentationToggle {
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.presentationOption,
+.presentationOptionActive {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.presentationOption {
+  background: transparent;
+  color: #64748b;
+}
+
+.presentationOption:hover {
+  color: #0f172a;
+}
+
+.presentationOptionActive {
+  background: #fff;
+  color: #0f172a;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.newValuesNotice {
+  margin: 0;
+  padding: 4px 16px 8px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.newValuesLink {
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1b6fd1;
+  cursor: pointer;
+}
+
+.newValuesLink:hover {
+  color: #1558a8;
+}
+
+/* Split modal */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(15, 23, 42, 0.2);
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 301;
+  width: min(520px, calc(100vw - 32px));
+  max-height: min(72vh, 620px);
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #dbe3ee;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.16);
+  overflow: hidden;
+}
+
+.modalWide {
+  width: min(760px, calc(100vw - 32px));
+  max-height: min(80vh, 680px);
+}
+
+.modalWideFixed {
+  height: min(680px, 80vh);
+  max-height: min(680px, 80vh);
+}
+
+.modalBodyCreate {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalDescription {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #64748b;
+}
+
+.modalCreateLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 16px 18px;
+  flex: 1;
+  min-height: 0;
+}
+
+.modalField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modalFieldLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.modalSelect {
+  width: 100%;
+  max-width: 420px;
+  padding: 8px 10px;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.splitAttributePicker {
+  position: relative;
+  max-width: 420px;
+}
+
+.splitAttributeTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.splitAttributeTrigger:hover {
+  border-color: #cbd5e1;
+}
+
+.splitAttributeTriggerOpen {
+  border-color: #1b6fd1;
+  box-shadow: 0 0 0 3px rgba(27, 111, 209, 0.12);
+}
+
+.splitAttributeTriggerText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.splitAttributePlaceholder {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.splitAttributePrimary {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.3;
+}
+
+.splitAttributeSecondary {
+  font-size: 11px;
+  font-weight: 500;
+  color: #94a3b8;
+  line-height: 1.3;
+}
+
+.splitAttributeChevron {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-right: 1.5px solid #64748b;
+  border-bottom: 1.5px solid #64748b;
+  transform: rotate(45deg) translateY(-2px);
+}
+
+.splitAttributePopoverPortal {
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  overflow: auto;
+  border: 1px solid #dbe3ee;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+  z-index: 310;
+}
+
+.splitAttributePopover {
+  position: absolute;
+  z-index: 2;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 280px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  overflow: auto;
+  border: 1px solid #dbe3ee;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+}
+
+.splitAttributeOption {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.splitAttributeOption:hover {
+  background: #f8fafc;
+}
+
+.splitAttributeOptionSelected {
+  background: #eff6ff;
+}
+
+.splitAttributeOptionSelected .splitAttributePrimary {
+  color: #1b6fd1;
+}
+
+.modalFieldHint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #64748b;
+}
+
+.modalValuesSection {
+  border: 1px solid #eef2f6;
+  border-radius: 10px;
+  background: #fafbfc;
+  overflow: hidden;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalValuesScroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  background: #fff;
+}
+
+.modalValuesHeaderCheckLabel {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  cursor: pointer;
+}
+
+.modalValuesHeaderCheckLabel input[type='checkbox'],
+.valueRow input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+  justify-self: start;
+}
+
+.modalValuesColHeader {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.modalValuesColHeaderEnd {
+  text-align: right;
+}
+
+.modalValuesHeader {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 18px;
+  border-bottom: 1px solid #e8edf3;
+  background: #fff;
+}
+
+.modalValuesEmpty {
+  margin: 0;
+  padding: 20px 14px;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.modalValuesEmptyIcon {
+  color: #cbd5e1;
+  flex-shrink: 0;
+}
+
+.modalValuesEmptyText {
+  margin: 0;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.modalValuesSection .valueRow {
+  background: #fff;
+}
+
+.modalHeader {
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid #eef2f6;
+}
+
+.modalEyebrow {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.modalBody {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.modalFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  border-top: 1px solid #eef2f6;
+  background: #fafbfc;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.modalFooterUnified {
+  justify-content: flex-end;
+}
+
+.modalFooterStart {
+  display: flex;
+  gap: 12px;
+}
+
+.modalFooterEnd {
+  display: flex;
+  gap: 8px;
+}
+
+.modalLinkBtn {
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1b6fd1;
+  cursor: pointer;
+}
+
+.modalLinkBtn:hover {
+  color: #1558a8;
+}
+
+.attrRow,
+.attrRowDisabled {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  padding: 12px 18px;
+  border: none;
+  border-bottom: 1px solid #eef2f6;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.attrRow:hover {
+  background: #f8fafc;
+}
+
+.attrRowDisabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.attrName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.attrMeta {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.chipWrap {
+  position: relative;
+}
+
+.chip,
+.chipBtn {
+  display: inline-flex;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.chipBtn {
+  border: none;
+  cursor: pointer;
+}
+
+.chipRecommended {
+  color: #166534;
+  background: #ecfdf3;
+}
+
+.chipNotRecommended {
+  color: #991b1b;
+  background: #fef2f2;
+}
+
+.chipPopover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 5;
+  width: 240px;
+  padding: 10px 12px;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+  font-size: 12px;
+  line-height: 1.45;
+  color: #475569;
+}
+
+.valueRow {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 18px;
+  border-bottom: 1px solid #eef2f6;
+}
+
+.valueLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+  cursor: pointer;
+}
+
+.valueMeta {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.primaryBtn,
+.secondaryBtn {
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primaryBtn {
+  border: 1px solid #1b6fd1;
+  background: #1b6fd1;
+  color: #fff;
+}
+
+.primaryBtn:hover:not(:disabled) {
+  background: #1558a8;
+}
+
+.primaryBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.secondaryBtn {
+  border: 1px solid #dbe3ee;
+  background: #fff;
+  color: #334155;
+}
+
+.secondaryBtn:hover {
+  background: #f8fafc;
+}
+
+.deleteDialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 303;
+  width: min(420px, calc(100vw - 32px));
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  border: 1px solid #dbe3ee;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.16);
+}
+
+.deleteTitle {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.deleteCopy {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #475569;
+}
+
+.deleteActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.dangerBtn {
+  padding: 7px 14px;
+  border: 1px solid #dc2626;
+  border-radius: 8px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sectionSummary {
+  margin: 0;
+  padding: 0 16px 10px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.linkedTaxonomy {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.linkedTaxonomyBtn {
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1b6fd1;
+  cursor: pointer;
+}
+
+.treeEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.treeEmptyTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.treeEmptyCopy {
+  margin: 0;
+  max-width: 440px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #64748b;
+}
+
+.nodeDetail {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 20px 20px;
+  height: 100%;
+}
+
+.nodeDetailEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 24px;
+  font-size: 14px;
+  color: #64748b;
+  text-align: center;
+}
+
+.nodeDetailHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.nodeDetailTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.nodeDetailMeta {
+  margin: 0;
+  padding: 0;
+}
+
+.nodeDetailRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13px;
+}
+
+.nodeDetailRow dt {
+  margin: 0;
+  color: #94a3b8;
+}
+
+.nodeDetailRow dd {
+  margin: 0;
+  color: #1e293b;
+  font-weight: 500;
+  text-align: right;
+}
+
+.nodeDetailLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.nodeDetailTextarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.nodeDetailActions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.siblingSwitcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.siblingBtn {
+  padding: 4px 10px;
+  border: 1px solid #dbe3ee;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+}
+
+.siblingBtn:hover {
+  background: #f8fafc;
+}
+
+.siblingBtnActive {
+  border-color: #1b6fd1;
+  background: #eff6ff;
+  color: #1b6fd1;
+}
+
+.previewBreadcrumb {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.previewBreadcrumb strong {
+  color: #0f172a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron,
+  .rowActions {
+    transition: none;
+  }
+}

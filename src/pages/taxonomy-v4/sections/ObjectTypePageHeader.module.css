@@ -1,0 +1,105 @@
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.title {
+  margin: 0 0 6px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.linkedAssets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.taxonomyLink {
+  padding: 4px 10px;
+  border: 1px solid #dbe3ee;
+  border-radius: 999px;
+  background: #f8fafc;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1b6fd1;
+  cursor: pointer;
+}
+
+.taxonomyLink:hover {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.iconBtn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #dbe3ee;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 14px;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.saveBtn {
+  padding: 6px 14px;
+  border: 1px solid #1b6fd1;
+  border-radius: 6px;
+  background: #1b6fd1;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+}
+
+.statusBadge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #ede9fe;
+  font-size: 11px;
+  font-weight: 700;
+  color: #6d28d9;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #64748b;
+}
+
+.parentLink {
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1b6fd1;
+  cursor: pointer;
+}
+
+.parentLink:hover {
+  text-decoration: underline;
+}
