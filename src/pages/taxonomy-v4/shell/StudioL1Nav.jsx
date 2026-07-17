@@ -3,6 +3,7 @@ import { L1_QUICK_LINKS } from './studioAssets';
 import { SectionIcon } from '../../v3/shell/StudioIcons';
 import styles from '../../v3/shell/StudioL1Nav.module.css';
 import anim from './StudioL1Nav.anim.module.css';
+import compact from './StudioL1Nav.compact.module.css';
 import {
   childAssetKey,
   getEnterDelay,
@@ -30,7 +31,10 @@ function Chevron({ open }) {
   );
 }
 
-function ObjectTypeIcon({ small = false }) {
+function ObjectTypeIcon({ small = false, compactNav = false }) {
+  if (compactNav) {
+    return <span className={compact.subtypeIcon} aria-hidden />;
+  }
   return (
     <span
       className={small ? styles.subtypeObjectIcon : styles.objectTypeIcon}
@@ -72,18 +76,22 @@ function NavSubtypeBranch({
     const staggerIndex = enteringKeys.get(navChildKey) ?? 0;
     const hasChildren = child.children?.length > 0;
     const isOpen = openSubtypeNodes[child.id] ?? true;
-    const indent = 8 + depth * 10;
+    const indent = 4 + depth * 8;
 
     return (
       <li key={child.id} className={isEntering ? anim.navRowEnter : undefined}>
         <div
-          className={isEntering ? anim.navRowEnterInner : anim.subtypeBranchRow}
+          className={
+            isEntering
+              ? anim.navRowEnterInner
+              : `${anim.subtypeBranchRow} ${compact.subtypeBranchRow}`
+          }
           style={{ paddingLeft: indent }}
         >
           {hasChildren ? (
             <button
               type="button"
-              className={styles.chevronBtn}
+              className={`${styles.chevronBtn} ${compact.subtypeChevron}`}
               aria-label={`${isOpen ? 'Collapse' : 'Expand'} ${child.label}`}
               aria-expanded={isOpen}
               onClick={() => toggleSubtypeNode(child.id)}
@@ -91,22 +99,22 @@ function NavSubtypeBranch({
               <Chevron open={isOpen} />
             </button>
           ) : (
-            <span className={anim.chevronSpacer} aria-hidden />
+            <span className={compact.chevronSpacer} aria-hidden />
           )}
           <button
             type="button"
-            className={`${childActive ? styles.childAssetActive : styles.childAsset} ${
+            className={`${childActive ? styles.childAssetActive : styles.childAsset} ${compact.subtypeBtn} ${
               isEntering ? anim.navItemEnter : ''
             }`}
             style={isEntering ? enteringStyle(staggerIndex) : undefined}
             onClick={() => onOpenAsset?.(child)}
           >
-            <ObjectTypeIcon small />
+            <ObjectTypeIcon compactNav />
             <span>{child.label}</span>
           </button>
         </div>
         {hasChildren && isOpen ? (
-          <ul className={styles.childAssetList}>
+          <ul className={`${styles.childAssetList} ${compact.subtypeList}`}>
             <NavSubtypeBranch
               nodes={child.children}
               objectTypeId={objectTypeId}
@@ -300,7 +308,7 @@ export default function StudioL1Nav({ sections, activeAssetKey, onOpenAsset }) {
                           )}
                         </div>
                         {hasChildren && isObjectGroupOpen(asset.id) && (
-                          <ul className={styles.childAssetList}>
+                          <ul className={`${styles.childAssetList} ${compact.subtypeList}`}>
                             <NavSubtypeBranch
                               nodes={asset.children}
                               objectTypeId={asset.id}

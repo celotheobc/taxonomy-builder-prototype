@@ -1,0 +1,32 @@
+.subtypeList {
+  padding-left: 8px;
+}
+
+.subtypeBranchRow {
+  gap: 1px;
+}
+
+li .subtypeBtn {
+  padding: 2px 6px;
+  font-size: 11px;
+  gap: 6px;
+  line-height: 1.25;
+  border-radius: 5px;
+}
+
+.subtypeChevron {
+  width: 20px;
+  height: 20px;
+}
+
+.subtypeIcon {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: #1b6fd1;
+  flex-shrink: 0;
+}
+
+.chevronSpacer {
+  width: 20px;
+}
