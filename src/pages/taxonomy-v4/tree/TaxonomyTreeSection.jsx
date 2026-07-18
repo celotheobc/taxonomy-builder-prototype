@@ -42,7 +42,7 @@ export default function TaxonomyTreeSection({
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [renamingNodeId, setRenamingNodeId] = useState(null);
   const [renameDraft, setRenameDraft] = useState('');
-  const [metadataVariant, setMetadataVariant] = useState('two-row');
+  const [metadataVariant, setMetadataVariant] = useState('single-row');
 
   const { enteringNodeIds, expandingBranchParentIds } = useHierarchyTreeAnimations(
     treeState.nodes,
@@ -171,47 +171,24 @@ export default function TaxonomyTreeSection({
 
   const summary =
     stats.subtypeCount > 0
-      ? `${stats.subtypeCount} total · ${stats.maxLevel} level${stats.maxLevel === 1 ? '' : 's'}`
+      ? `${stats.subtypeCount} subtype${stats.subtypeCount === 1 ? '' : 's'} over ${stats.maxLevel} level${stats.maxLevel === 1 ? '' : 's'}`
       : null;
 
   const headerActions =
-    stats.subtypeCount > 0 ? (
-      <div className={styles.headerActions}>
-        <div className={styles.presentationToggle} role="group" aria-label="Metadata layout">
-          <button
-            type="button"
-            className={
-              metadataVariant === 'single-row'
-                ? styles.presentationOptionActive
-                : styles.presentationOption
-            }
-            aria-pressed={metadataVariant === 'single-row'}
-            onClick={() => setMetadataVariant('single-row')}
-          >
-            Single row
-          </button>
-          <button
-            type="button"
-            className={
-              metadataVariant === 'two-row'
-                ? styles.presentationOptionActive
-                : styles.presentationOption
-            }
-            aria-pressed={metadataVariant === 'two-row'}
-            onClick={() => setMetadataVariant('two-row')}
-          >
-            Two row
-          </button>
-        </div>
-        {summary ? <span className={styles.sectionSummary}>{summary}</span> : null}
-      </div>
+    stats.subtypeCount > 0 && summary ? (
+      <span className={styles.sectionSummary}>{summary}</span>
     ) : null;
+
+  const toggleMetadataVariant = () => {
+    setMetadataVariant((current) => (current === 'single-row' ? 'two-row' : 'single-row'));
+  };
 
   return (
     <ObjectTypeSectionCard
       title="Subtype hierarchy"
       count={stats.subtypeCount || undefined}
       actions={headerActions}
+      onTitleClick={stats.subtypeCount > 0 ? toggleMetadataVariant : undefined}
       headerAddon={
         stats.subtypeCount > 0 ? (
           <button
@@ -220,6 +197,7 @@ export default function TaxonomyTreeSection({
             disabled
             title="Future: add a separate hierarchy for this object (e.g. Facility by Country)"
             aria-label="Add hierarchy (coming soon)"
+            onClick={(event) => event.stopPropagation()}
           >
             +
           </button>
@@ -228,14 +206,12 @@ export default function TaxonomyTreeSection({
     >
       {stats.subtypeCount === 0 ? (
         <div className={styles.treeEmpty}>
-          <h4 className={styles.treeEmptyTitle}></h4>
           <p className={styles.treeEmptyCopy}>
             Split this object type into more specific business concepts.
           </p>
           <button type="button" className={styles.primaryBtn} onClick={() => openSplitFlow()}>
             Create subtypes
           </button>
-          <h4 className={styles.treeEmptyTitle}></h4>
         </div>
       ) : (
         <HierarchyList

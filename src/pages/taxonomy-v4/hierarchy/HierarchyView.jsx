@@ -9,6 +9,7 @@ import { buildSplitMetadataProps } from './SplitMetadata';
 import { SubtypeRow } from './HierarchyRowParts';
 import SplitConfigBlock from './SplitConfigBlock';
 import { RootObjectRow, RootSplitMetaRow } from './RootObjectRow';
+import HierarchyMetadataHeader from './HierarchyMetadataHeader';
 import styles from './Hierarchy.module.css';
 import anim from './Hierarchy.anim.module.css';
 
@@ -261,6 +262,9 @@ export default function HierarchyView({
       role="tree"
       aria-label={`${objectTypeName} subtype hierarchy`}
     >
+      {metadataVariant === 'single-row' ? (
+        <HierarchyMetadataHeader showActions={!rowProps.readOnly} />
+      ) : null}
       <RootObjectRow
         objectTypeName={objectTypeName}
         splitMeta={rootSplitMeta}

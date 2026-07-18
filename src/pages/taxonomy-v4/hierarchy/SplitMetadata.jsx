@@ -34,7 +34,10 @@ export function buildSplitMetadataProps({
   };
 }
 
-export function SplitByLabel({ attributeName }) {
+export function SplitByLabel({ attributeName, labelOnly = false }) {
+  if (labelOnly) {
+    return <span className={styles.splitMetaColSplit}>{attributeName}</span>;
+  }
   return (
     <span className={styles.splitMetaColSplit}>Split by: {attributeName}</span>
   );
@@ -84,6 +87,13 @@ export function SplitMetadataTrailing({
   );
 }
 
+function TaxonomyMarker({ useDot = false }) {
+  if (useDot) {
+    return <span className={styles.splitMetaTaxonomyDot} aria-hidden />;
+  }
+  return <TaxonomyStackIcon size={16} title="" />;
+}
+
 export function SplitMetadataColumns({
   attributeName,
   directCount,
@@ -94,19 +104,30 @@ export function SplitMetadataColumns({
   taxonomyId,
   onOpenTaxonomy,
   className = '',
+  labelOnly = false,
+  shortAvailableLabel = false,
+  plainSubtypeCount = false,
+  useTaxonomyDot = false,
 }) {
   const chipLabel = `${directCount} subtype${directCount === 1 ? '' : 's'}`;
+  const availableLabel = shortAvailableLabel
+    ? `${availableCount} available`
+    : `Add ${availableCount} available`;
 
   return (
     <div className={`${styles.splitMetaColumns} ${className}`.trim()}>
-      <SplitByLabel attributeName={attributeName} />
+      <SplitByLabel attributeName={attributeName} labelOnly={labelOnly} />
       <span className={styles.splitMetaColChip}>
-        <span className={badgeStyles.badgeSubtypes}>{chipLabel}</span>
+        {plainSubtypeCount ? (
+          <span className={styles.splitMetaSubtypeCount}>{chipLabel}</span>
+        ) : (
+          <span className={badgeStyles.badgeSubtypes}>{chipLabel}</span>
+        )}
       </span>
       <span className={styles.splitMetaColAdd}>
         {showAdd ? (
           <button type="button" className={styles.splitMetaAddLink} onClick={onAddValues}>
-            Add {availableCount} available
+            {availableLabel}
           </button>
         ) : null}
       </span>
@@ -117,12 +138,12 @@ export function SplitMetadataColumns({
             className={styles.splitMetaTaxonomyLink}
             onClick={() => onOpenTaxonomy(taxonomyId)}
           >
-            <TaxonomyStackIcon size={16} title="" />
+            <TaxonomyMarker useDot={useTaxonomyDot} />
             <span>{taxonomyLabel}</span>
           </button>
         ) : (
           <span className={styles.splitMetaTaxonomyStatic}>
-            <TaxonomyStackIcon size={16} title="" />
+            <TaxonomyMarker useDot={useTaxonomyDot} />
             <span>{taxonomyLabel}</span>
           </span>
         )}
@@ -154,7 +175,14 @@ export function SplitMetadataTwoRow({
 export function SplitMetadataInline(props) {
   return (
     <div className={styles.hierarchyMetaBand}>
-      <SplitMetadataColumns {...props} className={styles.splitMetaColumnsInline} />
+      <SplitMetadataColumns
+        {...props}
+        className={styles.splitMetaColumnsInline}
+        labelOnly
+        shortAvailableLabel
+        plainSubtypeCount
+        useTaxonomyDot
+      />
     </div>
   );
 }
