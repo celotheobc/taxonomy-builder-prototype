@@ -20,12 +20,11 @@ function MetaSection({ title, rows }) {
 
 export default function TaxonomyAssetInspector({
   taxonomy,
-  hierarchyStats = { subtypeCount: 0, maxLevel: 0 },
   collapsed,
   onToggle,
   width,
   onResizeWidth,
-  onOpenObjectType,
+  lastUpdated = '—',
 }) {
   return (
     <aside
@@ -51,54 +50,26 @@ export default function TaxonomyAssetInspector({
 
         {!collapsed && (
           <div className={styles.panelBody}>
-            <div className={styles.introBlock}>
-              <p className={styles.eyebrow}>Taxonomy</p>
-              <h3 className={styles.assetName}>{taxonomy.name}</h3>
-              <p className={styles.bodyText}>{taxonomy.description}</p>
-            </div>
-
-            <MetaSection
-              title="Source"
-              rows={[
-                { label: 'Linked object type', value: taxonomy.sourceObjectTypeName },
-                { label: 'Root split attribute', value: taxonomy.splitAttributeName },
-              ]}
-            />
-
-            <MetaSection
-              title="Hierarchy"
-              rows={[
-                {
-                  label: 'Subtypes',
-                  value: String(hierarchyStats.subtypeCount),
-                },
-                {
-                  label: 'Levels',
-                  value: String(hierarchyStats.maxLevel),
-                },
-              ]}
-            />
-
             <MetaSection
               title="Asset"
               rows={[
-                { label: 'Type', value: taxonomy.type },
-                { label: 'Status', value: taxonomy.status },
-                { label: 'Created by', value: taxonomy.createdBy },
+                { label: 'Asset type', value: taxonomy.type },
                 { label: 'Owner', value: taxonomy.owner ?? '—' },
+                { label: 'Created', value: taxonomy.createdBy ?? '—' },
+                { label: 'Last updated', value: lastUpdated },
+                { label: 'Namespace', value: 'Custom' },
                 { label: 'Reference key', value: taxonomy.referenceKey },
+                { label: 'Status', value: taxonomy.status },
               ]}
             />
 
-            <div className={styles.footerActions}>
-              <button
-                type="button"
-                className={styles.linkBtn}
-                onClick={() => onOpenObjectType?.(taxonomy.sourceObjectTypeId)}
-              >
-                Open {taxonomy.sourceObjectTypeName}
-              </button>
-            </div>
+            <MetaSection
+              title="Usage"
+              rows={[
+                { label: 'Usage', value: 'Not tracked yet' },
+                { label: 'Linked assets', value: 'Not tracked yet' },
+              ]}
+            />
           </div>
         )}
       </div>

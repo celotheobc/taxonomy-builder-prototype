@@ -183,6 +183,8 @@ export function SubtypeRow({
   const nodeDepth = getNodeDepth(node.id, allNodes);
   const canSplit = !readOnly && nodeDepth < MAX_HIERARCHY_DEPTH;
   const showInlineMeta = metadataVariant === 'single-row' && splitMeta;
+  const showChildCountChip =
+    metadataVariant !== 'taxonomy' && childCount > 0 && !hasChildren;
   const splitHandler = hasExistingSplit ? onEditSplit : onSplit;
   const splitLabel = hasExistingSplit ? 'Edit split' : 'Split';
 
@@ -231,8 +233,15 @@ export function SubtypeRow({
               type="button"
               className={styles.subtypeLabel}
               onClick={() => {
+                if (metadataVariant === 'taxonomy') {
+                  onSelectNode?.(node);
+                  return;
+                }
+                if (onOpenSubtype) {
+                  onOpenSubtype(node);
+                  return;
+                }
                 if (readOnly && onSelectNode) onSelectNode(node);
-                else onOpenSubtype?.(node);
               }}
               style={{ border: 'none', background: 'transparent', padding: 0, cursor: 'pointer' }}
             >
@@ -245,12 +254,12 @@ export function SubtypeRow({
         </div>
 
         <div className={styles.rowMetaCol}>
-          {childCount > 0 && !hasChildren ? (
+          {showChildCountChip ? (
             <span className={styles.subtypeCountChip}>
               {childCount} subtype{childCount === 1 ? '' : 's'}
             </span>
           ) : null}
-          {node.recordCount ? (
+          {node.recordCount && metadataVariant !== 'taxonomy' ? (
             <span className={styles.rowCountMeta}>{node.recordCount.toLocaleString()} rows</span>
           ) : null}
         </div>

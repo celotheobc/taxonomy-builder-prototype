@@ -750,3 +750,244 @@
 .structureActionBtn:hover {
   background: #eff6ff;
 }
+
+.taxonomyEditorScroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 0 20px 24px;
+}
+
+.taxonomyOverview {
+  padding: 20px 0 4px;
+}
+
+.pageLead {
+  margin: 8px 0 0;
+  max-width: 720px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #64748b;
+}
+
+.overviewSectionTitle {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.overviewMeta {
+  margin: 0;
+  max-width: 560px;
+}
+
+.overviewMetaRow {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13px;
+}
+
+.overviewMetaRow:first-child {
+  padding-top: 0;
+}
+
+.overviewMetaRow:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.overviewMetaRow dt {
+  margin: 0;
+  color: #64748b;
+}
+
+.overviewMetaRow dd {
+  margin: 0;
+  color: #0f172a;
+  font-weight: 500;
+}
+
+.overviewLink {
+  padding: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-weight: 500;
+  color: #1b6fd1;
+  cursor: pointer;
+}
+
+.overviewLink:hover {
+  color: #1558a8;
+  text-decoration: underline;
+}
+
+.configSection {
+  margin: 24px 0;
+  padding: 16px;
+  border: 1px dashed #dbe3ee;
+  border-radius: 10px;
+  background: #fafbfc;
+}
+
+.configSectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.configSectionTitle {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.configSectionBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #64748b;
+  background: #e2e8f0;
+}
+
+.configSectionCopy {
+  margin: 0;
+  max-width: 720px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #64748b;
+}
+
+.structureSplitWrap {
+  min-height: 360px;
+}
+
+.structureTreePane {
+  min-height: 360px;
+}
+
+.structureDetailPane {
+  min-height: 360px;
+  background: #fafbfc;
+  border-left: 1px solid #e8edf3;
+}
+
+.valueDetail,
+.valueDetailEmpty {
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.valueDetailEmpty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.valueDetailEmptyTitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.valueDetailEmptyCopy {
+  margin: 0;
+  max-width: 280px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #64748b;
+}
+
+.valueDetailHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e8edf3;
+}
+
+.valueDetailTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.valueDetailPrimaryBtn {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border: 1px solid #1b6fd1;
+  border-radius: 8px;
+  background: #1b6fd1;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+}
+
+.valueDetailPrimaryBtn:hover {
+  background: #1558a8;
+  border-color: #1558a8;
+}
+
+.valueDetailGroup {
+  margin-bottom: 18px;
+}
+
+.valueDetailGroupTitle {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.valueDetailGroupBody {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.valueDetailLine {
+  margin: 0;
+}
+
+.valueDetailMuted {
+  margin: 0;
+  color: #64748b;
+}
+
+.valueDetailList {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.valueDetailList li {
+  margin: 0 0 4px;
+}
+
+.structureEmpty {
+  margin: 0;
+  padding: 24px 16px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #64748b;
+  text-align: center;
+}

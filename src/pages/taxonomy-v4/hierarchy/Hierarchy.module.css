@@ -283,6 +283,22 @@
   color: #64748b;
 }
 
+.hierarchyMetaTaxonomy {
+  --row-meta-width: 0px;
+}
+
+.hierarchyMetaTaxonomy .hierarchyRowBody {
+  grid-template-columns: var(--tree-chevron-width) minmax(0, 1fr);
+}
+
+.hierarchyMetaTaxonomy .hierarchyRowWithActions .hierarchyRowBody {
+  grid-template-columns: var(--tree-chevron-width) minmax(0, 1fr);
+}
+
+.hierarchyMetaTaxonomy .rowMetaCol {
+  display: none;
+}
+
 .hierarchyRow {
   position: relative;
   display: flex;

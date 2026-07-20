@@ -12,6 +12,17 @@ export function RootObjectRow({
 }) {
   const showActions = !readOnly && hasSplit;
 
+  if (metadataVariant === 'taxonomy') {
+    return (
+      <div className={styles.hierarchyRootRow}>
+        <div className={styles.hierarchyRootContext}>
+          <span className={styles.hierarchyRootContextLabel}>Source object</span>
+          <span className={styles.hierarchyRootName}>{objectTypeName}</span>
+        </div>
+      </div>
+    );
+  }
+
   if (metadataVariant === 'single-row' && splitMeta) {
     return (
       <div

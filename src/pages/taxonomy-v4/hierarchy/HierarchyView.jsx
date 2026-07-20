@@ -237,8 +237,10 @@ export default function HierarchyView({
   const rootSplitGroup = rootHasSplit
     ? getPrimarySplitGroup(null, nodes, objectType, rootSplitAttributeId)
     : null;
-  const rootSplitMeta = rootSplitGroup
-    ? buildMetaFromGroup(rootSplitGroup, {
+  const isTaxonomyView = metadataVariant === 'taxonomy';
+  const rootSplitMeta =
+    !isTaxonomyView && rootSplitGroup
+      ? buildMetaFromGroup(rootSplitGroup, {
         objectType,
         parentLabel: objectTypeName,
         taxonomyId,
@@ -252,28 +254,37 @@ export default function HierarchyView({
             attributeId: rootSplitGroup.attributeId,
           }),
       })
-    : null;
+      : null;
 
   const mergedRowProps = { ...rowProps, taxonomyId, taxonomyName };
+  const wrapClassName = isTaxonomyView
+    ? styles.hierarchyMetaTaxonomy
+    : metadataVariant === 'single-row'
+      ? styles.hierarchyMetaSingleRow
+      : styles.hierarchyMetaTwoRow;
 
   return (
     <div
-      className={`${styles.hierarchyTreeWrap} ${metadataVariant === 'single-row' ? styles.hierarchyMetaSingleRow : styles.hierarchyMetaTwoRow}`}
+      className={`${styles.hierarchyTreeWrap} ${wrapClassName}`}
       role="tree"
-      aria-label={`${objectTypeName} subtype hierarchy`}
+      aria-label={isTaxonomyView ? `${taxonomyName ?? 'Taxonomy'} structure` : `${objectTypeName} subtype hierarchy`}
     >
-      {metadataVariant === 'single-row' ? (
+      {metadataVariant === 'single-row' && !isTaxonomyView ? (
         <HierarchyMetadataHeader showActions={!rowProps.readOnly} />
       ) : null}
-      <RootObjectRow
-        objectTypeName={objectTypeName}
-        splitMeta={rootSplitMeta}
-        metadataVariant={metadataVariant}
-        hasSplit={rootHasSplit}
-        readOnly={rowProps.readOnly}
-        onEditSplit={() => rowProps.onEditRootSplit?.()}
-      />
-      <RootSplitMetaRow splitMeta={rootSplitMeta} metadataVariant={metadataVariant} />
+      {!isTaxonomyView ? (
+        <RootObjectRow
+          objectTypeName={objectTypeName}
+          splitMeta={rootSplitMeta}
+          metadataVariant={metadataVariant}
+          hasSplit={rootHasSplit}
+          readOnly={rowProps.readOnly}
+          onEditSplit={() => rowProps.onEditRootSplit?.()}
+        />
+      ) : null}
+      {!isTaxonomyView ? (
+        <RootSplitMetaRow splitMeta={rootSplitMeta} metadataVariant={metadataVariant} />
+      ) : null}
 
       <ul className={styles.hierarchyList}>
         <HierarchyBranch

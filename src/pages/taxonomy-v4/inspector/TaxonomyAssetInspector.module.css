@@ -125,3 +125,19 @@
   color: #1558a8;
   text-decoration: underline;
 }
+
+.inlineLinkBtn {
+  padding: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-weight: 500;
+  color: #1b6fd1;
+  cursor: pointer;
+  text-align: right;
+}
+
+.inlineLinkBtn:hover {
+  color: #1558a8;
+  text-decoration: underline;
+}

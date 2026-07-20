@@ -5,10 +5,10 @@ export default function TaxonomyEditorLayout({ mainContent, rightInspector, bott
   return (
     <div className={editorStyles.editor}>
       <div className={styles.centerColumn}>
-        <main className={styles.main} aria-label="Object type work surface">
+        <main className={styles.main} aria-label="Taxonomy work surface">
           {mainContent}
         </main>
-        <div className={styles.bottomDrawer}>{bottomPanel}</div>
+        {bottomPanel ? <div className={styles.bottomDrawer}>{bottomPanel}</div> : null}
       </div>
       {rightInspector}
     </div>
