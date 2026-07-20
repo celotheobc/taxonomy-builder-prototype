@@ -90,14 +90,36 @@ export function buildNodeTree(nodes, parentId = null) {
 }
 
 export function getNodeBreadcrumb(nodeId, nodes, rootLabel) {
-  const parts = [rootLabel];
+  return getClassificationPathItems(nodeId, nodes, rootLabel)
+    .map((item) => item.label)
+    .join(' · ');
+}
+
+/** Root object plus each ancestor subtype down to the selected node (navigable path). */
+export function getClassificationPathItems(nodeId, nodes, rootLabel) {
+  const items = [{ id: null, label: rootLabel }];
   const chain = [];
   let current = nodes.find((node) => node.id === nodeId) ?? null;
   while (current) {
-    chain.unshift(current.label);
+    chain.unshift({ id: current.id, label: current.label });
     current = current.parentId ? nodes.find((node) => node.id === current.parentId) : null;
   }
-  return [...parts, ...chain].join(' · ');
+  return [...items, ...chain];
+}
+
+/** Stats for descendants of a scoped parent (excludes the parent node itself). */
+export function getScopedHierarchyStats(scopeParentId, nodes) {
+  const descendantIds = getDescendantNodeIds(scopeParentId, nodes).filter(
+    (id) => id !== scopeParentId,
+  );
+  if (!descendantIds.length) return { subtypeCount: 0, maxLevel: 0 };
+
+  const scopeDepth = getNodeDepth(scopeParentId, nodes);
+  const depths = descendantIds.map((id) => getNodeDepth(id, nodes) - scopeDepth);
+  return {
+    subtypeCount: descendantIds.length,
+    maxLevel: Math.max(...depths),
+  };
 }
 
 export function getSiblingNodes(nodeId, nodes) {

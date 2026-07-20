@@ -226,31 +226,37 @@ export default function HierarchyView({
   rowProps,
   enteringNodeIds = new Set(),
   expandingBranchParentIds = new Set(),
+  subtreeRootId = null,
 }) {
   const objectType = getObjectType(objectTypeId);
-  const tree = buildNodeTree(nodes);
+  const scopedRoot = subtreeRootId ?? null;
+  const tree = buildNodeTree(nodes, scopedRoot);
   const expandedIds = new Set(expandedNodeIds);
 
   if (!nodes.length) return null;
+  if (scopedRoot && !nodes.some((node) => node.id === scopedRoot)) return null;
 
-  const rootHasSplit = parentHasDirectSplit(null, nodes);
+  const rootHasSplit = parentHasDirectSplit(scopedRoot, nodes);
   const rootSplitGroup = rootHasSplit
-    ? getPrimarySplitGroup(null, nodes, objectType, rootSplitAttributeId)
+    ? getPrimarySplitGroup(scopedRoot, nodes, objectType, rootSplitAttributeId)
     : null;
   const isTaxonomyView = metadataVariant === 'taxonomy';
+  const scopedParentLabel =
+    scopedRoot != null ? nodes.find((node) => node.id === scopedRoot)?.label : null;
+  const hierarchyRootLabel = scopedParentLabel ?? objectTypeName;
   const rootSplitMeta =
     !isTaxonomyView && rootSplitGroup
       ? buildMetaFromGroup(rootSplitGroup, {
         objectType,
-        parentLabel: objectTypeName,
+        parentLabel: hierarchyRootLabel,
         taxonomyId,
         taxonomyName,
         readOnly: rowProps.readOnly,
         onOpenTaxonomy: rowProps.onOpenTaxonomy,
         onAddValues: () =>
           rowProps.onAddSplitValues?.({
-            parentId: null,
-            parentLabel: objectTypeName,
+            parentId: scopedRoot,
+            parentLabel: hierarchyRootLabel,
             attributeId: rootSplitGroup.attributeId,
           }),
       })
@@ -267,12 +273,18 @@ export default function HierarchyView({
     <div
       className={`${styles.hierarchyTreeWrap} ${wrapClassName}`}
       role="tree"
-      aria-label={isTaxonomyView ? `${taxonomyName ?? 'Taxonomy'} structure` : `${objectTypeName} subtype hierarchy`}
+      aria-label={
+        isTaxonomyView
+          ? `${taxonomyName ?? 'Taxonomy'} structure`
+          : scopedRoot
+            ? `${hierarchyRootLabel} child subtypes`
+            : `${objectTypeName} subtype hierarchy`
+      }
     >
       {metadataVariant === 'single-row' && !isTaxonomyView ? (
         <HierarchyMetadataHeader showActions={!rowProps.readOnly} />
       ) : null}
-      {!isTaxonomyView ? (
+      {!isTaxonomyView && scopedRoot == null ? (
         <RootObjectRow
           objectTypeName={objectTypeName}
           splitMeta={rootSplitMeta}
@@ -282,7 +294,7 @@ export default function HierarchyView({
           onEditSplit={() => rowProps.onEditRootSplit?.()}
         />
       ) : null}
-      {!isTaxonomyView ? (
+      {!isTaxonomyView && scopedRoot == null ? (
         <RootSplitMetaRow splitMeta={rootSplitMeta} metadataVariant={metadataVariant} />
       ) : null}
 

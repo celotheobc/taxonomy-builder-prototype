@@ -7,7 +7,6 @@ import TaxonomyAssetInspector from './inspector/TaxonomyAssetInspector';
 import ObjectTypeSectionCard from './sections/ObjectTypeSectionCard';
 import HierarchyList from './hierarchy/HierarchyList';
 import TaxonomyOverview from './taxonomy/TaxonomyOverview';
-import TaxonomyConfigurationSection from './taxonomy/TaxonomyConfigurationSection';
 import TaxonomyValueDetailPanel from './taxonomy/TaxonomyValueDetailPanel';
 import SubtypesSplitLayout from './subtypes/SubtypesSplitLayout';
 import splitStyles from './subtypes/SubtypesSection.module.css';
@@ -97,8 +96,6 @@ export default function TaxonomyAssetView({
               hierarchyStats={hierarchyStats}
               onOpenObjectType={onOpenObjectType}
             />
-
-            <TaxonomyConfigurationSection />
 
             <ObjectTypeSectionCard title="Taxonomy structure">
               {treeState.nodes.length === 0 ? (

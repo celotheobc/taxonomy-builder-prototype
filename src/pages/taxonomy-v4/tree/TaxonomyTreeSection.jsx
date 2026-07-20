@@ -3,7 +3,9 @@ import { createPortal } from 'react-dom';
 import { getDetectedValues, getObjectType } from '../../../data/mockObjectTypes';
 import {
   getDescendantNodeIds,
+  getDirectChildCount,
   getHierarchyStats,
+  getScopedHierarchyStats,
   getSplitConfigsForParent,
   getUsedSplitAttributes,
   parentHasDirectSplit,
@@ -20,6 +22,9 @@ export default function TaxonomyTreeSection({
   onOpenTaxonomy,
   onOpenSubtype,
   onPreviewSubtype,
+  scopeParentId = null,
+  scopeParentLabel = null,
+  sectionTitle = 'Subtype hierarchy',
 }) {
   const objectType = getObjectType(objectTypeId);
   const {
@@ -35,7 +40,14 @@ export default function TaxonomyTreeSection({
   } = useObjectTypeWorkspace();
 
   const treeState = getTreeState(objectTypeId);
-  const stats = getHierarchyStats(treeState.nodes);
+  const stats = scopeParentId
+    ? getScopedHierarchyStats(scopeParentId, treeState.nodes)
+    : getHierarchyStats(treeState.nodes);
+  const hasDirectChildren = scopeParentId
+    ? getDirectChildCount(scopeParentId, treeState.nodes) > 0
+    : stats.subtypeCount > 0;
+  const splitParentId = scopeParentId ?? null;
+  const splitParentLabel = scopeParentLabel ?? objectType.name;
   const taxonomy = treeState.taxonomy;
 
   const [flow, setFlow] = useState(null);
@@ -72,7 +84,7 @@ export default function TaxonomyTreeSection({
     return getSplitEditRows(objectTypeId, flow.attributeId, flow.parentId);
   }, [flow, objectTypeId, getSplitEditRows]);
 
-  const openSplitFlow = (parentId = null, parentLabel = objectType.name) => {
+  const openSplitFlow = (parentId = splitParentId, parentLabel = splitParentLabel) => {
     const group = getSplitConfigsForParent(
       parentId,
       treeState.nodes,
@@ -175,7 +187,7 @@ export default function TaxonomyTreeSection({
       : null;
 
   const headerActions =
-    stats.subtypeCount > 0 && summary ? (
+    hasDirectChildren && summary ? (
       <span className={styles.sectionSummary}>{summary}</span>
     ) : null;
 
@@ -185,12 +197,12 @@ export default function TaxonomyTreeSection({
 
   return (
     <ObjectTypeSectionCard
-      title="Subtype hierarchy"
+      title={sectionTitle}
       count={stats.subtypeCount || undefined}
       actions={headerActions}
-      onTitleClick={stats.subtypeCount > 0 ? toggleMetadataVariant : undefined}
+      onTitleClick={hasDirectChildren ? toggleMetadataVariant : undefined}
       headerAddon={
-        stats.subtypeCount > 0 ? (
+        !scopeParentId && stats.subtypeCount > 0 ? (
           <button
             type="button"
             className={styles.futureHierarchyBtn}
@@ -204,16 +216,7 @@ export default function TaxonomyTreeSection({
         ) : null
       }
     >
-      {stats.subtypeCount === 0 ? (
-        <div className={styles.treeEmpty}>
-          <p className={styles.treeEmptyCopy}>
-            Split this object type into more specific business concepts.
-          </p>
-          <button type="button" className={styles.primaryBtn} onClick={() => openSplitFlow()}>
-            Create subtypes
-          </button>
-        </div>
-      ) : (
+      {hasDirectChildren ? (
         <HierarchyList
           metadataVariant={metadataVariant}
           objectTypeId={objectTypeId}
@@ -223,13 +226,14 @@ export default function TaxonomyTreeSection({
           expandedNodeIds={treeState.expandedNodeIds}
           taxonomyId={taxonomy?.id ?? null}
           taxonomyName={taxonomy?.name ?? null}
+          subtreeRootId={scopeParentId}
           onOpenTaxonomy={onOpenTaxonomy}
           onToggleExpand={(nodeId) => toggleNodeExpanded(objectTypeId, nodeId)}
           onOpenSubtype={(node) => onOpenSubtype?.(node.id)}
           onPreviewNode={(node) => onPreviewSubtype?.(node.id)}
           onSplitNode={(node) => openSplitFlow(node.id, node.label)}
           onEditSplitNode={(node) => openSplitFlow(node.id, node.label)}
-          onEditRootSplit={() => openSplitFlow(null, objectType.name)}
+          onEditRootSplit={() => openSplitFlow(splitParentId, splitParentLabel)}
           onRenameNode={handleRenameStart}
           onDeleteNode={setDeleteTarget}
           onAddSplitValues={openAddValuesFlow}
@@ -244,6 +248,21 @@ export default function TaxonomyTreeSection({
           enteringNodeIds={enteringNodeIds}
           expandingBranchParentIds={expandingBranchParentIds}
         />
+      ) : (
+        <div className={styles.treeEmpty}>
+          <p className={styles.treeEmptyCopy}>
+            {scopeParentId
+              ? 'Continue refining this subtype by splitting it into more specific concepts.'
+              : 'Split this object type into more specific business concepts.'}
+          </p>
+          <button
+            type="button"
+            className={styles.primaryBtn}
+            onClick={() => openSplitFlow(splitParentId, splitParentLabel)}
+          >
+            Create subtypes
+          </button>
+        </div>
       )}
 
       <SplitModal

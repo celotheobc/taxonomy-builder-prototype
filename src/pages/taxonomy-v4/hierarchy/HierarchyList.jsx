@@ -29,6 +29,7 @@ export default function HierarchyList({
   onRenameCancel,
   enteringNodeIds,
   expandingBranchParentIds,
+  subtreeRootId = null,
 }) {
   const rowProps = {
     selectedId: selectedNodeId,
@@ -64,6 +65,7 @@ export default function HierarchyList({
       rowProps={rowProps}
       enteringNodeIds={enteringNodeIds}
       expandingBranchParentIds={expandingBranchParentIds}
+      subtreeRootId={subtreeRootId}
     />
   );
 }

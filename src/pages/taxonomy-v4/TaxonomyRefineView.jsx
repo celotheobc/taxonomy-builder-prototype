@@ -1,12 +1,12 @@
-import { useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { getAttribute, getObjectType } from '../../data/mockObjectTypes';
+import { getClassificationPathItems, getAncestorIds } from '../../data/taxonomyTreeModel';
 import { useObjectTypeWorkspace } from './context/ObjectTypeWorkspaceContext';
 import TaxonomyEditorLayout from './layout/TaxonomyEditorLayout';
 import TaxonomyRightInspector from './inspector/TaxonomyRightInspector';
 import TaxonomyBottomPanel from './panels/TaxonomyBottomPanel';
 import ObjectTypePageHeader from './sections/ObjectTypePageHeader';
 import AttributesBindingsSection from './sections/AttributesBindingsSection';
-import SubtypeNestingSection from './sections/SubtypeNestingSection';
 import RelationshipsSection from './sections/RelationshipsSection';
 import AgentContextSection from './sections/AgentContextSection';
 import TaxonomyTreeSection from './tree/TaxonomyTreeSection';
@@ -28,7 +28,8 @@ export default function TaxonomyRefineView({
   const treeSectionRef = useRef(null);
   const { rightWidth, bottomHeight, adjustRightWidth, adjustBottomHeight } =
     usePanelDimensionsV5();
-  const { getSplitState, getAllSubtypeEntries, getSubtypeMapping } = useObjectTypeWorkspace();
+  const { getSplitState, getAllSubtypeEntries, getSubtypeMapping, getTreeState, ensureNodesExpanded } =
+    useObjectTypeWorkspace();
   const objectType = getObjectType(objectTypeId);
   const splitState = getSplitState(objectTypeId);
   const subtypeEntries = getAllSubtypeEntries(splitState);
@@ -37,6 +38,22 @@ export default function TaxonomyRefineView({
       ? subtypeEntries.find((entry) => entry.subtype.id === subtypeId) ?? null
       : null;
   const isSubtypeView = Boolean(subtypeEntry);
+  const treeState = getTreeState(objectTypeId);
+  const classificationPath = useMemo(() => {
+    if (!subtypeEntry) return null;
+    return getClassificationPathItems(
+      subtypeEntry.subtype.id,
+      treeState.nodes,
+      objectType.name,
+    );
+  }, [subtypeEntry, treeState.nodes, objectType.name]);
+
+  useEffect(() => {
+    if (!subtypeId) return;
+    const nodes = getTreeState(objectTypeId).nodes;
+    if (!nodes.some((node) => node.id === subtypeId)) return;
+    ensureNodesExpanded(objectTypeId, [...getAncestorIds(subtypeId, nodes), subtypeId]);
+  }, [subtypeId, objectTypeId, getTreeState, ensureNodesExpanded]);
   const visibleSubtypes = subtypeEntries.map((entry) => entry.subtype);
   const primaryEntry = subtypeEntry ?? subtypeEntries[0] ?? null;
   const splitAttribute = primaryEntry
@@ -85,7 +102,11 @@ export default function TaxonomyRefineView({
           <ObjectTypePageHeader
             objectTypeId={objectTypeId}
             subtypeEntry={subtypeEntry}
-            onNavigateToParent={onNavigateToParent}
+            classificationPath={classificationPath}
+            onNavigateClassificationItem={(item) => {
+              if (item.id == null) onNavigateToParent?.();
+              else onOpenObjectType?.(objectTypeId, item.id);
+            }}
           />
           <AttributesBindingsSection
             objectTypeId={objectTypeId}
@@ -97,9 +118,14 @@ export default function TaxonomyRefineView({
             onScrollToHierarchy={scrollToHierarchy}
           />
           {isSubtypeView ? (
-            <SubtypeNestingSection
-              parentObjectTypeName={objectType.name}
-              onOpenParent={onNavigateToParent}
+            <TaxonomyTreeSection
+              objectTypeId={objectTypeId}
+              scopeParentId={subtypeId}
+              scopeParentLabel={subtypeEntry.subtype.label}
+              sectionTitle="Subtypes"
+              onOpenTaxonomy={onOpenTaxonomy}
+              onOpenSubtype={(nextSubtypeId) => onOpenObjectType?.(objectTypeId, nextSubtypeId)}
+              onPreviewSubtype={handlePreviewSubtype}
             />
           ) : (
             <div ref={treeSectionRef}>

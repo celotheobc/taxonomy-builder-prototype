@@ -1,16 +1,13 @@
-import { getAttribute, getObjectType } from '../../../data/mockObjectTypes';
+import { getObjectType } from '../../../data/mockObjectTypes';
 import styles from './ObjectTypePageHeader.module.css';
 
 export default function ObjectTypePageHeader({
   objectTypeId,
   subtypeEntry = null,
-  onNavigateToParent,
+  classificationPath = null,
+  onNavigateClassificationItem,
 }) {
   const objectType = getObjectType(objectTypeId);
-
-  const splitAttribute = subtypeEntry
-    ? getAttribute(objectType, subtypeEntry.splitAttributeId)
-    : null;
   const displayName = subtypeEntry?.subtype.label ?? objectType.name;
 
   return (
@@ -18,19 +15,36 @@ export default function ObjectTypePageHeader({
       <div>
         {subtypeEntry && <p className={styles.eyebrow}>Object Type · Subtype</p>}
         <h1 className={styles.title}>{displayName}</h1>
-        {subtypeEntry ? (
-          <p className={styles.subtitle}>
-            Subtype of{' '}
-            <button type="button" className={styles.parentLink} onClick={onNavigateToParent}>
-              {objectType.name}
-            </button>
-            {splitAttribute && (
-              <>
-                {' '}
-                · derived from {splitAttribute.name} = {subtypeEntry.subtype.matchingValue}
-              </>
-            )}
-          </p>
+        {classificationPath?.length ? (
+          <nav className={styles.classificationNav} aria-label="Classification path">
+            <ol className={styles.classificationPath}>
+              {classificationPath.map((item, index) => {
+                const isLast = index === classificationPath.length - 1;
+                return (
+                  <li key={item.id ?? 'root'} className={styles.classificationItem}>
+                    {index > 0 ? (
+                      <span className={styles.classificationSep} aria-hidden="true">
+                        →
+                      </span>
+                    ) : null}
+                    {isLast ? (
+                      <span className={styles.classificationCurrent} aria-current="page">
+                        {item.label}
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        className={styles.classificationLink}
+                        onClick={() => onNavigateClassificationItem?.(item)}
+                      >
+                        {item.label}
+                      </button>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+          </nav>
         ) : null}
       </div>
       <div className={styles.actions} aria-label="Page actions">
