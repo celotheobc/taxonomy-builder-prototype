@@ -105,7 +105,8 @@ function SubtypeValuesBlock({
 }
 
 function createGroupId() {
-  return `grp-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+  createGroupId.counter = (createGroupId.counter ?? 0) + 1;
+  return `grp-${createGroupId.counter}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
 export default function SplitModal({
@@ -136,7 +137,6 @@ export default function SplitModal({
   const [selectedValues, setSelectedValues] = useState(() => new Set());
   const [chipPopoverId, setChipPopoverId] = useState(null);
   const [groups, setGroups] = useState([]);
-  const [editingGroupId, setEditingGroupId] = useState(null);
   const [rules, setRules] = useState([]);
   const objectType = getObjectType(objectTypeId);
   const isEdit = mode === 'edit';
@@ -162,7 +162,6 @@ export default function SplitModal({
       setSelectedValues(new Set());
       setChipPopoverId(null);
       setGroups([]);
-      setEditingGroupId(null);
       setRules([]);
       return;
     }
@@ -344,7 +343,6 @@ export default function SplitModal({
     if (method !== creationMethod) {
       setDraftAttributeId('');
       setGroups([]);
-      setEditingGroupId(null);
       setRules([]);
     }
     onChooseCreationMethod?.(method);
@@ -368,7 +366,7 @@ export default function SplitModal({
   const addSubtypeConcept = () => {
     const id = createGroupId();
     setGroups((prev) => [...prev, { id, label: '', values: [] }]);
-    setEditingGroupId(id);
+    return id;
   };
 
   const updateGroupLabel = (groupId, label) => {
@@ -377,7 +375,6 @@ export default function SplitModal({
 
   const finishEditingGroup = (groupId, label) => {
     const trimmed = label.trim();
-    setEditingGroupId(null);
     if (!trimmed) {
       setGroups((prev) => {
         const target = prev.find((group) => group.id === groupId);
@@ -394,7 +391,7 @@ export default function SplitModal({
     updateGroupLabel(groupId, trimmed);
   };
 
-  const mapValueToGroup = (value, groupId) => {
+  const mapValueToGroup = (value, groupId, activeEditingGroupId = null) => {
     const row = groupingValueRows.find((item) => item.value === value);
     if (!row) return;
     setGroups((prev) => {
@@ -412,7 +409,7 @@ export default function SplitModal({
           );
       next = next.filter((group) => {
         if (group.values.length > 0) return true;
-        if (group.id === editingGroupId) return true;
+        if (group.id === activeEditingGroupId) return true;
         if (sourceGroupIds.has(group.id)) return false;
         return true;
       });
@@ -422,24 +419,21 @@ export default function SplitModal({
 
   const createSubtypeFromValue = (value) => {
     const row = groupingValueRows.find((item) => item.value === value);
-    if (!row) return;
-    const newId = createGroupId();
-    let renameGroupId = null;
+    if (!row) return null;
+
+    let newId = null;
     setGroups((prev) => {
+      if (prev.some((group) => group.values.some((item) => item.value === value))) {
+        return prev;
+      }
+      newId = createGroupId();
       const without = prev.map((group) => ({
         ...group,
         values: group.values.filter((item) => item.value !== value),
       }));
-      const existing = without.find((group) => group.label.trim() === row.value);
-      if (existing) {
-        return without.map((group) =>
-          group.id === existing.id ? { ...group, values: [...group.values, row] } : group,
-        );
-      }
-      renameGroupId = newId;
       return [...without, { id: newId, label: row.value, values: [row] }];
     });
-    setEditingGroupId(renameGroupId);
+    return newId;
   };
 
   const createOnePerValue = () => {
@@ -450,16 +444,10 @@ export default function SplitModal({
         values: [{ value: row.value, recordCount: row.recordCount }],
       })),
     );
-    setEditingGroupId(null);
   };
 
   const removeGroupConcept = (groupId) => {
     setGroups((prev) => prev.filter((group) => group.id !== groupId));
-    setEditingGroupId((current) => (current === groupId ? null : current));
-  };
-
-  const startEditingGroup = (groupId) => {
-    setEditingGroupId(groupId);
   };
 
   const unassignValue = (value) => {
@@ -540,7 +528,6 @@ export default function SplitModal({
                           setDraftAttributeId(nextId);
                           onSelectAttribute?.(nextId);
                           setGroups([]);
-                          setEditingGroupId(null);
                         }}
                         getValueCount={getAttributeValueCount}
                         modalOpen={open}
@@ -557,18 +544,17 @@ export default function SplitModal({
                     ) : null}
                   </div>
                   <AttributeGroupingPanel
+                      key={draftAttributeId || attributeId || 'no-attribute'}
                       objectType={objectType}
                       placeholderOnly={!(draftAttributeId || attributeId)}
                       valueRows={groupingValueRows}
                       groups={groups}
-                      editingGroupId={editingGroupId}
                       onAddSubtype={addSubtypeConcept}
                       onUpdateGroupLabel={updateGroupLabel}
                       onFinishEditingGroup={finishEditingGroup}
                       onMapValueToGroup={mapValueToGroup}
                       onCreateSubtypeFromValue={createSubtypeFromValue}
                       onRemoveGroup={removeGroupConcept}
-                      onStartEditingGroup={startEditingGroup}
                       onUnassignValue={unassignValue}
                     />
                 </div>

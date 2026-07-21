@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   formatMatchingRecords,
   SUBTYPE_PREVIEW_EMPTY,
@@ -42,29 +42,98 @@ function getValueGroupId(value, groups) {
   return group?.id ?? '';
 }
 
+function renameInputId(groupId) {
+  return `subtype-rename-${groupId}`;
+}
+
 export default function AttributeGroupingPanel({
   objectType,
   placeholderOnly = false,
   valueRows,
   groups,
-  editingGroupId,
   onAddSubtype,
   onUpdateGroupLabel,
   onFinishEditingGroup,
   onMapValueToGroup,
   onCreateSubtypeFromValue,
   onRemoveGroup,
-  onStartEditingGroup,
   onUnassignValue,
 }) {
-  const editInputRef = useRef(null);
+  const [editingGroupId, setEditingGroupId] = useState(null);
+  const [renameRequestId, setRenameRequestId] = useState(0);
+  const [pendingRenameGroupId, setPendingRenameGroupId] = useState(null);
+  const renameInputRef = useRef(null);
 
   useEffect(() => {
-    if (editingGroupId && editInputRef.current) {
-      editInputRef.current.focus();
-      editInputRef.current.select();
+    if (!groups.length) {
+      setEditingGroupId(null);
+      setRenameRequestId(0);
+      setPendingRenameGroupId(null);
     }
-  }, [editingGroupId]);
+  }, [groups.length]);
+
+  useLayoutEffect(() => {
+    if (!pendingRenameGroupId) return;
+    if (!groups.some((group) => group.id === pendingRenameGroupId)) return;
+    setPendingRenameGroupId(null);
+    setEditingGroupId(pendingRenameGroupId);
+    setRenameRequestId((requestId) => requestId + 1);
+  }, [groups, pendingRenameGroupId]);
+
+  const queueRename = (groupId) => {
+    if (!groupId) return;
+    setPendingRenameGroupId(groupId);
+  };
+
+  const beginRename = (groupId) => {
+    if (!groupId) return;
+    setPendingRenameGroupId(null);
+    setEditingGroupId(groupId);
+    setRenameRequestId((requestId) => requestId + 1);
+  };
+
+  const editingGroupExists = groups.some((group) => group.id === editingGroupId);
+
+  useLayoutEffect(() => {
+    if (!editingGroupId || !renameRequestId || !editingGroupExists) return;
+
+    const focusRenameInput = () => {
+      const input = renameInputRef.current;
+      if (!input || input.id !== renameInputId(editingGroupId)) return false;
+      input.focus({ preventScroll: true });
+      input.select();
+      input.scrollIntoView({ block: 'nearest' });
+      return true;
+    };
+
+    if (focusRenameInput()) return undefined;
+    const frame = requestAnimationFrame(focusRenameInput);
+    return () => cancelAnimationFrame(frame);
+  }, [editingGroupId, renameRequestId, editingGroupExists]);
+
+  const exitRename = (groupId, label) => {
+    onFinishEditingGroup(groupId, label);
+    setEditingGroupId((current) => (current === groupId ? null : current));
+  };
+
+  const handleCreateFromValue = (value) => {
+    const newGroupId = onCreateSubtypeFromValue(value);
+    if (newGroupId) queueRename(newGroupId);
+  };
+
+  const handleAddSubtype = () => {
+    const newGroupId = onAddSubtype();
+    if (newGroupId) queueRename(newGroupId);
+  };
+
+  const handleRemoveGroup = (groupId) => {
+    onRemoveGroup(groupId);
+    setEditingGroupId((current) => (current === groupId ? null : current));
+  };
+
+  const handleMapToGroup = (value, targetGroupId) => {
+    onMapValueToGroup(value, targetGroupId, editingGroupId);
+  };
 
   const subtypeCount = useMemo(
     () => groups.filter((group) => group.label.trim()).length,
@@ -126,7 +195,7 @@ export default function AttributeGroupingPanel({
                         value={groupId || ''}
                         onChange={(event) => {
                           const next = event.target.value;
-                          if (next) onMapValueToGroup(row.value, next);
+                          if (next) handleMapToGroup(row.value, next);
                         }}
                         aria-label={`Assign to existing subtype for ${row.value}`}
                       >
@@ -147,7 +216,8 @@ export default function AttributeGroupingPanel({
                     type="button"
                     className={styles.createFromValueBtn}
                     disabled={isAssigned}
-                    onClick={() => onCreateSubtypeFromValue(row.value)}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => handleCreateFromValue(row.value)}
                   >
                     Create subtype
                   </button>
@@ -162,7 +232,12 @@ export default function AttributeGroupingPanel({
             <h3 className={styles.groupingColumnTitlePreview}>
               Subtypes ({groups.length})
             </h3>
-            <button type="button" className={styles.addSubtypeBtnSecondary} onClick={onAddSubtype}>
+            <button
+              type="button"
+              className={styles.addSubtypeBtnSecondary}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={handleAddSubtype}
+            >
               Add subtype
             </button>
           </div>
@@ -182,7 +257,8 @@ export default function AttributeGroupingPanel({
                     <div className={styles.conceptCardHeader}>
                       {isEditing ? (
                         <input
-                          ref={editInputRef}
+                          ref={renameInputRef}
+                          id={renameInputId(group.id)}
                           type="text"
                           className={styles.conceptNameInput}
                           value={group.label}
@@ -191,14 +267,14 @@ export default function AttributeGroupingPanel({
                           onKeyDown={(event) => {
                             if (event.key === 'Enter') {
                               event.preventDefault();
-                              onFinishEditingGroup(group.id, group.label);
+                              exitRename(group.id, group.label);
                             }
                             if (event.key === 'Escape') {
                               event.preventDefault();
-                              onFinishEditingGroup(group.id, '');
+                              exitRename(group.id, '');
                             }
                           }}
-                          onBlur={() => onFinishEditingGroup(group.id, group.label)}
+                          onBlur={() => onUpdateGroupLabel(group.id, group.label)}
                           aria-label="Subtype name"
                           aria-describedby={showAssignHint ? `subtype-hint-${group.id}` : undefined}
                         />
@@ -206,7 +282,7 @@ export default function AttributeGroupingPanel({
                         <button
                           type="button"
                           className={styles.conceptNameButton}
-                          onClick={() => onStartEditingGroup(group.id)}
+                          onClick={() => beginRename(group.id)}
                         >
                           {group.label.trim() || 'Subtype name'}
                         </button>
@@ -215,7 +291,7 @@ export default function AttributeGroupingPanel({
                         <button
                           type="button"
                           className={styles.conceptRemoveBtn}
-                          onClick={() => onRemoveGroup(group.id)}
+                          onClick={() => handleRemoveGroup(group.id)}
                           aria-label={`Remove ${group.label.trim() || 'subtype'}`}
                         >
                           <CloseIcon />
