@@ -1,0 +1,70 @@
+.page {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 16px 20px 24px;
+  background: #fff;
+}
+
+.missing {
+  padding: 24px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.header {
+  margin-bottom: 16px;
+}
+
+.headerMain {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.objectIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #1b6fd1;
+  flex-shrink: 0;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.title {
+  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.parentLink {
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1b6fd1;
+  cursor: pointer;
+}
+
+.panelCard {
+  border: 1px solid #dbe3ee;
+  border-radius: 10px;
+  overflow: hidden;
+  min-height: 360px;
+}

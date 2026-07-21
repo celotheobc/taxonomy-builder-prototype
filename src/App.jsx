@@ -6,6 +6,7 @@ import TaxonomyBuilderAppV1 from './pages/taxonomy-v1/TaxonomyBuilderApp';
 import TaxonomyBuilderAppV2 from './pages/taxonomy-v2/TaxonomyBuilderApp';
 import TaxonomyBuilderAppV3 from './pages/taxonomy-v3/TaxonomyBuilderApp';
 import TaxonomyBuilderAppV4 from './pages/taxonomy-v4/TaxonomyBuilderApp';
+import TaxonomyBuilderAppV5 from './pages/taxonomy-v5/TaxonomyBuilderApp';
 
 export default function App() {
   const [showApp, setShowApp] = useState(() => {
@@ -50,7 +51,9 @@ export default function App() {
           ? TaxonomyBuilderAppV2
           : prototypeVersion === 'v3'
             ? TaxonomyBuilderAppV3
-            : TaxonomyBuilderAppV4;
+            : prototypeVersion === 'v5'
+              ? TaxonomyBuilderAppV5
+              : TaxonomyBuilderAppV4;
 
     return (
       <BuilderApp

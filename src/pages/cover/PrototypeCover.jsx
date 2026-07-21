@@ -4,6 +4,14 @@ import styles from './PrototypeCover.module.css';
 
 const VERSIONS = [
   {
+    id: 'v5',
+    title: 'Grouped values & rule-based hierarchy authoring',
+    description:
+      'Builds on V4 with a modal-first choice between attribute-value grouping (many source values → one subtype) and a visual rule builder with preview, while keeping the object, taxonomy, and subtype pages stable.',
+    tag: 'v5',
+    objectTypeId: 'facility',
+  },
+  {
     id: 'v4',
     title: 'Parent-owned split configuration',
     description:

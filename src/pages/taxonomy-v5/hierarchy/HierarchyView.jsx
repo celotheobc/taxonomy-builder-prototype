@@ -1,0 +1,319 @@
+import {
+  buildNodeTree,
+  getDirectChildCount,
+  getSplitConfigsForParent,
+  parentHasDirectSplit,
+} from '../../../data/taxonomyTreeModel';
+import { getDetectedValues, getObjectType } from '../../../data/mockObjectTypes';
+import { buildSplitMetadataProps } from './SplitMetadata';
+import { SubtypeRow } from './HierarchyRowParts';
+import SplitConfigBlock from './SplitConfigBlock';
+import { RootObjectRow, RootSplitMetaRow } from './RootObjectRow';
+import HierarchyMetadataHeader from './HierarchyMetadataHeader';
+import styles from './Hierarchy.module.css';
+import anim from './Hierarchy.anim.module.css';
+
+function getItemEnterProps(nodeId, branchParentId, enteringNodeIds, expandingBranchParentIds) {
+  const isEntering = enteringNodeIds.has(nodeId);
+  const isExpandReveal =
+    branchParentId != null && expandingBranchParentIds.has(branchParentId);
+  if (!isEntering && !isExpandReveal) return {};
+  return { className: anim.itemEnter };
+}
+
+function ExpandedBranch({ branchExpanding, children }) {
+  if (!branchExpanding) return children;
+  return (
+    <div className={anim.branchExpand}>
+      <div className={anim.branchExpandInner}>{children}</div>
+    </div>
+  );
+}
+
+function SplitConfigsForParent({
+  parentId,
+  parentLabel,
+  allNodes,
+  branchDepth,
+  ancestorContinues,
+  isLastInBranch,
+  objectType,
+  rootSplitAttributeId,
+  rowProps,
+  metadataVariant,
+}) {
+  if (metadataVariant === 'single-row') return null;
+
+  const configs = getSplitConfigsForParent(
+    parentId,
+    allNodes,
+    objectType,
+    getDetectedValues,
+    rootSplitAttributeId,
+  );
+
+  if (!configs.length) return null;
+
+  return configs.map((group) => (
+    <SplitConfigBlock
+      key={`${parentId ?? 'root'}-${group.attributeId}`}
+      group={group}
+      objectType={objectType}
+      parentLabel={parentLabel}
+      branchDepth={branchDepth}
+      ancestorContinues={ancestorContinues}
+      isLastInBranch={isLastInBranch}
+      readOnly={rowProps.readOnly}
+      taxonomyId={rowProps.taxonomyId}
+      taxonomyName={parentId == null ? rowProps.taxonomyName : undefined}
+      onOpenTaxonomy={rowProps.onOpenTaxonomy}
+      onAddValues={() =>
+        rowProps.onAddSplitValues?.({
+          parentId,
+          parentLabel,
+          attributeId: group.attributeId,
+        })
+      }
+    />
+  ));
+}
+
+function getPrimarySplitGroup(parentId, allNodes, objectType, rootSplitAttributeId) {
+  const configs = getSplitConfigsForParent(
+    parentId,
+    allNodes,
+    objectType,
+    getDetectedValues,
+    rootSplitAttributeId,
+  );
+  return configs[0] ?? null;
+}
+
+function buildMetaFromGroup(group, ctx) {
+  if (!group) return null;
+  return buildSplitMetadataProps({
+    group,
+    objectType: ctx.objectType,
+    parentLabel: ctx.parentLabel,
+    taxonomyId: ctx.taxonomyId,
+    taxonomyName: ctx.taxonomyName,
+    readOnly: ctx.readOnly,
+    onOpenTaxonomy: ctx.onOpenTaxonomy,
+    onAddValues: ctx.onAddValues,
+  });
+}
+
+function HierarchyBranch({
+  nodes,
+  allNodes,
+  branchDepth,
+  ancestorContinues,
+  expandedIds,
+  objectType,
+  rootSplitAttributeId,
+  rowProps,
+  metadataVariant,
+  branchParentId = null,
+  enteringNodeIds = new Set(),
+  expandingBranchParentIds = new Set(),
+}) {
+  return nodes.map((node, index) => {
+    const isLast = index === nodes.length - 1;
+    const hasChildren = Boolean(node.children?.length);
+    const isExpanded = expandedIds.has(node.id);
+    const childCount = getDirectChildCount(node.id, allNodes);
+    const childAncestorContinues = [...ancestorContinues, !isLast];
+    const hasExistingSplit = parentHasDirectSplit(node.id, allNodes);
+    const splitGroup = hasExistingSplit
+      ? getPrimarySplitGroup(node.id, allNodes, objectType, rootSplitAttributeId)
+      : null;
+    const splitMeta =
+      metadataVariant === 'single-row' && splitGroup
+        ? buildMetaFromGroup(splitGroup, {
+            objectType,
+            parentLabel: node.label,
+            taxonomyId: rowProps.taxonomyId,
+            readOnly: rowProps.readOnly,
+            onOpenTaxonomy: rowProps.onOpenTaxonomy,
+            onAddValues: () =>
+              rowProps.onAddSplitValues?.({
+                parentId: node.id,
+                parentLabel: node.label,
+                attributeId: splitGroup.attributeId,
+              }),
+          })
+        : null;
+
+    const itemEnter = getItemEnterProps(
+      node.id,
+      branchParentId,
+      enteringNodeIds,
+      expandingBranchParentIds,
+    );
+    const branchExpanding = expandingBranchParentIds.has(node.id);
+
+    return (
+      <li
+        key={node.id}
+        role="treeitem"
+        aria-expanded={hasChildren ? isExpanded : undefined}
+        className={itemEnter.className}
+      >
+        <SubtypeRow
+          node={node}
+          allNodes={allNodes}
+          branchDepth={branchDepth}
+          ancestorContinues={ancestorContinues}
+          isLast={isLast}
+          hasChildren={hasChildren}
+          isExpanded={isExpanded}
+          childCount={childCount}
+          hasExistingSplit={hasExistingSplit}
+          splitMeta={splitMeta}
+          metadataVariant={metadataVariant}
+          onToggleExpand={rowProps.onToggleExpand}
+          {...rowProps}
+        />
+
+        {hasChildren && isExpanded ? (
+          <ExpandedBranch branchExpanding={branchExpanding}>
+            {metadataVariant === 'two-row' ? (
+              <SplitConfigsForParent
+                parentId={node.id}
+                parentLabel={node.label}
+                allNodes={allNodes}
+                branchDepth={branchDepth}
+                ancestorContinues={ancestorContinues}
+                isLastInBranch={false}
+                objectType={objectType}
+                rootSplitAttributeId={rootSplitAttributeId}
+                rowProps={rowProps}
+                metadataVariant={metadataVariant}
+              />
+            ) : null}
+            <ul className={styles.hierarchyList} role="group">
+              <HierarchyBranch
+                nodes={node.children}
+                allNodes={allNodes}
+                branchDepth={branchDepth + 1}
+                ancestorContinues={childAncestorContinues}
+                expandedIds={expandedIds}
+                objectType={objectType}
+                rootSplitAttributeId={rootSplitAttributeId}
+                rowProps={rowProps}
+                metadataVariant={metadataVariant}
+                branchParentId={node.id}
+                enteringNodeIds={enteringNodeIds}
+                expandingBranchParentIds={expandingBranchParentIds}
+              />
+            </ul>
+          </ExpandedBranch>
+        ) : null}
+      </li>
+    );
+  });
+}
+
+export default function HierarchyView({
+  objectTypeId,
+  objectTypeName,
+  nodes,
+  rootSplitAttributeId,
+  expandedNodeIds,
+  taxonomyId,
+  taxonomyName,
+  metadataVariant = 'two-row',
+  rowProps,
+  enteringNodeIds = new Set(),
+  expandingBranchParentIds = new Set(),
+  subtreeRootId = null,
+}) {
+  const objectType = getObjectType(objectTypeId);
+  const scopedRoot = subtreeRootId ?? null;
+  const tree = buildNodeTree(nodes, scopedRoot);
+  const expandedIds = new Set(expandedNodeIds);
+
+  if (!nodes.length) return null;
+  if (scopedRoot && !nodes.some((node) => node.id === scopedRoot)) return null;
+
+  const rootHasSplit = parentHasDirectSplit(scopedRoot, nodes);
+  const rootSplitGroup = rootHasSplit
+    ? getPrimarySplitGroup(scopedRoot, nodes, objectType, rootSplitAttributeId)
+    : null;
+  const isTaxonomyView = metadataVariant === 'taxonomy';
+  const scopedParentLabel =
+    scopedRoot != null ? nodes.find((node) => node.id === scopedRoot)?.label : null;
+  const hierarchyRootLabel = scopedParentLabel ?? objectTypeName;
+  const rootSplitMeta =
+    !isTaxonomyView && rootSplitGroup
+      ? buildMetaFromGroup(rootSplitGroup, {
+        objectType,
+        parentLabel: hierarchyRootLabel,
+        taxonomyId,
+        taxonomyName,
+        readOnly: rowProps.readOnly,
+        onOpenTaxonomy: rowProps.onOpenTaxonomy,
+        onAddValues: () =>
+          rowProps.onAddSplitValues?.({
+            parentId: scopedRoot,
+            parentLabel: hierarchyRootLabel,
+            attributeId: rootSplitGroup.attributeId,
+          }),
+      })
+      : null;
+
+  const mergedRowProps = { ...rowProps, taxonomyId, taxonomyName };
+  const wrapClassName = isTaxonomyView
+    ? styles.hierarchyMetaTaxonomy
+    : metadataVariant === 'single-row'
+      ? styles.hierarchyMetaSingleRow
+      : styles.hierarchyMetaTwoRow;
+
+  return (
+    <div
+      className={`${styles.hierarchyTreeWrap} ${wrapClassName}`}
+      role="tree"
+      aria-label={
+        isTaxonomyView
+          ? `${taxonomyName ?? 'Taxonomy'} structure`
+          : scopedRoot
+            ? `${hierarchyRootLabel} child subtypes`
+            : `${objectTypeName} subtype hierarchy`
+      }
+    >
+      {metadataVariant === 'single-row' && !isTaxonomyView ? (
+        <HierarchyMetadataHeader showActions={!rowProps.readOnly} />
+      ) : null}
+      {!isTaxonomyView && scopedRoot == null ? (
+        <RootObjectRow
+          objectTypeName={objectTypeName}
+          splitMeta={rootSplitMeta}
+          metadataVariant={metadataVariant}
+          hasSplit={rootHasSplit}
+          readOnly={rowProps.readOnly}
+          onEditSplit={() => rowProps.onEditRootSplit?.()}
+        />
+      ) : null}
+      {!isTaxonomyView && scopedRoot == null ? (
+        <RootSplitMetaRow splitMeta={rootSplitMeta} metadataVariant={metadataVariant} />
+      ) : null}
+
+      <ul className={styles.hierarchyList}>
+        <HierarchyBranch
+          nodes={tree}
+          allNodes={nodes}
+          branchDepth={0}
+          ancestorContinues={[]}
+          expandedIds={expandedIds}
+          objectType={objectType}
+          rootSplitAttributeId={rootSplitAttributeId}
+          rowProps={mergedRowProps}
+          metadataVariant={metadataVariant}
+          branchParentId={null}
+          enteringNodeIds={enteringNodeIds}
+          expandingBranchParentIds={expandingBranchParentIds}
+        />
+      </ul>
+    </div>
+  );
+}
